@@ -45,7 +45,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	shape.setFillColor(sf::Color::Transparent);
 
 	// Preparing text preform for rendering mines
-	sf::Text text("", font, 20);
+	sf::Text text("", font, 15);
 
 	for (unsigned int i = 0; i < ARRAY_SIZE; i++) 
 	{
@@ -58,7 +58,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
 		shape.setPosition(position);
 
-		text.setPosition(position.x + 10.f + (cells[i] < 10 ? 15.f : 0.f), position.y + 15.f);
+		text.setPosition(position.x + (i < 10 ? 15.f : 0.f), position.y + 5.f);
 		target.draw(shape, states);
 		target.draw(text, states);
 
