@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <random>
 
 Game::Game()
 {
@@ -17,6 +16,7 @@ void Game::Init()
 		int rand_x = rand() % SIZE;
 		int rand_y = rand() % SIZE;
 		if (cells[rand_y * SIZE + rand_x] != CLEAR) continue;
+		cells[rand_y * SIZE + rand_x] = MINE;
 		i++;
 	}
 }
@@ -53,32 +53,32 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		text.setFillColor(color);
 		text.setString("M");
 
-		text.setString(std::to_string(i));
+		//text.setString(std::to_string(cells[i]));
 
-		sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
-		shape.setPosition(position);
+		//sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
+		//shape.setPosition(position);
 
-		text.setPosition(position.x + (i < 10 ? 15.f : 0.f), position.y + 5.f);
-		target.draw(shape, states);
-		target.draw(text, states);
+		//text.setPosition(position.x + (cells[i] < 10 ? 15.f : 0.f), position.y + 5.f);
+		//target.draw(shape, states);
+		//target.draw(text, states);
 
-		//if (cells[i] == CLEAR)
-		//{
-		//	sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
-		//	shape.setPosition(position);
+		if (cells[i] == CLEAR)
+		{
+			sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
+			shape.setPosition(position);
 
-		//	target.draw(shape, states);
-		//}
+			target.draw(shape, states);
+		}
 
-		//if (cells[i] == MINE)
-		//{
-		//	sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
-		//	shape.setPosition(position);
+		if (cells[i] == MINE)
+		{
+			sf::Vector2f position(i % SIZE * CELL_SIZE + 10.f, i / SIZE * CELL_SIZE + 10.f);
+			shape.setPosition(position);
 
-		//	text.setPosition(position.x + 30.f + (cells[i] < 10 ? 15.f : 0.f), position.y + 25.f);
-		//	target.draw(shape, states);
-		//	target.draw(text, states);
-		//}
+			text.setPosition(position.x + 5.f, position.y + 5.f);
+			target.draw(shape, states);
+			target.draw(text, states);
+		}
 	}
 
 
