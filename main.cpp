@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include <iostream>
 
 int main()
 {
@@ -28,6 +29,12 @@ int main()
 			{
 				if (event.key.code == sf::Keyboard::Escape) window.close();
 				if (event.key.code == sf::Keyboard::F2) game.Init();
+			}
+			if (event.type == sf::Event::MouseButtonReleased) {
+                game.event(event);
+			}
+			if (event.type == sf::Event::MouseMoved) {
+			    std::cout << event.mouseMove.x << " " << event.mouseMove.y << std::endl;
 			}
 		}
 		window.clear();

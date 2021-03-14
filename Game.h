@@ -18,12 +18,14 @@ class Game : public sf::Drawable, public sf::Transformable
 {
 protected:
 	int cells[ARRAY_SIZE];
+	sf::Vector2f mousePos;
 	bool isLosed;
 	sf::Font font;
 public:
 	Game();
 	void Init();
 	void CheckCell(const int, const int);
-
 	virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+
+	void event(sf::Event);
 };
