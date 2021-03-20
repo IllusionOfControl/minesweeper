@@ -9,7 +9,7 @@
 
 struct GameData
 {
-    StateManager machine;
+    StateManager manager;
     sf::RenderWindow window;
     AssetManager assets;
     InputManager input;

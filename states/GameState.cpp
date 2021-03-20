@@ -16,24 +16,23 @@ GameState::GameState(GameDataRef data) : _data(data)
 void GameState::Init()
 {
     gameState = STATE_PLAYING;
+    this->_data->assets.LoadTexture("tile_0", GAME_FIELD_TILES, TILE_0);
+    this->_data->assets.LoadTexture("tile_1", GAME_FIELD_TILES, TILE_1);
+    this->_data->assets.LoadTexture("tile_2", GAME_FIELD_TILES, TILE_2);
+    this->_data->assets.LoadTexture("tile_3", GAME_FIELD_TILES, TILE_3);
+    this->_data->assets.LoadTexture("tile_4", GAME_FIELD_TILES, TILE_4);
+    this->_data->assets.LoadTexture("tile_5", GAME_FIELD_TILES, TILE_5);
+    this->_data->assets.LoadTexture("tile_6", GAME_FIELD_TILES, TILE_6);
+    this->_data->assets.LoadTexture("tile_7", GAME_FIELD_TILES, TILE_7);
+    this->_data->assets.LoadTexture("tile_8", GAME_FIELD_TILES, TILE_8);
+    this->_data->assets.LoadTexture("tile_bomb", GAME_FIELD_TILES, TILE_BOMB);
+    this->_data->assets.LoadTexture("tile_bomb_detonated", GAME_FIELD_TILES, TILE_BOMB_DETONATED);
+    this->_data->assets.LoadTexture("tile_mine_bomb_false", GAME_FIELD_TILES, TILE_BOMB_FALSE);
+    this->_data->assets.LoadTexture("tile_flag", GAME_FIELD_TILES, TILE_FLAG);
+    this->_data->assets.LoadTexture("tile_question", GAME_FIELD_TILES, TILE_QUESTION);
+    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, TILE_BLOCK);
+    this->_data->assets.LoadTexture("tile_empty", GAME_FIELD_TILES, TILE_EMPTY);
 
-    this->_data->assets.LoadTexture("tile_0", GAME_FIELD_TILES, {32 * 0, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_1", GAME_FIELD_TILES, {32 * 1, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_2", GAME_FIELD_TILES, {32 * 2, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_3", GAME_FIELD_TILES, {32 * 3, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_4", GAME_FIELD_TILES, {32 * 4, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_5", GAME_FIELD_TILES, {32 * 5, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_6", GAME_FIELD_TILES, {32 * 6, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_7", GAME_FIELD_TILES, {32 * 7, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_8", GAME_FIELD_TILES, {32 * 8, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_mine", GAME_FIELD_TILES, {32 * 9, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_grave", GAME_FIELD_TILES, {32 * 10, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_unopened", GAME_FIELD_TILES, {32 * 11, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_flag", GAME_FIELD_TILES, {32 * 12, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_question", GAME_FIELD_TILES, {32 * 13, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_wwwwww", GAME_FIELD_TILES, {32 * 14, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_qqqqqq", GAME_FIELD_TILES, {32 * 15, 0, 32, 32});
-    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, {32 * 16, 0, 32, 32});
 
     this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
     this->_data->assets.LoadTexture("X Piece", X_PIECE_FILEPATH);
@@ -41,12 +40,14 @@ void GameState::Init()
     this->_data->assets.LoadTexture("X Winning Piece", X_WINNING_PIECE_FILEPATH);
     this->_data->assets.LoadTexture("O Winning Piece", O_WINNING_PIECE_FILEPATH);
 
-    _background.setTexture(this->_data->assets.GetTexture("Background"));
-    _pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
-    _gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
+    auto& backgroundTexture = this->_data->assets.GetTexture("tile_block");
+    backgroundTexture.setRepeated(true);
+    _background.setTexture(backgroundTexture);
+//    _pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
+ //   _gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
 
     _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
-    _gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
+//    _gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
 
     InitGridPieces();
 
@@ -73,7 +74,7 @@ void GameState::HandleInput()
         if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
         {
             // Switch To Game State
-            //this->_data->machine.AddState(StateRef(new PauseState(_data)), false);
+            //this->_data->manager.AddState(StateRef(new PauseState(_data)), false);
         }
         else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
         {
@@ -129,7 +130,7 @@ void GameState::CheckAndPlacePiece()
 {
     sf::Vector2i touchPoint = this->_data->input.GetMousePosition(this->_data->window);
     sf::FloatRect gridSize = _gridSprite.getGlobalBounds();
-    sf::Vector2f gapOutsideOfGrid = sf::Vector2f((SCREEN_WIDTH - gridSize.width) / 2, (SCREEN_HEIGHT - gridSize.height) / 2);
+    sf::Vector2f gapOutsideOfGrid = sf::Vector2f(0,0);
 
     sf::Vector2f gridLocalTouchPos = sf::Vector2f(touchPoint.x - gapOutsideOfGrid.x, touchPoint.y - gapOutsideOfGrid.y);
 
@@ -195,7 +196,6 @@ void GameState::CheckHasPlayerWon(int player)
 
     if (STATE_WON != gameState)
     {
-        gameState = STATE_AI_PLAYING;
 
         Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_PIECE);
         Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_PIECE);
@@ -220,18 +220,18 @@ void GameState::CheckHasPlayerWon(int player)
         }
     }
 
-    // check if the game is a draw
-    if (0 == emptyNum && (STATE_WON != gameState) && (STATE_LOSE != gameState))
-    {
-        gameState = STATE_DRAW;
-    }
-
-    // check if the game is over
-    if (STATE_DRAW == gameState || STATE_LOSE == gameState || STATE_WON == gameState)
-    {
-        // show game over
-        this->_clock.restart( );
-    }
+//    // check if the game is a draw
+//    if (0 == emptyNum && (STATE_WON != gameState) && (STATE_LOSE != gameState))
+//    {
+//        gameState = STATE_DRAW;
+//    }
+//
+//    // check if the game is over
+//    if (STATE_DRAW == gameState || STATE_LOSE == gameState || STATE_WON == gameState)
+//    {
+//        // show game over
+//        this->_clock.restart( );
+//    }
 
     std::cout << gameState << std::endl;
 }

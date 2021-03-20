@@ -9,25 +9,22 @@ MainMenuState::MainMenuState(GameDataRef data) : _data(data)
 
 void MainMenuState::Init()
 {
-    this->_data->window.create(sf::VideoMode(224, 320), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
-    this->_data->assets.LoadTexture("Background", GAME_FIELD_TILES, {512,0,32, 32});
+    this->_data->window.create(sf::VideoMode(MAIN_MENU_WIDTH, MAIN_MENU_HEIGHT), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
+    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, {0,32*13,32,32});
     this->_data->assets.LoadTexture("Play Button", MAIN_MENU_PLAY_BUTTON);
     this->_data->assets.LoadTexture("Play Button Outer", MAIN_MENU_PLAY_BUTTON_OUTER);
     this->_data->assets.LoadTexture("Game logo", MAIN_MENU_LOGO_FILEPATH);
 
-    auto& backgroundTexture = this->_data->assets.GetTexture("Background");
+    auto& backgroundTexture = this->_data->assets.GetTexture("tile_block");
     backgroundTexture.setRepeated(true);
     this->_background.setTexture(backgroundTexture);
-    this->_background.setTextureRect({0,0,640,640});
+    this->_background.setTextureRect({0,0,MAIN_MENU_WIDTH, MAIN_MENU_HEIGHT});
     this->_playButton.setTexture(this->_data->assets.GetTexture("Play Button"));
 
     this->_logo.setTexture(this->_data->assets.GetTexture("Game logo"));
 
     this->_playButton.setPosition((32 * 1), (32 * 4));
     this->_logo.setPosition(32, 0);
-    //    this->_playButtonOuter.setPosition((SCREEN_WIDTH / 2) - (this->_playButtonOuter.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (this->_playButtonOuter.getGlobalBounds().height / 2));
-
-
 }
 
 void MainMenuState::HandleInput()
@@ -36,15 +33,20 @@ void MainMenuState::HandleInput()
 
     while (this->_data->window.pollEvent(event))
     {
-        if (sf::Event::Closed == event.type)
-        {
+        if (sf::Event::Closed == event.type) {
             this->_data->window.close();
+        }
+
+        if (event.type == sf::Event::MouseMoved) {
+            if (_playButton.getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
+                _playButton.setColor(sf::Color(0,255,0));
+            else _playButton.setColor(sf::Color(255,255,255));
         }
 
         if (this->_data->input.IsSpriteClicked(this->_playButton, sf::Mouse::Left, this->_data->window))
         {
             // Switch To Game State
-            this->_data->machine.AddState(StateRef(new GameState(_data)), true);
+            this->_data->manager.AddState(StateRef(new GameState(_data)), true);
         }
     }
 }
