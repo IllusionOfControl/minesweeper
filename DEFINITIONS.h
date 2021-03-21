@@ -28,7 +28,23 @@
 #define TILE_FLAG           {0, TILE_HEIGHT * 12, TILE_WIDTH, TILE_HEIGHT}
 #define TILE_QUESTION       {0, TILE_HEIGHT * 13, TILE_WIDTH, TILE_HEIGHT}
 #define TILE_BLOCK          {0, TILE_HEIGHT * 14, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_EMPTY          {0, TILE_HEIGHT * 15, TILE_WIDTH, TILE_HEIGHT}
+#define TILE_CLOSED         {0, TILE_HEIGHT * 15, TILE_WIDTH, TILE_HEIGHT}
+
+#define CELL_0              0x0
+#define CELL_1              0x1
+#define CELL_2              0x2
+#define CELL_3              0x3
+#define CELL_4              0x4
+#define CELL_5              0x5
+#define CELL_6              0x6
+#define CELL_7              0x7
+#define CELL_8              0x8
+#define CELL_BOMB           0xA
+#define CELL_BOMB_DETONATED 0xB
+#define CELL_BOMB_FALSE     0xC
+#define CELL_FLAG           0x10
+#define CELL_QUESTION       0x20
+#define CELL_OPENED         0x100
 
 #define GAME_FIELD_TILES "_Resources/res/tiles.png"
 
@@ -64,6 +80,8 @@
 #define STATE_WON       1
 #define STATE_LOSE      2
 
-#define TIME_BEFORE_SHOWING_GAME_OVER 3
+#define DIFFICULTY_EASY     {9, 9, 10};
+#define DIFFICULTY_NORMAL   {9, 9, 10};
+#define DIFFICULTY_HARD     {9, 9, 10};
 
 #endif //MINESWEEPER_DEFINITIONS_H

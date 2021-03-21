@@ -10,7 +10,7 @@ MainMenuState::MainMenuState(GameDataRef data) : _data(data)
 void MainMenuState::Init()
 {
     this->_data->window.create(sf::VideoMode(MAIN_MENU_WIDTH, MAIN_MENU_HEIGHT), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
-    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, {0,32*13,32,32});
+    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, TILE_BLOCK);
     this->_data->assets.LoadTexture("Play Button", MAIN_MENU_PLAY_BUTTON);
     this->_data->assets.LoadTexture("Play Button Outer", MAIN_MENU_PLAY_BUTTON_OUTER);
     this->_data->assets.LoadTexture("Game logo", MAIN_MENU_LOGO_FILEPATH);

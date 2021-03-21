@@ -5,7 +5,13 @@
 #include "managers/AssetManager.h"
 #include "managers/InputManager.h"
 #include "managers/StateManager.h"
+#include "DEFINITIONS.h"
 
+struct DifficultyData {
+    int field_width;
+    int field_height;
+    int bomb_count;
+};
 
 struct GameData
 {
@@ -13,6 +19,7 @@ struct GameData
     sf::RenderWindow window;
     AssetManager assets;
     InputManager input;
+    DifficultyData difficulty = DIFFICULTY_EASY;
 };
 
 typedef std::shared_ptr<GameData> GameDataRef;

@@ -18,6 +18,8 @@ public:
 
 private:
     void InitGridPieces();
+    void InitGridCells();
+    void InitGridArray();
 
     void CheckAndPlacePiece();
 
@@ -32,11 +34,11 @@ private:
 
     sf::Sprite _gridSprite;
 
-    sf::Sprite _gridPieces[3][3];
-    int _gridArray[3][3];
+    std::vector<sf::Sprite> _gridCells;
+    std::vector<int> _gridArray;
 
-    int turn;
-    int gameState;
+    int minesCount;
+    int gameState;  // ?
 
     sf::Clock _clock;
 };

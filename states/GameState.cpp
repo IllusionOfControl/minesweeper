@@ -16,6 +16,10 @@ GameState::GameState(GameDataRef data) : _data(data)
 void GameState::Init()
 {
     gameState = STATE_PLAYING;
+
+    int window_h = TILE_WIDTH * 11;
+    int window_w = TILE_HEIGHT * 11;
+    this->_data->window.create(sf::VideoMode(TILE_WIDTH * 12, TILE_HEIGHT * 12), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
     this->_data->assets.LoadTexture("tile_0", GAME_FIELD_TILES, TILE_0);
     this->_data->assets.LoadTexture("tile_1", GAME_FIELD_TILES, TILE_1);
     this->_data->assets.LoadTexture("tile_2", GAME_FIELD_TILES, TILE_2);
@@ -31,7 +35,7 @@ void GameState::Init()
     this->_data->assets.LoadTexture("tile_flag", GAME_FIELD_TILES, TILE_FLAG);
     this->_data->assets.LoadTexture("tile_question", GAME_FIELD_TILES, TILE_QUESTION);
     this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, TILE_BLOCK);
-    this->_data->assets.LoadTexture("tile_empty", GAME_FIELD_TILES, TILE_EMPTY);
+    this->_data->assets.LoadTexture("tile_closed", GAME_FIELD_TILES, TILE_CLOSED);
 
 
     this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
@@ -42,22 +46,21 @@ void GameState::Init()
 
     auto& backgroundTexture = this->_data->assets.GetTexture("tile_block");
     backgroundTexture.setRepeated(true);
-    _background.setTexture(backgroundTexture);
-//    _pauseButton.setTexture(this->_data->assets.GetTexture("Pause Button"));
- //   _gridSprite.setTexture(this->_data->assets.GetTexture("Grid Sprite"));
+    this->_background.setTexture(backgroundTexture);
+    this->_background.setTextureRect({0,0, TILE_WIDTH * 12, TILE_HEIGHT * 12});
 
-    _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
+    this->_gridSprite.setTexture(this->_data->assets.GetTexture("tile_closed"));
+    this->_gridSprite.setTextureRect({TILE_HEIGHT * 1,
+                                      TILE_WIDTH * 1,
+                                      this->_data->difficulty.field_height * TILE_HEIGHT,
+                                     this->_data->difficulty.field_height * TILE_WIDTH});
+    this->_gridSprite.setPosition(sf::Vector2f(TILE_HEIGHT * 1, TILE_WIDTH * 1));
+
+//    _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
 //    _gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
 
-    InitGridPieces();
-
-    for (int x = 0; x < 3; x++)
-    {
-        for (int y = 0; y < 3; y++)
-        {
-            _gridArray[x][y] = EMPTY_PIECE;
-        }
-    }
+    //InitGridPieces();
+    InitGridArray();
 }
 
 void GameState::HandleInput()
@@ -104,7 +107,7 @@ void GameState::Draw()
     {
         for (int y = 0; y < 3; y++)
         {
-            this->_data->window.draw(this->_gridPieces[x][y]);
+            //this->_data->window.draw(this->_gridPieces[x][y]);
         }
     }
 
@@ -119,12 +122,49 @@ void GameState::InitGridPieces()
     {
         for (int y = 0; y < 3; y++)
         {
-            _gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
-            _gridPieces[x][y].setPosition(_gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, _gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
-            _gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
+//            _gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
+//            _gridPieces[x][y].setPosition(_gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, _gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
+//            _gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
         }
     }
 }
+
+void GameState::InitGridCells() {
+    sf::Vector2i tempSpriteSize = sf::Vector2i(TILE_WIDTH, TILE_HEIGHT);
+    sf::Vector2f basePos = this->_gridSprite.getPosition();
+    int grid_w = this->_data->difficulty.field_width;
+    int grid_h = this->_data->difficulty.field_height;
+    for (int i = 0; i < grid_h * grid_w; i++) {
+        sf::Sprite cell;
+        cell.setTexture(this->_data->assets.GetTexture("tile_closed"));
+        //cell.setPosition()
+        this->_gridCells.push_back(cell);
+    }
+}
+
+void GameState::InitGridArray() {
+    int cellCount = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
+    for (int i = 0; i < cellCount; i++) {
+        this->_gridArray.push_back(0);
+    }
+
+    for (int i = 0; i < this->_data->difficulty.field_height; i++) {
+        int rand_x = rand() % this->_data->difficulty.field_width;
+        int rand_y = rand() % this->_data->difficulty.field_height;
+        int cellNum = rand_y * this->_data->difficulty.field_height + rand_x;
+        if (this->_gridArray.at(i) == CELL_BOMB) {
+            i--;
+            continue;
+        }
+        this->_gridArray[cellNum] = CELL_BOMB;
+        if (rand_x != 0) _gridArray[cellNum-1]++;
+        if (rand_x != this->_data->difficulty.field_width) _gridArray[cellNum+1]++;
+        if (rand_x != 0) _gridArray[cellNum+this->_data->difficulty.field_height]++;
+        if (rand_y != this->_data->difficulty.field_height) _gridArray[cellNum-this->_data->difficulty.field_height]++;
+    }
+}
+
+
 
 void GameState::CheckAndPlacePiece()
 {
@@ -168,18 +208,18 @@ void GameState::CheckAndPlacePiece()
         row = 3;
     }
 
-    if (_gridArray[column - 1][row - 1] == EMPTY_PIECE)
+//    if (_gridArray[column - 1][row - 1] == EMPTY_PIECE)
     {
-        _gridArray[column - 1][row - 1] = turn;
+//        _gridArray[column - 1][row - 1] = turn;
 
-        if (PLAYER_PIECE == turn)
+//        if (PLAYER_PIECE == turn)
         {
-            _gridPieces[column - 1][row - 1].setTexture(this->_data->assets.GetTexture("X Piece"));
+//            _gridPieces[column - 1][row - 1].setTexture(this->_data->assets.GetTexture("X Piece"));
 
-            this->CheckHasPlayerWon(turn);
+//            this->CheckHasPlayerWon(turn);
         }
 
-        _gridPieces[column - 1][row - 1].setColor(sf::Color(255, 255, 255, 255));
+//        _gridPieces[column - 1][row - 1].setColor(sf::Color(255, 255, 255, 255));
     }
 }
 
@@ -213,9 +253,9 @@ void GameState::CheckHasPlayerWon(int player)
     {
         for (int y = 0; y < 3; y++)
         {
-            if (EMPTY_PIECE != _gridArray[x][y])
+//            if (EMPTY_PIECE != _gridArray[x][y])
             {
-                emptyNum--;
+//                emptyNum--;
             }
         }
     }
@@ -238,31 +278,31 @@ void GameState::CheckHasPlayerWon(int player)
 
 void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
 {
-    if (pieceToCheck == _gridArray[x1][y1] && pieceToCheck == _gridArray[x2][y2] && pieceToCheck == _gridArray[x3][y3])
-    {
-        std::string winningPieceStr;
-
-        if (O_PIECE == pieceToCheck)
-        {
-            winningPieceStr = "O Winning Piece";
-        }
-        else
-        {
-            winningPieceStr = "X Winning Piece";
-        }
-
-        _gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-        _gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-        _gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
-
-
-        if (PLAYER_PIECE == pieceToCheck)
-        {
-            gameState = STATE_WON;
-        }
-        else
-        {
-            gameState = STATE_LOSE;
-        }
-    }
+////    if (pieceToCheck == _gridArray[x1][y1] && pieceToCheck == _gridArray[x2][y2] && pieceToCheck == _gridArray[x3][y3])
+//    {
+//        std::string winningPieceStr;
+//
+//        if (O_PIECE == pieceToCheck)
+//        {
+//            winningPieceStr = "O Winning Piece";
+//        }
+//        else
+//        {
+//            winningPieceStr = "X Winning Piece";
+//        }
+//
+////        _gridPieces[x1][y1].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+////        _gridPieces[x2][y2].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+////        _gridPieces[x3][y3].setTexture(this->_data->assets.GetTexture(winningPieceStr));
+//
+//
+//        if (PLAYER_PIECE == pieceToCheck)
+//        {
+//            gameState = STATE_WON;
+//        }
+//        else
+//        {
+//            gameState = STATE_LOSE;
+//        }
+//    }
 }
