@@ -1,4 +1,5 @@
 #include "AssetManager.h"
+#include <iostream>
 
 void AssetManager::LoadTexture(std::string name, std::string fileName)
 {
@@ -7,6 +8,8 @@ void AssetManager::LoadTexture(std::string name, std::string fileName)
     if (tex.loadFromFile(fileName))
     {
         this->_textures[name] = tex;
+    } else {
+        std::cout << "Unable to load texture on the path " + fileName << std::endl;
     }
 }
 

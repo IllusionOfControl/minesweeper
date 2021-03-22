@@ -9,21 +9,31 @@ MainMenuState::MainMenuState(GameDataRef data) : _data(data)
 
 void MainMenuState::Init()
 {
-    this->_data->window.create(sf::VideoMode(MAIN_MENU_WIDTH, MAIN_MENU_HEIGHT), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
-    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, TILE_BLOCK);
-    this->_data->assets.LoadTexture("Play Button", MAIN_MENU_PLAY_BUTTON);
-    this->_data->assets.LoadTexture("Play Button Outer", MAIN_MENU_PLAY_BUTTON_OUTER);
-    this->_data->assets.LoadTexture("Game logo", MAIN_MENU_LOGO_FILEPATH);
-
-    auto& backgroundTexture = this->_data->assets.GetTexture("tile_block");
+    this->_data->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                                             (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE), "Minesweeper"); //TODO desktop.bitsPerPixel is useless?
+                                             auto& backgroundTexture = this->_data->assets.GetTexture("background");
+    auto windowSize = this->_data->window.getSize();
     backgroundTexture.setRepeated(true);
     this->_background.setTexture(backgroundTexture);
-    this->_background.setTextureRect({0,0,MAIN_MENU_WIDTH, MAIN_MENU_HEIGHT});
-    this->_playButton.setTexture(this->_data->assets.GetTexture("Play Button"));
+    this->_background.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    this->_logo.setTexture(this->_data->assets.GetTexture("Game logo"));
+    auto& buttonTextures = this->_data->assets.GetTexture(TEXTURE_SECOND_NAME);
+    this->_playButton.setTexture(buttonTextures);
+    this->_playButton.setTextureRect(BUTTON_INT_RECT(0, 32));
 
-    this->_playButton.setPosition((32 * 1), (32 * 4));
+
+    this->_playButton.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
+
+    auto& font = this->_data->assets.GetFont("default_font");
+
+    this->_optionButton.setFont(font);
+    this->_optionButton.setString("Options");
+    this->_optionButton.setPosition(this->_data->window.getDefaultView().getSize().x / 2 - SQUARE_SIZE + 8, SQUARE_SIZE - 6);
+
+    this->_exitButton.setFont(font);
+    this->_exitButton.setString("Exit");
+    this->_exitButton.setPosition(this->_data->window.getDefaultView().getSize().x / 2 - SQUARE_SIZE + 3, 8 * SQUARE_SIZE - 6);
+
     this->_logo.setPosition(32, 0);
 }
 
@@ -43,11 +53,11 @@ void MainMenuState::HandleInput()
             else _playButton.setColor(sf::Color(255,255,255));
         }
 
-        if (this->_data->input.IsSpriteClicked(this->_playButton, sf::Mouse::Left, this->_data->window))
-        {
-            // Switch To Game State
-            this->_data->manager.AddState(StateRef(new GameState(_data)), true);
-        }
+//        if (this->_data->input.IsSpriteClicked(this->_playButton, sf::Mouse::Left, this->_data->window))
+//        {
+//            // Switch To Game State
+//            this->_data->manager.AddState(StateRef(new GameState(_data)), true);
+//        }
     }
 }
 
@@ -62,7 +72,8 @@ void MainMenuState::Draw()
 
     this->_data->window.draw(this->_background);
     this->_data->window.draw(this->_playButton);
-    this->_data->window.draw(this->_playButtonOuter);
+    this->_data->window.draw(this->_optionButton);
+    this->_data->window.draw(this->_exitButton);
     this->_data->window.draw(this->_logo);
 
     this->_data->window.display();

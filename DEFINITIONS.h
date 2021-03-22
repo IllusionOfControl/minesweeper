@@ -1,6 +1,20 @@
 #ifndef MINESWEEPER_DEFINITIONS_H
 #define MINESWEEPER_DEFINITIONS_H
 
+// Definitions in squares
+#define GAME_BORDER_TOP     4
+#define GAME_BORDER_BOTTOM  1
+#define GAME_BORDER_RIGHT   1
+#define GAME_BORDER_LEFT    1
+#define WIDTH   5
+#define HEIGHT  5
+
+#define SQUARE_SIZE 32
+
+#define TEXTURE_SECOND_NAME "second"
+
+#define BUTTON_INT_RECT(pos_x, pos_y)     {pos_x, pos_y, 160, 32}
+
 #define MAIN_MENU_WIDTH 224
 #define MAIN_MENU_HEIGHT 320
 
@@ -8,7 +22,7 @@
 #define TILE_HEIGHT 32
 
 #define BUTTON_WIDTH  32
-#define BUTTON_HEIGHT 512
+#define BUTTON_HEIGHT 160
 
 #define SMALL_BUTTON_WIDTH  32
 #define SMALL_BUTTON_HEIGHT 32
