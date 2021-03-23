@@ -2,17 +2,15 @@
 #include "states/MainMenuState.h"
 #include "header.h"
 
-MineSweeper::MineSweeper()
-{
+MineSweeper::MineSweeper() {
     _data->window.create(sf::VideoMode(200, 300), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
     _data->manager.AddState(StateRef(new MainMenuState(this->_data)));
 
     this->Run();
 }
 
-void MineSweeper::Run()
-{
-
+void MineSweeper::Run() {
+    srand(time(0));
     this->_data->assets.LoadTexture("tile_texture", "images/tiles.png");
     this->_data->assets.LoadTexture("logo", "images/logo.png");
     this->_data->assets.LoadTexture("option_buttons", "images/tiles.png");
