@@ -8,59 +8,32 @@
 
 #include <iostream>
 
-GameState::GameState(GameDataRef data) : _data(data)
-{
+GameState::GameState(GameDataRef data) : _data(data) {
 
 }
 
-void GameState::Init()
-{
-    gameState = STATE_PLAYING;
+void GameState::Init() {
+    auto difficulty = this->_data->difficulty;
+    this->_data->window.create(sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                                             (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
+                               "Minesweeper");
+    auto& backgroundTexture = this->_data->assets.GetTexture("background");
+    auto windowSize = this->_data->window.getSize();
 
-    int window_h = TILE_WIDTH * 11;
-    int window_w = TILE_HEIGHT * 11;
-    this->_data->window.create(sf::VideoMode(TILE_WIDTH * 12, TILE_HEIGHT * 12), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);
-    this->_data->assets.LoadTexture("tile_0", GAME_FIELD_TILES, TILE_0);
-    this->_data->assets.LoadTexture("tile_1", GAME_FIELD_TILES, TILE_1);
-    this->_data->assets.LoadTexture("tile_2", GAME_FIELD_TILES, TILE_2);
-    this->_data->assets.LoadTexture("tile_3", GAME_FIELD_TILES, TILE_3);
-    this->_data->assets.LoadTexture("tile_4", GAME_FIELD_TILES, TILE_4);
-    this->_data->assets.LoadTexture("tile_5", GAME_FIELD_TILES, TILE_5);
-    this->_data->assets.LoadTexture("tile_6", GAME_FIELD_TILES, TILE_6);
-    this->_data->assets.LoadTexture("tile_7", GAME_FIELD_TILES, TILE_7);
-    this->_data->assets.LoadTexture("tile_8", GAME_FIELD_TILES, TILE_8);
-    this->_data->assets.LoadTexture("tile_bomb", GAME_FIELD_TILES, TILE_BOMB);
-    this->_data->assets.LoadTexture("tile_bomb_detonated", GAME_FIELD_TILES, TILE_BOMB_DETONATED);
-    this->_data->assets.LoadTexture("tile_mine_bomb_false", GAME_FIELD_TILES, TILE_BOMB_FALSE);
-    this->_data->assets.LoadTexture("tile_flag", GAME_FIELD_TILES, TILE_FLAG);
-    this->_data->assets.LoadTexture("tile_question", GAME_FIELD_TILES, TILE_QUESTION);
-    this->_data->assets.LoadTexture("tile_block", GAME_FIELD_TILES, TILE_BLOCK);
-    this->_data->assets.LoadTexture("tile_closed", GAME_FIELD_TILES, TILE_CLOSED);
-
-
-    this->_data->assets.LoadTexture("Grid Sprite", GRID_SPRITE_FILEPATH);
-    this->_data->assets.LoadTexture("X Piece", X_PIECE_FILEPATH);
-    this->_data->assets.LoadTexture("O Piece", O_PIECE_FILEPATH);
-    this->_data->assets.LoadTexture("X Winning Piece", X_WINNING_PIECE_FILEPATH);
-    this->_data->assets.LoadTexture("O Winning Piece", O_WINNING_PIECE_FILEPATH);
-
-    auto& backgroundTexture = this->_data->assets.GetTexture("tile_block");
     backgroundTexture.setRepeated(true);
     this->_background.setTexture(backgroundTexture);
-    this->_background.setTextureRect({0,0, TILE_WIDTH * 12, TILE_HEIGHT * 12});
+    this->_background.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    this->_gridSprite.setTexture(this->_data->assets.GetTexture("tile_closed"));
-    this->_gridSprite.setTextureRect({TILE_HEIGHT * 1,
-                                      TILE_WIDTH * 1,
-                                      this->_data->difficulty.field_height * TILE_HEIGHT,
-                                     this->_data->difficulty.field_height * TILE_WIDTH});
-    this->_gridSprite.setPosition(sf::Vector2f(TILE_HEIGHT * 1, TILE_WIDTH * 1));
+//    this->_gridSprite.setTexture(this->_data->assets.GetTexture("tile_texture"));
+//    this->_gridSprite.setTextureRect(TILE_INT_RECT(17));
+//    this->_gridSprite.setPosition(sf::Vector2f(GAME_BORDER_LEFT, GAME_BORDER_TOP));
 
 //    _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
 //    _gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
 
     //InitGridPieces();
-    InitGridArray();
+    InitGridArray(0);
+    InitGridCells();
 }
 
 void GameState::HandleInput()
@@ -74,18 +47,18 @@ void GameState::HandleInput()
             this->_data->window.close();
         }
 
-        if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
-        {
-            // Switch To Game State
-            //this->_data->manager.AddState(StateRef(new PauseState(_data)), false);
-        }
-        else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
-        {
-            if (STATE_PLAYING == gameState)
-            {
-                this->CheckAndPlacePiece();
-            }
-        }
+//        if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
+//        {
+//            // Switch To Game State
+//            //this->_data->manager.AddState(StateRef(new PauseState(_data)), false);
+//        }
+//        else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
+//        {
+//            if (STATE_PLAYING == gameState)
+//            {
+//                this->CheckAndPlacePiece();
+//            }
+//        }
     }
 }
 
@@ -96,71 +69,56 @@ void GameState::Update()
 void GameState::Draw()
 {
     this->_data->window.clear(sf::Color::Red);
-
-    this->_data->window.draw( this->_background );
-
-    this->_data->window.draw( this->_pauseButton );
-
-    this->_data->window.draw( this->_gridSprite );
-
-    for (int x = 0; x < 3; x++)
-    {
-        for (int y = 0; y < 3; y++)
-        {
-            //this->_data->window.draw(this->_gridPieces[x][y]);
-        }
+    this->_data->window.draw(this->_background);
+    this->_data->window.draw(this->_pauseButton);
+    this->_data->window.draw(this->_gridSprite);
+    for (auto cell : this->_gridCells) {
+        this->_data->window.draw(cell);
     }
+
 
     this->_data->window.display();
 }
 
-void GameState::InitGridPieces()
-{
-    sf::Vector2u tempSpriteSize = this->_data->assets.GetTexture("X Piece").getSize();
-
-    for (int x = 0; x < 3; x++)
-    {
-        for (int y = 0; y < 3; y++)
-        {
-//            _gridPieces[x][y].setTexture(this->_data->assets.GetTexture("X Piece"));
-//            _gridPieces[x][y].setPosition(_gridSprite.getPosition().x + (tempSpriteSize.x * x) - 7, _gridSprite.getPosition().y + (tempSpriteSize.y * y) - 7);
-//            _gridPieces[x][y].setColor(sf::Color(255, 255, 255, 0));
-        }
-    }
-}
-
 void GameState::InitGridCells() {
-    sf::Vector2i tempSpriteSize = sf::Vector2i(TILE_WIDTH, TILE_HEIGHT);
-    sf::Vector2f basePos = this->_gridSprite.getPosition();
-    int grid_w = this->_data->difficulty.field_width;
-    int grid_h = this->_data->difficulty.field_height;
-    for (int i = 0; i < grid_h * grid_w; i++) {
+    auto difficulty = this->_data->difficulty;
+
+    for (int i = 0; i < this->_gridArray.size(); i++) {
+        int cell_y = std::ceil(i / difficulty.field_height);
+        int cell_x = i % difficulty.field_height;
         sf::Sprite cell;
-        cell.setTexture(this->_data->assets.GetTexture("tile_closed"));
-        //cell.setPosition()
+        cell.setTexture(this->_data->assets.GetTexture("tile_texture"));
+        cell.setTextureRect(TILE_INT_RECT(11));
+        auto position = sf::Vector2f((GAME_BORDER_LEFT + cell_x) * SQUARE_SIZE,
+                                     (GAME_BORDER_TOP + cell_y) * SQUARE_SIZE);
+        cell.setPosition(position);
+
         this->_gridCells.push_back(cell);
     }
 }
 
-void GameState::InitGridArray() {
+void GameState::InitGridArray(int firstMove) {
+    this->_gridArray.clear();
+    auto difficulty = this->_data->difficulty;
+
     int cellCount = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
     for (int i = 0; i < cellCount; i++) {
         this->_gridArray.push_back(0);
     }
 
     for (int i = 0; i < this->_data->difficulty.field_height; i++) {
-        int rand_x = rand() % this->_data->difficulty.field_width;
-        int rand_y = rand() % this->_data->difficulty.field_height;
+        int rand_x = rand() % (this->_data->difficulty.field_width - 1);
+        int rand_y = rand() % (this->_data->difficulty.field_height - 1);
         int cellNum = rand_y * this->_data->difficulty.field_height + rand_x;
-        if (this->_gridArray.at(i) == CELL_BOMB) {
+        if (this->_gridArray.at(cellNum) == CELL_BOMB || cellNum == firstMove) {
             i--;
             continue;
         }
         this->_gridArray[cellNum] = CELL_BOMB;
         if (rand_x != 0) _gridArray[cellNum-1]++;
         if (rand_x != this->_data->difficulty.field_width) _gridArray[cellNum+1]++;
-        if (rand_x != 0) _gridArray[cellNum+this->_data->difficulty.field_height]++;
-        if (rand_y != this->_data->difficulty.field_height) _gridArray[cellNum-this->_data->difficulty.field_height]++;
+        if (rand_y != 0) _gridArray[cellNum - difficulty.field_height]++;
+        if (rand_y != difficulty.field_height) _gridArray[cellNum + difficulty.field_height]++;
     }
 }
 

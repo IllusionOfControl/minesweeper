@@ -13,7 +13,9 @@
 
 #define TEXTURE_SECOND_NAME "second"
 
-#define BUTTON_INT_RECT(pos_x, pos_y)     {pos_x, pos_y, 160, 32}
+#define BACKGROUND_INT_RECT                 {}
+#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x, pos_y, 160, 32}
+#define TILE_INT_RECT(tile_type)            {tile_type * 32, 0, 32, 32}
 
 #define MAIN_MENU_WIDTH 224
 #define MAIN_MENU_HEIGHT 320
@@ -53,9 +55,9 @@
 #define CELL_6              0x6
 #define CELL_7              0x7
 #define CELL_8              0x8
-#define CELL_BOMB           0xA
-#define CELL_BOMB_DETONATED 0xB
-#define CELL_BOMB_FALSE     0xC
+#define CELL_BOMB           0x9
+#define CELL_BOMB_DETONATED 0xA
+#define CELL_BOMB_FALSE     0xB
 #define CELL_FLAG           0x10
 #define CELL_QUESTION       0x20
 #define CELL_OPENED         0x100

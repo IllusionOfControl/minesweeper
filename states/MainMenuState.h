@@ -1,13 +1,11 @@
-//
-// Created by Illusion of control on 20.03.2021.
-//
-
 #ifndef MINESWEEPER_MAINMENUSTATE_H
 #define MINESWEEPER_MAINMENUSTATE_H
 
 #include <SFML/Graphics.hpp>
-#include "State.h"
 #include "../MineSweeper.h"
+#include "../DEFINITIONS.h"
+#include "State.h"
+
 
 class MainMenuState: public State {
 public:
@@ -28,7 +26,6 @@ private:
 //    sf::Sprite _optionButton;
 //    sf::Sprite _exitButton;
 
-//    sf::Text _playButton;
     sf::Text _optionButton;
     sf::Text _exitButton;
 

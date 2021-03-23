@@ -17,9 +17,8 @@ public:
     void Draw();
 
 private:
-    void InitGridPieces();
     void InitGridCells();
-    void InitGridArray();
+    void InitGridArray(int firstMove);
 
     void CheckAndPlacePiece();
 

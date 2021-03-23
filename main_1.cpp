@@ -146,6 +146,7 @@ int main() {
         int mouseY = pos.y / squareSize - gameBorder_top;
 
         switch (menustage) {
+            //TODO MAIN MENU PART
         case 0:
             sf::Event main_menu;
             if (appWindow.isOpen()) {
@@ -223,6 +224,7 @@ int main() {
             appWindow.display();
             break;
 
+            //TODO PLAY PART
         case 1:
             sf::Event play;
             if (appWindow.isOpen()) {
@@ -673,6 +675,7 @@ int main() {
             appWindow.display();
             break;
 
+        //TODO OPTIONS PART
         case 2:
             sf::Event options_menu;
             if (appWindow.isOpen()) {
@@ -827,7 +830,7 @@ int main() {
             }
             appWindow.display();
             break;
-
+            //TODO PLAYMODE PART
         case 3:
             sf::Event playmode;
             if (appWindow.isOpen()) {
@@ -947,7 +950,7 @@ int main() {
             }
             appWindow.display();
             break;
-
+        //TODO CUSTOM MENU PART
         case 4:
             sf::Event custom;
             if (appWindow.isOpen()) {
@@ -1113,6 +1116,7 @@ int main() {
             appWindow.display();
             break;
 
+            //TODO TUTORIAL PART
         case 5:
             sf::Event tutorial_menu;
             if (appWindow.isOpen()) {
@@ -1198,6 +1202,7 @@ int main() {
             appWindow.display();
             break;
 
+            //TODO ABOUT MENU
         case 6:
             sf::Event about_menu;
             if (appWindow.isOpen()) {
