@@ -47,6 +47,7 @@
 #define TILE_BLOCK          {0, TILE_HEIGHT * 14, TILE_WIDTH, TILE_HEIGHT}
 #define TILE_CLOSED         {0, TILE_HEIGHT * 15, TILE_WIDTH, TILE_HEIGHT}
 
+#define CELL_EMPTY          0x0
 #define CELL_0              0x0
 #define CELL_1              0x1
 #define CELL_2              0x2
@@ -97,7 +98,7 @@
 #define STATE_WON       1
 #define STATE_LOSE      2
 
-#define DIFFICULTY_EASY     {9, 9, 10};
+#define DIFFICULTY_EASY     {9, 18, 10};
 #define DIFFICULTY_NORMAL   {9, 9, 10};
 #define DIFFICULTY_HARD     {9, 9, 10};
 

@@ -20,6 +20,7 @@ private:
     void InitGridCells();
     void InitGridArray(int firstMove);
 
+    int RevealCell(int x, int y);
     void CheckAndPlacePiece();
 
     void CheckHasPlayerWon(int turn);
@@ -28,13 +29,13 @@ private:
     GameDataRef _data;
 
     sf::Sprite _background;
-
     sf::Sprite _pauseButton;
-
     sf::Sprite _gridSprite;
 
     std::vector<sf::Sprite> _gridCells;
     std::vector<int> _gridArray;
+
+    bool isMoved=false;
 
     int minesCount;
     int gameState;  // ?
