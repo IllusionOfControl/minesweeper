@@ -14,7 +14,8 @@
 #define TEXTURE_SECOND_NAME "second"
 
 #define BACKGROUND_INT_RECT                 {}
-#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x, pos_y, 160, 32}
+//#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x, pos_y, 160, 32}
+#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x * SQUARE_SIZE, pos_y * SQUARE_SIZE, 160, 32}
 #define TILE_INT_RECT(tile_type)            {tile_type * 32, 0, 32, 32}
 
 #define MAIN_MENU_WIDTH 224

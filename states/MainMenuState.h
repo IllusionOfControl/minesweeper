@@ -23,11 +23,8 @@ private:
     sf::Sprite _background;
 
     sf::Sprite _playButton;
-//    sf::Sprite _optionButton;
-//    sf::Sprite _exitButton;
-
-    sf::Text _optionButton;
-    sf::Text _exitButton;
+    sf::Sprite _optionButton;
+    sf::Sprite _exitButton;
 
     sf::Sprite _logo;
 };
