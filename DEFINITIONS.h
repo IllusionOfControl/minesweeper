@@ -62,7 +62,7 @@
 #define CELL_BOMB_FALSE     0xB
 #define CELL_FLAG           0x10
 #define CELL_QUESTION       0x20
-#define CELL_OPENED         0x100
+#define CELL_REVEALED       0x40
 
 #define GAME_FIELD_TILES "_Resources/res/tiles.png"
 

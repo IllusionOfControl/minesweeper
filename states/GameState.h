@@ -20,7 +20,7 @@ private:
     void InitGridCells();
     void InitGridArray(int firstMove);
 
-    int RevealCell(int x, int y);
+    void RevealCell(int x, int y);
     void CheckAndPlacePiece();
 
     void CheckHasPlayerWon(int turn);
@@ -37,7 +37,7 @@ private:
 
     bool isMoved=false;
 
-    int minesCount;
+    int cellsRevealed;
     int gameState;  // ?
 
     sf::Clock _clock;

@@ -61,10 +61,10 @@ void GameState::HandleInput()
                                          this->_data->difficulty.field_width * SQUARE_SIZE,
                                          this->_data->difficulty.field_height * SQUARE_SIZE);
                 if(fieldRect.contains(mousePos)) {
-                    int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE)  / SQUARE_SIZE;
                     int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE)  / SQUARE_SIZE;
+                    int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE)  / SQUARE_SIZE;
 
-                    std::cout << RevealCell(col, row) << std::endl;
+                    RevealCell(col, row);
                     isMoved = true;
 //                    int value = this->_gridArray.at(row * this->_data->difficulty.field_height + col);
 //                    this->_gridCells.at(row * this->_data->difficulty.field_height + col).setTextureRect(TILE_INT_RECT(value));
@@ -93,8 +93,10 @@ void GameState::Update() {
     if (isMoved) {
         int fieldSize = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
         for (int i = 0; i < fieldSize; i++) {
-            int cellValue = this->_gridArray.at(i);
-            this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(cellValue & 0xF));
+            if (this->_gridArray.at(i) & CELL_REVEALED) {
+                int cellValue = this->_gridArray.at(i) & 0xF;
+                this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(cellValue));
+            }
         }
         isMoved = false;
     }
@@ -131,6 +133,8 @@ void GameState::InitGridCells() {
 
 void GameState::InitGridArray(int firstMove) {
     this->_gridArray.clear();
+    this->cellsRevealed = 0;
+
     auto difficulty = this->_data->difficulty;
 
     int cellCount = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
@@ -147,9 +151,9 @@ void GameState::InitGridArray(int firstMove) {
             continue;
         }
         this->_gridArray.at(cellNum) = CELL_BOMB;
-        for (int row = (randRow - 1); row < randRow + 2; row++) {
+        for (int row = (randRow - 1); row <= randRow+1; row++) {
             if (row >= 0 && row < difficulty.field_height) {
-            for (int col = (randCol - 1); col < randCol + 2; col++) {
+            for (int col = (randCol - 1); col <= randCol+1; col++) {
                 if (col >= 0 && col < difficulty.field_width) {
                     if (this->_gridArray.at(row * difficulty.field_width + col) < CELL_BOMB)
                         _gridArray.at(row * difficulty.field_width + col)++;
@@ -160,23 +164,25 @@ void GameState::InitGridArray(int firstMove) {
     }
 }
 
-int GameState::RevealCell(int x, int y) {
+void GameState::RevealCell(int x, int y) {
     auto difficulty = this->_data->difficulty;
+    _gridArray.at(y * this->_data->difficulty.field_width + x) |= CELL_REVEALED;
 
-    _gridArray.at(y * this->_data->difficulty.field_width + x) |= CELL_OPENED;
-
-    if (this->_gridArray.at(y * difficulty.field_width + x) & 0xF == CELL_EMPTY) {
-        for (int row = (y - 1); row < y + 2; row++) {
+    if ((this->_gridArray.at(y * difficulty.field_width + x) & 0xF) == CELL_EMPTY) {
+        for (int row = (y - 1); row <= y + 1; row++) {
             if (row >= 0 && row < difficulty.field_height) {
-                for (int col = (x - 1); col < x + 2; col++) {
+                for (int col = (x - 1); col <= x + 1; col++) {
                     if (col >= 0 && col < difficulty.field_width) {
-                        this->RevealCell(row, col);
+                        if ((this->_gridArray.at(row * difficulty.field_width + col) & CELL_REVEALED) == 0) {
+                            if (row == y && col == x) continue;
+                            this->cellsRevealed++;
+                            this->RevealCell(col, row);
+                       }
                     }
                 }
             }
         }
     }
-    return _gridArray.at(y * this->_data->difficulty.field_width + x) & 0xF;
 }
 
 
@@ -237,57 +243,8 @@ void GameState::CheckAndPlacePiece() {
 }
 
 void GameState::CheckHasPlayerWon(int player)
-{
-    Check3PiecesForMatch(0, 0, 1, 0, 2, 0, player);
-    Check3PiecesForMatch(0, 1, 1, 1, 2, 1, player);
-    Check3PiecesForMatch(0, 2, 1, 2, 2, 2, player);
-    Check3PiecesForMatch(0, 0, 0, 1, 0, 2, player);
-    Check3PiecesForMatch(1, 0, 1, 1, 1, 2, player);
-    Check3PiecesForMatch(2, 0, 2, 1, 2, 2, player);
-    Check3PiecesForMatch(0, 0, 1, 1, 2, 2, player);
-    Check3PiecesForMatch(0, 2, 1, 1, 2, 0, player);
+{}
 
-    if (STATE_WON != gameState)
-    {
-
-        Check3PiecesForMatch(0, 0, 1, 0, 2, 0, AI_PIECE);
-        Check3PiecesForMatch(0, 1, 1, 1, 2, 1, AI_PIECE);
-        Check3PiecesForMatch(0, 2, 1, 2, 2, 2, AI_PIECE);
-        Check3PiecesForMatch(0, 0, 0, 1, 0, 2, AI_PIECE);
-        Check3PiecesForMatch(1, 0, 1, 1, 1, 2, AI_PIECE);
-        Check3PiecesForMatch(2, 0, 2, 1, 2, 2, AI_PIECE);
-        Check3PiecesForMatch(0, 0, 1, 1, 2, 2, AI_PIECE);
-        Check3PiecesForMatch(0, 2, 1, 1, 2, 0, AI_PIECE);
-    }
-
-    int emptyNum = 9;
-
-    for (int x = 0; x < 3; x++)
-    {
-        for (int y = 0; y < 3; y++)
-        {
-//            if (EMPTY_PIECE != _gridArray[x][y])
-            {
-//                emptyNum--;
-            }
-        }
-    }
-
-//    // check if the game is a draw
-//    if (0 == emptyNum && (STATE_WON != gameState) && (STATE_LOSE != gameState))
-//    {
-//        gameState = STATE_DRAW;
-//    }
-//
-//    // check if the game is over
-//    if (STATE_DRAW == gameState || STATE_LOSE == gameState || STATE_WON == gameState)
-//    {
-//        // show game over
-//        this->_clock.restart( );
-//    }
-
-    std::cout << gameState << std::endl;
-}
 
 void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck)
 {
