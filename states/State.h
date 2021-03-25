@@ -1,9 +1,7 @@
-//
-// Created by Illusion of control on 20.03.2021.
-//
-
 #ifndef MINESWEEPER_STATE_H
 #define MINESWEEPER_STATE_H
+
+#include <memory>
 
 
 class State {
@@ -15,5 +13,6 @@ public:
     virtual void Draw() = 0;
 };
 
+typedef std::unique_ptr<State> StateRef;
 
 #endif //MINESWEEPER_STATE_H

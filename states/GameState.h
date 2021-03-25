@@ -29,6 +29,9 @@ private:
     sf::Sprite _pauseButton;
     sf::Sprite _gridSprite;
 
+    sf::Sprite _mainMenuButton;
+    sf::Sprite _exitButton;
+
     std::vector<sf::Sprite> _gridCells;
     std::vector<int> _gridArray;
 

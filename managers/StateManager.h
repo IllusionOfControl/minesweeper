@@ -6,8 +6,6 @@
 
 #include "../states/State.h"
 
-typedef std::unique_ptr<State> StateRef;
-
 class StateManager {
 public:
     StateManager() { }

@@ -17,6 +17,7 @@ void MineSweeper::Run() {
     this->_data->assets.LoadTexture("background", "_Resources/res/tiles.png", sf::IntRect(15 * squareSize, 0, squareSize, squareSize));
     this->_data->assets.LoadTexture("face_button", "_Resources/res/faces.png");
     this->_data->assets.LoadTexture(TEXTURE_SECOND_NAME, "_Resources/res/second.png");
+    this->_data->assets.LoadTexture("state_buttons", "_Resources/res/state_buttons.png");
 
     this->_data->assets.LoadFont("default_font", "fonts/visitor1.ttf");
 

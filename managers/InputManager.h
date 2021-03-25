@@ -1,7 +1,3 @@
-//
-// Created by Illusion of control on 20.03.2021.
-//
-
 #ifndef MINESWEEPER_INPUTMANAGER_H
 #define MINESWEEPER_INPUTMANAGER_H
 
