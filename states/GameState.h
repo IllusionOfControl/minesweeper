@@ -20,14 +20,17 @@ private:
     void InitGridCells();
     void InitGridArray(int x, int y);
 
+    void Reset();
     void RevealCell(int x, int y);
     void MarkCell(int x, int y);
 
     GameDataRef _data;
 
     sf::Sprite _background;
-    sf::Sprite _pauseButton;
     sf::Sprite _gridSprite;
+
+    sf::Sprite _minesLeftSprite;
+    sf::Text _minesLeftText;
 
     sf::Sprite _mainMenuButton;
     sf::Sprite _exitButton;
@@ -36,11 +39,10 @@ private:
     std::vector<int> _gridArray;
 
     bool _isUpdate;
-    bool _isFirstMove;
 
     int _cellsRevealed;
     int _minesCount;
-    int _gameState;  // ?
+    int _gameState;
 
     sf::Clock _clock;
 };

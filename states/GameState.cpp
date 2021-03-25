@@ -3,6 +3,7 @@
 #include "../DEFINITIONS.h"
 
 #include <iostream>
+#include <sstream>
 
 GameState::GameState(GameDataRef data) : _data(data) {
 
@@ -33,10 +34,19 @@ void GameState::Init() {
     this->_exitButton.setTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     this->_exitButton.setPosition((difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
 
-    this->_gameState = STATE_FIRST_MOVE;
-    this->_minesCount = difficulty.bomb_count;
-    this->_isUpdate = false;
-    InitGridCells();
+    auto& ledBackground = this->_data->assets.GetTexture("led_background");
+    ledBackground.setRepeated(true);
+    this->_minesLeftSprite.setTexture(ledBackground);
+    this->_minesLeftSprite.setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
+    this->_minesLeftSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+
+    this->_minesLeftText.setFont(this->_data->assets.GetFont("default_font"));
+    this->_minesLeftText.setCharacterSize(20);
+    this->_minesLeftText.setStyle(sf::Text::Bold);
+    this->_minesLeftText.setScale(2.f, 2.f);
+    this->_minesLeftText.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
+
+    Reset();
 }
 
 void GameState::HandleInput()
@@ -70,17 +80,19 @@ void GameState::HandleInput()
             case sf::Event::MouseButtonPressed: {
                 auto mousePos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    if (fieldRect.contains(mousePos)) {
-                        int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
-                        int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
+                    if (this->_gameState != STATE_LOSE) {
+                        if (fieldRect.contains(mousePos)) {
+                            int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
+                            int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
-                        if (this->_gameState == STATE_FIRST_MOVE) {
-                            this->_gameState = STATE_PLAYING;
-                            InitGridArray(col, row);
+                            if (this->_gameState == STATE_FIRST_MOVE) {
+                                this->_gameState = STATE_PLAYING;
+                                InitGridArray(col, row);
+                            }
+
+                            this->RevealCell(col, row);
+                            _isUpdate = true;
                         }
-
-                        this->RevealCell(col, row);
-                        _isUpdate = true;
                     }
                     if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                         this->_data->window.close();
@@ -94,11 +106,17 @@ void GameState::HandleInput()
                         int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
                         int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
-                        if (this->_gameState == STATE_PLAYING) {
+                        if (this->_gameState == STATE_PLAYING &&
+                            this->_minesCount > -5) {
                             this->MarkCell(col, row);
                             _isUpdate = true;
                         }
                     }
+                }
+            }
+            case sf::Event::KeyPressed: {
+                if (event.key.code == sf::Keyboard::R) {
+                    Reset();
                 }
             }
         }
@@ -121,6 +139,9 @@ void GameState::Update() {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(11));
                 }
             }
+            std::ostringstream minesLeft;
+            minesLeft << _minesCount;
+            this->_minesLeftText.setString(minesLeft.str());
         }
         if (this->_gameState == STATE_LOSE) {
             int fieldSize = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
@@ -144,6 +165,17 @@ void GameState::Update() {
     _isUpdate = false;
 }
 
+void GameState::Reset() {
+    this->_gameState = STATE_FIRST_MOVE;
+    this->_minesCount = this->_data->difficulty.bomb_count;
+    this->_isUpdate = false;
+
+    std::ostringstream minesLeft;
+    minesLeft << _minesCount;
+    this->_minesLeftText.setString(minesLeft.str());
+
+    InitGridCells();
+}
 
 
 void GameState::Draw()
@@ -152,6 +184,12 @@ void GameState::Draw()
     this->_data->window.draw(this->_background);
     this->_data->window.draw(this->_mainMenuButton);
     this->_data->window.draw(this->_exitButton);
+    this->_data->window.draw(this->_minesLeftSprite);
+    this->_data->window.draw(this->_minesLeftText);
+    this->_data->window.draw(this->_exitButton);
+
+
+
     for (auto cell : this->_gridCells) {
         this->_data->window.draw(cell);
     }
@@ -160,6 +198,7 @@ void GameState::Draw()
 }
 
 void GameState::InitGridCells() {
+    this->_gridCells.clear();
     auto difficulty = this->_data->difficulty;
 
     int cellCount = difficulty.field_height * difficulty.field_width;
