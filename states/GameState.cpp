@@ -160,7 +160,6 @@ void GameState::Update() {
                 }
             }
         }
-        std::cout << this->_minesCount << std::endl;
     }
     _isUpdate = false;
 }
