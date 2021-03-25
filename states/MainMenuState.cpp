@@ -68,9 +68,9 @@ void MainMenuState::HandleInput()
                     this->_data->manager.AddState(StateRef(new GameState(_data)), true);
                 if (this->_optionButton.getGlobalBounds().contains(mousePos));
 //                    this->_data->manager.AddState(StateRef(new GameState(_data)), true);
-                if (this->_exitButton.getGlobalBounds().contains(mousePos));
-//                    this->_data->manager.AddState(StateRef(new GameState(_data)), true);
-                break;
+                if (this->_exitButton.getGlobalBounds().contains(mousePos)) {
+                    this->_data->window.close();
+                }
             }
         }
     }

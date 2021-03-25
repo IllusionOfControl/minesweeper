@@ -18,34 +18,9 @@
 #define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x * SQUARE_SIZE, pos_y * SQUARE_SIZE, 160, 32}
 #define TILE_INT_RECT(tile_type)            {tile_type * 32, 0, 32, 32}
 
-#define MAIN_MENU_WIDTH 224
-#define MAIN_MENU_HEIGHT 320
-
-#define TILE_WIDTH  32
-#define TILE_HEIGHT 32
-
-#define BUTTON_WIDTH  32
-#define BUTTON_HEIGHT 160
 
 #define SMALL_BUTTON_WIDTH  32
 #define SMALL_BUTTON_HEIGHT 32
-
-#define TILE_0              {0, TILE_HEIGHT * 0, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_1              {0, TILE_HEIGHT * 1, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_2              {0, TILE_HEIGHT * 2, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_3              {0, TILE_HEIGHT * 3, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_4              {0, TILE_HEIGHT * 4, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_5              {0, TILE_HEIGHT * 5, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_6              {0, TILE_HEIGHT * 6, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_7              {0, TILE_HEIGHT * 7, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_8              {0, TILE_HEIGHT * 8, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_BOMB           {0, TILE_HEIGHT * 9, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_BOMB_DETONATED {0, TILE_HEIGHT * 10, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_BOMB_FALSE     {0, TILE_HEIGHT * 11, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_FLAG           {0, TILE_HEIGHT * 12, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_QUESTION       {0, TILE_HEIGHT * 13, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_BLOCK          {0, TILE_HEIGHT * 14, TILE_WIDTH, TILE_HEIGHT}
-#define TILE_CLOSED         {0, TILE_HEIGHT * 15, TILE_WIDTH, TILE_HEIGHT}
 
 #define CELL_EMPTY          0x0
 #define CELL_0              0x0

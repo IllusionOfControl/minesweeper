@@ -1,7 +1,6 @@
 #include "GameState.h"
 #include "MainMenuState.h"
 #include "../DEFINITIONS.h"
-//#include "GameOverState.hpp"
 
 #include <iostream>
 
@@ -27,14 +26,8 @@ void GameState::Init() {
     this->_gridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
     this->_gridSprite.setTextureRect(TILE_INT_RECT(17));
 
-//    this->_gridSprite.setPosition(sf::Vector2f(GAME_BORDER_LEFT, GAME_BORDER_TOP));
-
-//    _pauseButton.setPosition(this->_data->window.getSize().x - _pauseButton.getLocalBounds().width, _pauseButton.getPosition().y);
-//    _gridSprite.setPosition((SCREEN_WIDTH / 2) - (_gridSprite.getGlobalBounds().width / 2), (SCREEN_HEIGHT / 2) - (_gridSprite.getGlobalBounds().height / 2));
-
-    //InitGridPieces();
-
     this->_gameState = STATE_FIRST_MOVE;
+    this->_minesCount = difficulty.bomb_count;
     this->_isUpdate = false;
     InitGridCells();
 }
@@ -87,19 +80,6 @@ void GameState::HandleInput()
             }
         }
     }
-
-//        if (this->_data->input.IsSpriteClicked(this->_pauseButton, sf::Mouse::Left, this->_data->window))
-//        {
-//            // Switch To Game State
-//            //this->_data->manager.AddState(StateRef(new PauseState(_data)), false);
-//        }
-//        else if (this->_data->input.IsSpriteClicked(this->_gridSprite, sf::Mouse::Left, this->_data->window))
-//        {
-//            if (STATE_PLAYING == _gameState)
-//            {
-//                this->CheckAndPlacePiece();
-//            }
-//        }
 }
 
 void GameState::Update() {
@@ -123,7 +103,7 @@ void GameState::Update() {
             int fieldSize = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
             for (int i = 0; i < fieldSize; i++) {
                 if (this->_gridArray.at(i) & CELL_FLAG && this->_gridArray.at(i) != CELL_BOMB) {
-                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(15));
+                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(14));
                 } else if (this->_gridArray.at(i) == CELL_BOMB && (this->_gridArray.at(i) & CELL_FLAG)) {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
                     continue;
@@ -136,6 +116,7 @@ void GameState::Update() {
                 }
             }
         }
+        std::cout << this->_minesCount << std::endl;
     }
     _isUpdate = false;
 }
@@ -239,23 +220,24 @@ void GameState::RevealCell(int x, int y) {
 }
 
 void GameState::MarkCell(int x, int y) {
-    if (_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_REVEALED)
+    if (this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_REVEALED)
         return;
 
-    if (_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_FLAG) {
-        _gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_FLAG;
-        _gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_QUESTION;
-        return;
-    }
-
-    if (!(_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_FLAG) &&
-        !(_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_QUESTION)) {
-        _gridArray.at(y * this->_data->difficulty.field_width + x) |= CELL_FLAG;
+    if (this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_FLAG) {
+        this->_gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_FLAG;
+        this->_gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_QUESTION;
+        this->_minesCount++;
         return;
     }
 
-    if (_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_QUESTION) {
-        _gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_QUESTION;
-        ;
+    if (!(this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_FLAG) &&
+        !(this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_QUESTION)) {
+        this->_gridArray.at(y * this->_data->difficulty.field_width + x) |= CELL_FLAG;
+        this->_minesCount--;
+        return;
+    }
+
+    if (this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_QUESTION) {
+        this->_gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_QUESTION;
     }
 }

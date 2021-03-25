@@ -36,6 +36,7 @@ private:
     bool _isFirstMove;
 
     int _cellsRevealed;
+    int _minesCount;
     int _gameState;  // ?
 
     sf::Clock _clock;
