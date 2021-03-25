@@ -10,21 +10,18 @@ class GameState : public State
 public:
     GameState(GameDataRef data);
 
-    void Init();
+    void Init() override;
 
-    void HandleInput();
-    void Update();
-    void Draw();
+    void HandleInput() override;
+    void Update() override;
+    void Draw() override;
 
 private:
     void InitGridCells();
-    void InitGridArray(int firstMove);
+    void InitGridArray(int x, int y);
 
     void RevealCell(int x, int y);
-    void CheckAndPlacePiece();
-
-    void CheckHasPlayerWon(int turn);
-    void GameState::Check3PiecesForMatch(int x1, int y1, int x2, int y2, int x3, int y3, int pieceToCheck);
+    void MarkCell(int x, int y);
 
     GameDataRef _data;
 
@@ -35,10 +32,11 @@ private:
     std::vector<sf::Sprite> _gridCells;
     std::vector<int> _gridArray;
 
-    bool isMoved=false;
+    bool _isUpdate;
+    bool _isFirstMove;
 
-    int cellsRevealed;
-    int gameState;  // ?
+    int _cellsRevealed;
+    int _gameState;  // ?
 
     sf::Clock _clock;
 };

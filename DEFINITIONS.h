@@ -94,9 +94,10 @@
 #define PLAYER_PIECE X_PIECE
 #define AI_PIECE O_PIECE
 
-#define STATE_PLAYING   0
-#define STATE_WON       1
-#define STATE_LOSE      2
+#define STATE_FIRST_MOVE   0
+#define STATE_PLAYING   1
+#define STATE_WON       2
+#define STATE_LOSE      3
 
 #define DIFFICULTY_EASY     {9, 18, 10};
 #define DIFFICULTY_NORMAL   {9, 9, 10};
