@@ -46,6 +46,15 @@ void GameState::Init() {
     this->_minesLeftText.setScale(2.f, 2.f);
     this->_minesLeftText.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
 
+    this->_gameTimerSprite.setTexture(ledBackground);
+    this->_gameTimerSprite.setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
+    this->_gameTimerSprite.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_gameTimerText.setFont(this->_data->assets.GetFont("default_font"));
+    this->_gameTimerText.setCharacterSize(20);
+    this->_gameTimerText.setStyle(sf::Text::Bold);
+    this->_gameTimerText.setScale(2.f, 2.f);
+    this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
+
     Reset();
 }
 
@@ -80,7 +89,9 @@ void GameState::HandleInput()
             case sf::Event::MouseButtonPressed: {
                 auto mousePos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    if (this->_gameState != STATE_LOSE) {
+                    if (this->_gameState == STATE_PLAYING || this->_gameState == STATE_FIRST_MOVE) {
+                        if (this->_gameState == STATE_FIRST_MOVE)
+                            this->_gameClock.restart();
                         if (fieldRect.contains(mousePos)) {
                             int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
                             int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
@@ -161,6 +172,17 @@ void GameState::Update() {
             }
         }
     }
+
+    if (this->_gameState == STATE_PLAYING) {
+        this->_gameTimer = this->_gameClock.getElapsedTime();
+        if (this->_gameTimer.asSeconds() > this->_gameTime)
+            if (this->_gameTime < 999) {
+                this->_gameTime++;
+                std::ostringstream gameTimer;
+                gameTimer << this->_gameTime;
+                this->_gameTimerText.setString(gameTimer.str());
+            }
+    }
     _isUpdate = false;
 }
 
@@ -168,10 +190,14 @@ void GameState::Reset() {
     this->_gameState = STATE_FIRST_MOVE;
     this->_minesCount = this->_data->difficulty.bomb_count;
     this->_isUpdate = false;
+    this->_gameTime = 0;
 
-    std::ostringstream minesLeft;
-    minesLeft << _minesCount;
+    std::ostringstream minesLeft, gameTime;
+    minesLeft << this->_minesCount;
+    gameTime << this->_gameTime;
+
     this->_minesLeftText.setString(minesLeft.str());
+    this->_gameTimerText.setString(gameTime.str());
 
     InitGridCells();
 }
@@ -185,6 +211,8 @@ void GameState::Draw()
     this->_data->window.draw(this->_exitButton);
     this->_data->window.draw(this->_minesLeftSprite);
     this->_data->window.draw(this->_minesLeftText);
+    this->_data->window.draw(this->_gameTimerSprite);
+    this->_data->window.draw(this->_gameTimerText);
     this->_data->window.draw(this->_exitButton);
 
 

@@ -32,6 +32,9 @@ private:
     sf::Sprite _minesLeftSprite;
     sf::Text _minesLeftText;
 
+    sf::Sprite _gameTimerSprite;
+    sf::Text _gameTimerText;
+
     sf::Sprite _mainMenuButton;
     sf::Sprite _exitButton;
 
@@ -43,8 +46,10 @@ private:
     int _cellsRevealed;
     int _minesCount;
     int _gameState;
+    int _gameTime;
 
-    sf::Clock _clock;
+    sf::Clock _gameClock;
+    sf::Time _gameTimer;
 };
 
 
