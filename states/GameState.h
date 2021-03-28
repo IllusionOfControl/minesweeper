@@ -28,6 +28,7 @@ private:
 
     sf::Sprite _background;
     sf::Sprite _gridSprite;
+    sf::Sprite _smileButton;
 
     sf::Sprite _minesLeftSprite;
     sf::Text _minesLeftText;

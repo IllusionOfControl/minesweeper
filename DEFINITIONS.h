@@ -74,7 +74,7 @@
 #define STATE_WON       2
 #define STATE_LOSE      3
 
-#define DIFFICULTY_EASY     {9, 18, 10};
+#define DIFFICULTY_EASY     {9, 9, 10};
 #define DIFFICULTY_NORMAL   {9, 9, 10};
 #define DIFFICULTY_HARD     {9, 9, 10};
 

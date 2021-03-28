@@ -11,7 +11,8 @@ void MainMenuState::Init()
 {
     this->_data->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                              (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                               "Minesweeper");
+                                                    "Minesweeper",
+                                                        sf::Style::Titlebar | sf::Style::Close);
     auto& backgroundTexture = this->_data->assets.GetTexture("background");
     auto windowSize = this->_data->window.getSize();
 

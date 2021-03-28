@@ -13,7 +13,8 @@ void GameState::Init() {
     auto difficulty = this->_data->difficulty;
     this->_data->window.create(sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                              (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                               "Minesweeper");
+                                                    "Minesweeper",
+                                                    sf::Style::Titlebar | sf::Style::Close);
     auto& backgroundTexture = this->_data->assets.GetTexture("background");
     auto windowSize = this->_data->window.getSize();
 
@@ -54,6 +55,8 @@ void GameState::Init() {
     this->_gameTimerText.setStyle(sf::Text::Bold);
     this->_gameTimerText.setScale(2.f, 2.f);
     this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
+
+    sf::Texture smileButtonTexture = this->_data->assets.GetTexture("led_background");
 
     Reset();
 }
