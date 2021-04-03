@@ -1,7 +1,3 @@
-//
-// Created by Illusion of control on 20.03.2021.
-//
-
 #include "InputManager.h"
 
 bool InputManager::IsSpriteClicked(sf::Sprite object, sf::RenderWindow &window)

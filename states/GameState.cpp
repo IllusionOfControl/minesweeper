@@ -56,9 +56,11 @@ void GameState::Init() {
     this->_gameTimerText.setScale(2.f, 2.f);
     this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
 
+
+
     sf::Texture smileButtonTexture = this->_data->assets.GetTexture("led_background");
 
-    Reset();
+    this->Reset();
 }
 
 void GameState::HandleInput()
@@ -87,15 +89,14 @@ void GameState::HandleInput()
                     this->_exitButton.setTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
                 else this->_exitButton.setTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
             }
-            case sf::Event::MouseButtonReleased:
-                break;
-            case sf::Event::MouseButtonPressed: {
+            case sf::Event::MouseButtonReleased: {
                 auto mousePos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
                     if (this->_gameState == STATE_PLAYING || this->_gameState == STATE_FIRST_MOVE) {
-                        if (this->_gameState == STATE_FIRST_MOVE)
-                            this->_gameClock.restart();
                         if (fieldRect.contains(mousePos)) {
+                            if (this->_gameState == STATE_FIRST_MOVE)
+                                this->_gameClock.restart();
+
                             int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
                             int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
@@ -108,14 +109,8 @@ void GameState::HandleInput()
                             _isUpdate = true;
                         }
                     }
-                    if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
-                        this->_data->window.close();
-                    }
-                    if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
-                        this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
-                    }
                 }
-                else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+                if (this->_gameState == STATE_PLAYING && event.mouseButton.button == sf::Mouse::Right) {
                     if (fieldRect.contains(mousePos)) {
                         int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
                         int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
@@ -127,6 +122,43 @@ void GameState::HandleInput()
                         }
                     }
                 }
+            }
+            case sf::Event::MouseButtonPressed: {
+                auto mousePos = sf::Mouse::getPosition(this->_data->window);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    if (this->_gameState == STATE_PLAYING) {
+                        if (fieldRect.contains(mousePos)) {
+                            int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
+                            int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
+
+                            this->_gridArray.at(row * this->_data->difficulty.field_width + col) |= CELL_SELECTED;
+                            _isUpdate = true;
+                        }
+                    }
+                    if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+                        this->_data->window.close();
+                    }
+                    if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+                        this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
+                    }
+                }
+                else if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
+                    if (fieldRect.contains(mousePos) && this->_gameState == STATE_PLAYING) {
+                        int col = ((mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE);
+                        int row = ((mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE);
+                        auto difficulty = this->_data->difficulty;
+
+                        for (int i = row ? row-1 : row; i <= (row+1<difficulty.field_height? row+1 : difficulty.field_height-1); i++) {
+                            for (int j = col ? col - 1 : col;
+                                 j <= (col + 1 < difficulty.field_width ? col + 1 : difficulty.field_width - 1); j++) {
+                                int cell_num = i * this->_data->difficulty.field_width + j;
+                                this->_gridArray.at(cell_num) |= CELL_SELECTED;
+                            }
+                        }
+                    }
+                }
+                _isUpdate = true;
+                break;
             }
             case sf::Event::KeyPressed: {
                 if (event.key.code == sf::Keyboard::R) {
@@ -149,7 +181,11 @@ void GameState::Update() {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
                 } else if (this->_gridArray.at(i) & CELL_QUESTION) {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(13));
-                } else {
+                } else if (this->_gridArray.at(i) & CELL_SELECTED) {
+                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(0));
+                    this->_gridArray.at(i) &= 0xF;
+                }
+                else {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(11));
                 }
             }

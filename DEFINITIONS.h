@@ -38,6 +38,7 @@
 #define CELL_FLAG           0x10
 #define CELL_QUESTION       0x20
 #define CELL_REVEALED       0x40
+#define CELL_SELECTED       0x80
 
 #define GAME_FIELD_TILES "_Resources/res/tiles.png"
 

@@ -63,7 +63,7 @@ void MainMenuState::HandleInput()
                     this->_exitButton.setColor(sf::Color::White);
                 break;
             }
-            case sf::Event::MouseButtonPressed: {
+            case sf::Event::MouseButtonReleased: {
                 auto mousePos = sf::Vector2f((float) event.mouseButton.x, (float) event.mouseButton.y);
                 if (this->_playButton.getGlobalBounds().contains(mousePos))
                     this->_data->manager.AddState(StateRef(new GameState(_data)), true);
