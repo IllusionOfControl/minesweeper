@@ -56,10 +56,10 @@ void GameState::Init() {
     this->_gameTimerText.setScale(2.f, 2.f);
     this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
 
-
-
-    sf::Texture smileButtonTexture = this->_data->assets.GetTexture("led_background");
-
+    auto& smileButtonTexture = this->_data->assets.GetTexture("smiles_button");
+    this->_smileButton.setTexture(smileButtonTexture);
+    this->_smileButton.setPosition((GAME_BORDER_LEFT + 4) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_isSmileSmall = difficulty.field_width % 2 ? true : false;
     this->Reset();
 }
 
@@ -106,6 +106,7 @@ void GameState::HandleInput()
                             }
 
                             this->RevealCell(col, row);
+                            this->_smileReaction = SMILE_USUAL;
                             _isUpdate = true;
                         }
                     }
@@ -122,6 +123,9 @@ void GameState::HandleInput()
                         }
                     }
                 }
+                if (this->_smileButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+                    this->Reset();
+                }
             }
             case sf::Event::MouseButtonPressed: {
                 auto mousePos = sf::Mouse::getPosition(this->_data->window);
@@ -132,6 +136,7 @@ void GameState::HandleInput()
                             int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
                             this->_gridArray.at(row * this->_data->difficulty.field_width + col) |= CELL_SELECTED;
+                            this->_smileReaction = SMILE_REVEAL;
                             _isUpdate = true;
                         }
                     }
@@ -140,6 +145,9 @@ void GameState::HandleInput()
                     }
                     if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                         this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
+                    }
+                    if (this->_smileButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+                        this->_smileReaction = SMILE_CLICK;
                     }
                 }
                 else if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
@@ -155,6 +163,14 @@ void GameState::HandleInput()
                                 this->_gridArray.at(cell_num) |= CELL_SELECTED;
                             }
                         }
+                    }
+                } else {
+                    if (this->_gameState == STATE_LOSE) {
+                        this->_smileReaction = SMILE_LOSE;
+                    } else if (this->_gameState == STATE_WON) {
+                        this->_smileReaction = SMILE_WIN;
+                    } else {
+                        this->_smileReaction = SMILE_USUAL;
                     }
                 }
                 _isUpdate = true;
@@ -210,19 +226,42 @@ void GameState::Update() {
                 }
             }
         }
+        if (this->_gameState == STATE_WON) {
+            int fieldSize = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
+            for (int i = 0; i < fieldSize; i++) {
+                if (this->_gridArray.at(i) == CELL_BOMB && (this->_gridArray.at(i) & CELL_FLAG)) {
+                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
+                    continue;
+                } else if (this->_gridArray.at(i) == CELL_BOMB) {
+                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
+                } else if (this->_gridArray.at(i) == CELL_BOMB_DETONATED) {
+                    this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
+                }
+            }
+        }
+        _isUpdate = false;
     }
 
     if (this->_gameState == STATE_PLAYING) {
         this->_gameTimer = this->_gameClock.getElapsedTime();
-        if (this->_gameTimer.asSeconds() > this->_gameTime)
+        if (this->_gameTimer.asSeconds() > this->_gameTime) {
             if (this->_gameTime < 999) {
                 this->_gameTime++;
                 std::ostringstream gameTimer;
                 gameTimer << this->_gameTime;
                 this->_gameTimerText.setString(gameTimer.str());
             }
+        }
+
+        auto difficulty = this->_data->difficulty;
+        int cellsLeft = difficulty.field_width * difficulty.field_height - this->_cellsRevealed;
+        if (cellsLeft == difficulty.bomb_count) {
+            this->_gameState = STATE_WON;
+            this->_smileReaction = SMILE_WIN;
+        }
     }
-    _isUpdate = false;
+
+    this->_smileButton.setTextureRect(SMILE_SMALL_INT_RECT(this->_smileReaction));
 }
 
 void GameState::Reset() {
@@ -230,6 +269,7 @@ void GameState::Reset() {
     this->_minesCount = this->_data->difficulty.bomb_count;
     this->_isUpdate = false;
     this->_gameTime = 0;
+    this->_smileReaction = SMILE_USUAL;
 
     std::ostringstream minesLeft, gameTime;
     minesLeft << this->_minesCount;
@@ -252,7 +292,7 @@ void GameState::Draw()
     this->_data->window.draw(this->_minesLeftText);
     this->_data->window.draw(this->_gameTimerSprite);
     this->_data->window.draw(this->_gameTimerText);
-    this->_data->window.draw(this->_exitButton);
+    this->_data->window.draw(this->_smileButton);
 
 
 
@@ -294,7 +334,7 @@ void GameState::InitGridArray(int x, int y) {
         this->_gridArray.push_back(0);
     }
 
-    for (int i = 0; i < this->_data->difficulty.field_height; i++) {
+    for (int i = 0; i < this->_data->difficulty.bomb_count; i++) {
         int randCol = rand() % (difficulty.field_width - 1);
         int randRow = rand() % (difficulty.field_height - 1);
         int cellNum = randRow * difficulty.field_width + randCol;
@@ -321,6 +361,9 @@ void GameState::RevealCell(int x, int y) {
     if (_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_FLAG) {
         return;
     }
+    if (_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_REVEALED) {
+        return;
+    }
     if (_gridArray.at(y * this->_data->difficulty.field_width + x) == CELL_BOMB) {
         this->_gameState = STATE_LOSE;
         _gridArray.at(y * this->_data->difficulty.field_width + x) = CELL_BOMB_DETONATED;
@@ -329,16 +372,15 @@ void GameState::RevealCell(int x, int y) {
 
     _gridArray.at(y * this->_data->difficulty.field_width + x) &= 0xF;
     _gridArray.at(y * this->_data->difficulty.field_width + x) |= CELL_REVEALED;
-
+    this->_cellsRevealed++;
 
     if ((this->_gridArray.at(y * difficulty.field_width + x) & 0xF) == CELL_EMPTY) {
         for (int row = (y - 1); row <= y + 1; row++) {
             if (row >= 0 && row < difficulty.field_height) {
                 for (int col = (x - 1); col <= x + 1; col++) {
                     if (col >= 0 && col < difficulty.field_width) {
-                        if ((this->_gridArray.at(row * difficulty.field_width + col) & CELL_REVEALED) == 0) {
+                        if (!(this->_gridArray.at(row * difficulty.field_width + col) & CELL_REVEALED)) {
                             if (row == y && col == x) continue;
-                            this->_cellsRevealed++;
                             this->RevealCell(col, row);
                        }
                     }

@@ -43,11 +43,13 @@ private:
     std::vector<int> _gridArray;
 
     bool _isUpdate;
+    bool _isSmileSmall;
 
     int _cellsRevealed;
     int _minesCount;
     int _gameState;
     int _gameTime;
+    int _smileReaction;
 
     sf::Clock _gameClock;
     sf::Time _gameTimer;

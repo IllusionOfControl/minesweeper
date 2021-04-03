@@ -17,7 +17,8 @@
 //#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x, pos_y, 160, 32}
 #define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x * SQUARE_SIZE, pos_y * SQUARE_SIZE, 160, 32}
 #define TILE_INT_RECT(tile_type)            {tile_type * 32, 0, 32, 32}
-
+#define SMILE_SMALL_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE, 0 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE}
+#define SMILE_LARGE_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE * 2, 0 * SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE}
 
 #define SMALL_BUTTON_WIDTH  32
 #define SMALL_BUTTON_HEIGHT 32
@@ -39,6 +40,12 @@
 #define CELL_QUESTION       0x20
 #define CELL_REVEALED       0x40
 #define CELL_SELECTED       0x80
+
+#define SMILE_USUAL     0
+#define SMILE_REVEAL    1
+#define SMILE_CLICK     2
+#define SMILE_WIN       3
+#define SMILE_LOSE      4
 
 #define GAME_FIELD_TILES "_Resources/res/tiles.png"
 
