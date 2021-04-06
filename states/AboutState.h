@@ -1,17 +1,16 @@
-#ifndef MINESWEEPER_MAINMENUSTATE_H
-#define MINESWEEPER_MAINMENUSTATE_H
+#ifndef MINESWEEPER_ABOUTSTATE_H
+#define MINESWEEPER_ABOUTSTATE_H
 
 #include <SFML/Graphics.hpp>
 #include "../MineSweeper.h"
 #include "../DEFINITIONS.h"
+#include "MainMenuState.h"
 #include "State.h"
-#include "GameState.h"
-#include "AboutState.h"
 
 
-class MainMenuState: public State {
+class AboutState: public State {
 public:
-    MainMenuState(GameDataRef data);
+    AboutState(GameDataRef data);
 
     void Init();
 
@@ -24,12 +23,12 @@ private:
 
     sf::Sprite _background;
 
-    sf::Sprite _playButton;
-    sf::Sprite _optionButton;
+    sf::Sprite _mainMenuButton;
     sf::Sprite _exitButton;
-
     sf::Sprite _logo;
+
+    sf::Sprite _authorButton;
 };
 
 
-#endif //MINESWEEPER_MAINMENUSTATE_H
+#endif //MINESWEEPER_ABOUTSTATE_H

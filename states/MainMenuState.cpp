@@ -1,6 +1,5 @@
 #include "MainMenuState.h"
-#include "GameState.h"
-#include <iostream>
+
 
 MainMenuState::MainMenuState(GameDataRef data) : _data(data)
 {
@@ -68,7 +67,7 @@ void MainMenuState::HandleInput()
                 if (this->_playButton.getGlobalBounds().contains(mousePos))
                     this->_data->manager.AddState(StateRef(new GameState(_data)), true);
                 if (this->_optionButton.getGlobalBounds().contains(mousePos));
-//                    this->_data->manager.AddState(StateRef(new GameState(_data)), true);
+                    this->_data->manager.AddState(StateRef(new AboutState(_data)), true);
                 if (this->_exitButton.getGlobalBounds().contains(mousePos)) {
                     this->_data->window.close();
                 }
