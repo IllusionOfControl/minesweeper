@@ -15,7 +15,7 @@
 
 #define BACKGROUND_INT_RECT                 {}
 //#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x, pos_y, 160, 32}
-#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x * SQUARE_SIZE, pos_y * SQUARE_SIZE, 160, 32}
+#define BUTTON_INT_RECT(pos_x, pos_y)       {pos_x * SQUARE_SIZE * 5, pos_y * SQUARE_SIZE, 160, 32}
 #define TILE_INT_RECT(tile_type)            {tile_type * 32, 0, 32, 32}
 #define SMILE_SMALL_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE, 0 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE}
 #define SMILE_LARGE_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE * 2, 0 * SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE}
@@ -83,7 +83,7 @@
 #define STATE_LOSE      3
 
 #define DIFFICULTY_EASY     {9, 9, 10};
-#define DIFFICULTY_NORMAL   {9, 9, 10};
-#define DIFFICULTY_HARD     {9, 9, 10};
+#define DIFFICULTY_MEDIUM   {16, 16, 40};
+#define DIFFICULTY_HARD     {32, 16, 99};
 
 #endif //MINESWEEPER_DEFINITIONS_H
