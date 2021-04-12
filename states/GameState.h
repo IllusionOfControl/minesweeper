@@ -23,6 +23,7 @@ private:
     void Reset();
     void RevealCell(int x, int y);
     void MarkCell(int x, int y);
+    void UpdateSmile(sf::Texture);
 
     GameDataRef _data;
 

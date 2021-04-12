@@ -58,7 +58,7 @@ void GameState::Init() {
 
     auto& smileButtonTexture = this->_data->assets.GetTexture("smiles_button");
     this->_smileButton.setTexture(smileButtonTexture);
-    this->_smileButton.setPosition((GAME_BORDER_LEFT + 4) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_smileButton.setPosition((GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
     this->_isSmileSmall = difficulty.field_width % 2 ? true : false;
     this->Reset();
 }
@@ -261,7 +261,9 @@ void GameState::Update() {
         }
     }
 
-    this->_smileButton.setTextureRect(SMILE_SMALL_INT_RECT(this->_smileReaction));
+    if (this->_isSmileSmall)
+        this->_smileButton.setTextureRect(SMILE_SMALL_INT_RECT(this->_smileReaction));
+    else this->_smileButton.setTextureRect(SMILE_LARGE_INT_RECT(this->_smileReaction));
 }
 
 void GameState::Reset() {
@@ -410,5 +412,11 @@ void GameState::MarkCell(int x, int y) {
 
     if (this->_gridArray.at(y * this->_data->difficulty.field_width + x) & CELL_QUESTION) {
         this->_gridArray.at(y * this->_data->difficulty.field_width + x) ^= CELL_QUESTION;
+    }
+}
+
+void GameState::UpdateSmile(sf::Texture) {
+    if (this->_data->difficulty.field_width % 2 == 0) { // чётное -> большая кнопка
+
     }
 }
