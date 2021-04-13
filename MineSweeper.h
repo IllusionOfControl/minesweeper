@@ -19,7 +19,7 @@ struct GameData
     sf::RenderWindow window;
     AssetManager assets;
     InputManager input;
-    DifficultyData difficulty = DIFFICULTY_EASY;
+    DifficultyData difficulty;
 };
 
 typedef std::shared_ptr<GameData> GameDataRef;
