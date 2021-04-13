@@ -94,6 +94,9 @@ void DifficultyMenuState::HandleInput()
                     this->_data->difficulty = DIFFICULTY_HARD;
                     this->_data->manager.AddState(StateRef(new GameState(_data)), true);
                 }
+                if (this->_customButton.getGlobalBounds().contains(mousePos)) {
+                    this->_data->manager.AddState(StateRef(new CustomDifficultyState(_data)), true);
+                }
                 if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                     this->_data->window.close();
                 }
