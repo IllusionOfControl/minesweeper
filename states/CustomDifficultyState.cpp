@@ -114,17 +114,6 @@ void CustomDifficultyState::HandleInput() {
                     if (this->isValidDifficulty)
                         this->_data->manager.AddState(StateRef(new GameState(_data)), true);
                 }
-//                if (this->_mediumButton.getGlobalBounds().contains(mousePos)) {
-//                    this->_data->difficulty = DIFFICULTY_MEDIUM;
-//                    this->_data->manager.AddState(StateRef(new GameState(_data)), true);
-//                }
-//                if (this->_hardButton.getGlobalBounds().contains(mousePos)) {
-//                    this->_data->difficulty = DIFFICULTY_HARD;
-//                    this->_data->manager.AddState(StateRef(new GameState(_data)), true);
-//                }
-//                if (this->_customButton.getGlobalBounds().contains(mousePos)) {
-//                    this->_data->manager.AddState(StateRef(new CustomDifficultyState(_data)), true);
-//                }
                 if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                     this->_data->window.close();
                 }

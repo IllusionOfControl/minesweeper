@@ -337,8 +337,8 @@ void GameState::InitGridArray(int x, int y) {
     }
 
     for (int i = 0; i < this->_data->difficulty.bomb_count; i++) {
-        int randCol = rand() % (difficulty.field_width - 1);
-        int randRow = rand() % (difficulty.field_height - 1);
+        int randCol = rand() % (difficulty.field_width);
+        int randRow = rand() % (difficulty.field_height);
         int cellNum = randRow * difficulty.field_width + randCol;
         if (this->_gridArray.at(cellNum) == CELL_BOMB || cellNum == firstMoveCell) {
             i--;
