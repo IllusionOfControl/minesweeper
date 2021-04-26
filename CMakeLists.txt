@@ -10,7 +10,7 @@ set(SOURCE_FILES ${SOURCE_FILES} states/MainMenuState.cpp states/MainMenuState.h
 set(SOURCE_FILES ${SOURCE_FILES} states/GameState.cpp states/GameState.h)
 set(SOURCE_FILES ${SOURCE_FILES} states/AboutState.cpp states/AboutState.h)
 set(SOURCE_FILES ${SOURCE_FILES} states/DifficultyMenuState.cpp states/DifficultyMenuState.h)
-set(SOURCE_FILES ${SOURCE_FILES} states/CustomDifficultyState.cpp states/CustomDifficultyState.h)
+set(SOURCE_FILES ${SOURCE_FILES} states/CustomDifficultyState.cpp states/CustomDifficultyState.h states/LeaderboardState.cpp states/LeaderboardState.h states/RecordSaveState.cpp states/RecordSaveState.h managers/LeaderboardManager.cpp managers/LeaderboardManager.h)
 add_executable(minesweeper main.cpp DEFINITIONS.h ${SOURCE_FILES})
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 target_link_libraries(minesweeper sfml-graphics sfml-audio)

@@ -118,6 +118,7 @@ void CustomDifficultyState::HandleInput() {
                     this->_data->window.close();
                 }
                 if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+                    this->_data->difficulty.difficulty_type = GAME_CUSTOM;
                     this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
                 }
             }

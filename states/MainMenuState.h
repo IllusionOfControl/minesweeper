@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "AboutState.h"
 #include "DifficultyMenuState.h"
+#include "LeaderboardState.h"
 
 
 class MainMenuState: public State {
@@ -26,7 +27,8 @@ private:
     sf::Sprite _background;
 
     sf::Sprite _playButton;
-    sf::Sprite _optionButton;
+    sf::Sprite _aboutButton;
+    sf::Sprite _leaderboardsButton;
     sf::Sprite _exitButton;
 
     sf::Sprite _logo;

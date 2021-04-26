@@ -7,7 +7,7 @@
 #define GAME_BORDER_RIGHT   1
 #define GAME_BORDER_LEFT    1
 #define WIDTH   5
-#define HEIGHT  5
+#define HEIGHT  7
 
 #define SQUARE_SIZE 32
 
@@ -82,8 +82,13 @@
 #define STATE_WON       2
 #define STATE_LOSE      3
 
-#define DIFFICULTY_EASY     {9, 9, 10};
-#define DIFFICULTY_MEDIUM   {16, 16, 40};
-#define DIFFICULTY_HARD     {32, 16, 99};
+#define GAME_EASY   1
+#define GAME_NORMAL 2
+#define GAME_HARD   3
+#define GAME_CUSTOM 4
+
+#define DIFFICULTY_EASY     {9, 9, 10, GAME_EASY};
+#define DIFFICULTY_MEDIUM   {16, 16, 40, GAME_NORMAL};
+#define DIFFICULTY_HARD     {32, 16, 99, GAME_HARD};
 
 #endif //MINESWEEPER_DEFINITIONS_H

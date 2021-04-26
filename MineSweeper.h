@@ -4,12 +4,14 @@
 #include <memory>
 #include "managers/AssetManager.h"
 #include "managers/StateManager.h"
+#include "managers/LeaderboardManager.h"
 #include "DEFINITIONS.h"
 
 struct DifficultyData {
     int field_width;
     int field_height;
     int bomb_count;
+    int difficulty_type;
 };
 
 struct GameData
@@ -18,6 +20,7 @@ struct GameData
     sf::RenderWindow window;
     AssetManager assets;
     DifficultyData difficulty;
+    LeaderboardManager leaderboard;
 };
 
 typedef std::shared_ptr<GameData> GameDataRef;
