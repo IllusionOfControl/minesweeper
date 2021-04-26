@@ -3,7 +3,6 @@
 
 #include <memory>
 #include "managers/AssetManager.h"
-#include "managers/InputManager.h"
 #include "managers/StateManager.h"
 #include "DEFINITIONS.h"
 
@@ -18,7 +17,6 @@ struct GameData
     StateManager manager;
     sf::RenderWindow window;
     AssetManager assets;
-    InputManager input;
     DifficultyData difficulty;
 };
 
