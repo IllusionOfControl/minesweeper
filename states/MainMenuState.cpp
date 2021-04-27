@@ -1,6 +1,5 @@
 #include "MainMenuState.h"
 
-
 MainMenuState::MainMenuState(GameDataRef data) : _data(data)
 {
 

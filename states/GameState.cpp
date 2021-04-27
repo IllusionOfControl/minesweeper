@@ -11,18 +11,19 @@ GameState::GameState(GameDataRef data) : _data(data) {
 
 void GameState::Init() {
     auto difficulty = this->_data->difficulty;
-    this->_data->window.create(sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                                             (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                                                    "Minesweeper",
-                                                    sf::Style::Titlebar | sf::Style::Close);
-    auto& backgroundTexture = this->_data->assets.GetTexture("background");
+    this->_data->window.create(
+            sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                          (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
+            "Minesweeper",
+            sf::Style::Titlebar | sf::Style::Close);
+    auto &backgroundTexture = this->_data->assets.GetTexture("background");
     auto windowSize = this->_data->window.getSize();
 
     backgroundTexture.setRepeated(true);
     this->_background.setTexture(backgroundTexture);
     this->_background.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    auto& fieldTexture = this->_data->assets.GetTexture("tile_texture");
+    auto &fieldTexture = this->_data->assets.GetTexture("tile_texture");
     fieldTexture.setRepeated(true);
     this->_gridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
     this->_gridSprite.setTextureRect(TILE_INT_RECT(17));
@@ -35,40 +36,42 @@ void GameState::Init() {
     this->_exitButton.setTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     this->_exitButton.setPosition((difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
 
-    auto& ledBackground = this->_data->assets.GetTexture("led_background");
+    auto &ledBackground = this->_data->assets.GetTexture("led_background");
     ledBackground.setRepeated(true);
     this->_minesLeftSprite.setTexture(ledBackground);
     this->_minesLeftSprite.setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
-    this->_minesLeftSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_minesLeftSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
 
     this->_minesLeftText.setFont(this->_data->assets.GetFont("default_font"));
     this->_minesLeftText.setCharacterSize(20);
     this->_minesLeftText.setStyle(sf::Text::Bold);
     this->_minesLeftText.setScale(2.f, 2.f);
-    this->_minesLeftText.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
+    this->_minesLeftText.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP - 3) * SQUARE_SIZE + 18);
 
     this->_gameTimerSprite.setTexture(ledBackground);
     this->_gameTimerSprite.setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
-    this->_gameTimerSprite.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_gameTimerSprite.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE,
+                                       (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     this->_gameTimerText.setFont(this->_data->assets.GetFont("default_font"));
     this->_gameTimerText.setCharacterSize(20);
     this->_gameTimerText.setStyle(sf::Text::Bold);
     this->_gameTimerText.setScale(2.f, 2.f);
-    this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6, (GAME_BORDER_TOP-3) * SQUARE_SIZE + 18);
+    this->_gameTimerText.setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE + 6,
+                                     (GAME_BORDER_TOP - 3) * SQUARE_SIZE + 18);
 
-    auto& smileButtonTexture = this->_data->assets.GetTexture("smiles_button");
+    auto &smileButtonTexture = this->_data->assets.GetTexture("smiles_button");
     this->_smileButton.setTexture(smileButtonTexture);
-    this->_smileButton.setPosition((GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE, (GAME_BORDER_TOP-2) * SQUARE_SIZE);
+    this->_smileButton.setPosition(
+            (GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE,
+            (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     this->_isSmileSmall = difficulty.field_width % 2 ? true : false;
     this->Reset();
 }
 
-void GameState::HandleInput()
-{
+void GameState::HandleInput() {
     sf::Event event;
 
-    while (this->_data->window.pollEvent(event))
-    {
+    while (this->_data->window.pollEvent(event)) {
 
         auto fieldRect = sf::IntRect(GAME_BORDER_LEFT * SQUARE_SIZE,
                                      GAME_BORDER_TOP * SQUARE_SIZE,
@@ -149,14 +152,14 @@ void GameState::HandleInput()
                     if (this->_smileButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                         this->_smileReaction = SMILE_CLICK;
                     }
-                }
-                else if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
+                } else if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
                     if (fieldRect.contains(mousePos) && this->_gameState == STATE_PLAYING) {
                         int col = ((mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE);
                         int row = ((mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE);
                         auto difficulty = this->_data->difficulty;
 
-                        for (int i = row ? row-1 : row; i <= (row+1<difficulty.field_height? row+1 : difficulty.field_height-1); i++) {
+                        for (int i = row ? row - 1 : row;
+                             i <= (row + 1 < difficulty.field_height ? row + 1 : difficulty.field_height - 1); i++) {
                             for (int j = col ? col - 1 : col;
                                  j <= (col + 1 < difficulty.field_width ? col + 1 : difficulty.field_width - 1); j++) {
                                 int cell_num = i * this->_data->difficulty.field_width + j;
@@ -200,8 +203,7 @@ void GameState::Update() {
                 } else if (this->_gridArray.at(i) & CELL_SELECTED) {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(0));
                     this->_gridArray.at(i) &= 0xF;
-                }
-                else {
+                } else {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(11));
                 }
             }
@@ -212,9 +214,9 @@ void GameState::Update() {
         if (this->_gameState == STATE_LOSE) {
             int fieldSize = this->_data->difficulty.field_height * this->_data->difficulty.field_width;
             for (int i = 0; i < fieldSize; i++) {
-                if (this->_gridArray.at(i) & CELL_FLAG && this->_gridArray.at(i) != CELL_BOMB) {
+                if (this->_gridArray.at(i) & CELL_FLAG && ((this->_gridArray.at(i) & 0xF) != CELL_BOMB)) {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(14));
-                } else if (this->_gridArray.at(i) == CELL_BOMB && (this->_gridArray.at(i) & CELL_FLAG)) {
+                } else if (((this->_gridArray.at(i) & 0xF) == CELL_BOMB) && (this->_gridArray.at(i) & CELL_FLAG)) {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
                     continue;
                 } else if (this->_gridArray.at(i) == CELL_BOMB) {
@@ -238,6 +240,12 @@ void GameState::Update() {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
                 }
             }
+            this->_data->lastResults.time = this->_gameTime > 999 ? 999 : _gameTime;
+            this->_data->lastResults.name = "";
+            this->_data->lastResults.game_type = this->_data->difficulty.difficulty_type;
+            if (_data->leaderboard.CheckResult(this->_data->lastResults))
+                this->_data->manager.AddState(StateRef(new RecordSaveState(this->_data)), true);
+
         }
         _isUpdate = false;
     }
@@ -284,8 +292,7 @@ void GameState::Reset() {
 }
 
 
-void GameState::Draw()
-{
+void GameState::Draw() {
     this->_data->window.clear(sf::Color::Red);
     this->_data->window.draw(this->_background);
     this->_data->window.draw(this->_mainMenuButton);
@@ -295,7 +302,6 @@ void GameState::Draw()
     this->_data->window.draw(this->_gameTimerSprite);
     this->_data->window.draw(this->_gameTimerText);
     this->_data->window.draw(this->_smileButton);
-
 
 
     for (auto cell : this->_gridCells) {
@@ -345,9 +351,9 @@ void GameState::InitGridArray(int x, int y) {
             continue;
         }
         this->_gridArray.at(cellNum) = CELL_BOMB;
-        for (int row = (randRow - 1); row <= randRow+1; row++) {
+        for (int row = (randRow - 1); row <= randRow + 1; row++) {
             if (row >= 0 && row < difficulty.field_height) {
-                for (int col = (randCol - 1); col <= randCol+1; col++) {
+                for (int col = (randCol - 1); col <= randCol + 1; col++) {
                     if (col >= 0 && col < difficulty.field_width) {
                         if (this->_gridArray.at(row * difficulty.field_width + col) < CELL_BOMB)
                             _gridArray.at(row * difficulty.field_width + col)++;
@@ -384,7 +390,7 @@ void GameState::RevealCell(int x, int y) {
                         if (!(this->_gridArray.at(row * difficulty.field_width + col) & CELL_REVEALED)) {
                             if (row == y && col == x) continue;
                             this->RevealCell(col, row);
-                       }
+                        }
                     }
                 }
             }

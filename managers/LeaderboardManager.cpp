@@ -79,8 +79,8 @@ void LeaderboardManager::SaveResult(struct Record result) {
             break;
         }
         case GAME_HARD: {
-            SaveSrt("Name2", result.name);
-            SaveInt("Time2", result.time);
+            SaveSrt("Name3", result.name);
+            SaveInt("Time3", result.time);
             break;
         }
     }
