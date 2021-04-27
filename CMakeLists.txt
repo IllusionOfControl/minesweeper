@@ -1,7 +1,7 @@
 project(minesweeper)
 cmake_minimum_required(VERSION 3.8)
 set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Release)
 set(SOURCE_FILES ${SOURCE_FILES} MineSweeper.cpp MineSweeper.h)
 set(SOURCE_FILES ${SOURCE_FILES} managers/AssetManager.cpp managers/AssetManager.h)
 set(SOURCE_FILES ${SOURCE_FILES} managers/StateManager.cpp managers/StateManager.h)
