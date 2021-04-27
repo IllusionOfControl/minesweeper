@@ -112,13 +112,13 @@ void CustomDifficultyState::HandleInput() {
                 auto mousePos = sf::Vector2f((float) event.mouseButton.x, (float) event.mouseButton.y);
                 if (this->_playButton.getGlobalBounds().contains(mousePos)) {
                     if (this->isValidDifficulty)
+                        this->_data->difficulty.difficulty_type = GAME_CUSTOM;
                         this->_data->manager.AddState(StateRef(new GameState(_data)), true);
                 }
                 if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
                     this->_data->window.close();
                 }
                 if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
-                    this->_data->difficulty.difficulty_type = GAME_CUSTOM;
                     this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
                 }
             }

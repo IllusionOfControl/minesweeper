@@ -240,12 +240,13 @@ void GameState::Update() {
                     this->_gridCells.at(i).setTextureRect(TILE_INT_RECT(12));
                 }
             }
-            this->_data->lastResults.time = this->_gameTime > 999 ? 999 : _gameTime;
-            this->_data->lastResults.name = "";
-            this->_data->lastResults.game_type = this->_data->difficulty.difficulty_type;
-            if (_data->leaderboard.CheckResult(this->_data->lastResults))
-                this->_data->manager.AddState(StateRef(new RecordSaveState(this->_data)), true);
-
+            if (this->_data->difficulty.difficulty_type != GAME_CUSTOM) {
+                this->_data->lastResults.time = this->_gameTime > 999 ? 999 : _gameTime;
+                this->_data->lastResults.name = "";
+                this->_data->lastResults.game_type = this->_data->difficulty.difficulty_type;
+                if (_data->leaderboard.CheckResult(this->_data->lastResults))
+                    this->_data->manager.AddState(StateRef(new RecordSaveState(this->_data)), true);
+            }
         }
         _isUpdate = false;
     }
