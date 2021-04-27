@@ -39,7 +39,7 @@ void LeaderboardState::Init() {
     this->_textEasyName.setStyle(sf::Text::Bold);
     this->_textEasyName.setScale(2.f, 2.f);
     this->_textEasyName.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP-2) * SQUARE_SIZE + 18);
-    this->_textEasyName.setString(_data->leaderboard.records[GAME_EASY].name);
+    this->_textEasyName.setString(_data->leaderboard.records[GAME_EASY].name.substr(0,9));
     this->_textEasyTime.setFont(this->_data->assets.GetFont("default_font"));
     this->_textEasyTime.setCharacterSize(20);
     this->_textEasyTime.setStyle(sf::Text::Bold);
@@ -57,7 +57,7 @@ void LeaderboardState::Init() {
     this->_textNormalName.setStyle(sf::Text::Bold);
     this->_textNormalName.setScale(2.f, 2.f);
     this->_textNormalName.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP+1) * SQUARE_SIZE + 18);
-    this->_textNormalName.setString(_data->leaderboard.records[GAME_NORMAL].name);
+    this->_textNormalName.setString(_data->leaderboard.records[GAME_NORMAL].name.substr(0,9));
     this->_textNormalTime.setFont(this->_data->assets.GetFont("default_font"));
     this->_textNormalTime.setCharacterSize(20);
     this->_textNormalTime.setStyle(sf::Text::Bold);
@@ -75,7 +75,7 @@ void LeaderboardState::Init() {
     this->_textHardName.setStyle(sf::Text::Bold);
     this->_textHardName.setScale(2.f, 2.f);
     this->_textHardName.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE + 6, (GAME_BORDER_TOP+4) * SQUARE_SIZE + 18);
-    this->_textHardName.setString(_data->leaderboard.records[GAME_HARD].name);
+    this->_textHardName.setString(_data->leaderboard.records[GAME_HARD].name.substr(0,9));
     this->_textHardTime.setFont(this->_data->assets.GetFont("default_font"));
     this->_textHardTime.setCharacterSize(20);
     this->_textHardTime.setStyle(sf::Text::Bold);

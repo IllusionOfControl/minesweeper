@@ -8,10 +8,10 @@
 #include <sstream>
 #include "../DEFINITIONS.h"
 
-
 struct Record {
     std::string name;
     int time;
+    int game_type;
 };
 
 class LeaderboardManager {
@@ -34,6 +34,8 @@ public:
     LeaderboardManager();
     ~LeaderboardManager() {}
 
+    bool CheckResult(struct Record result);
+    void SaveResult(struct Record result);
     std::map<int, struct Record> records;
 };
 

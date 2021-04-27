@@ -19,7 +19,6 @@ public:
 
 private:
     std::map<std::string, sf::Texture> _textures;
-//    std::map<std::string, sf::
     std::map<std::string, sf::Font> _fonts;
 };
 

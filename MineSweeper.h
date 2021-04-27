@@ -21,6 +21,7 @@ struct GameData
     AssetManager assets;
     DifficultyData difficulty;
     LeaderboardManager leaderboard;
+    struct Record lastResults;
 };
 
 typedef std::shared_ptr<GameData> GameDataRef;
