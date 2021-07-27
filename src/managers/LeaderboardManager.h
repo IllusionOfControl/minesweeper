@@ -1,7 +1,7 @@
 #ifndef MINESWEEPER_LEADERBOARDMANAGER_H
 #define MINESWEEPER_LEADERBOARDMANAGER_H
 
-#include <windows.h>
+#include <Windows.h>
 #include <string>
 #include <map>
 #include <memory>
