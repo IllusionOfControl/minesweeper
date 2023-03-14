@@ -9,29 +9,25 @@
 #include "AboutState.h"
 #include "DifficultyMenuState.h"
 #include "LeaderboardState.h"
+#include "../gui/Container.hpp"
 
 
 class MainMenuState: public State {
 public:
-    MainMenuState(GameDataRef data);
+    explicit MainMenuState(GameDataRef);
 
-    void Init();
+    void Init() override;
 
-    void HandleInput();
-    void Update();
-    void Draw();
+    void HandleInput() override;
+    void Update() override;
+    void Draw() override;
 
 private:
-    GameDataRef _data;
+    GameDataRef mGameData;
 
-    sf::Sprite _background;
-
-    sf::Sprite _playButton;
-    sf::Sprite _aboutButton;
-    sf::Sprite _leaderboardsButton;
-    sf::Sprite _exitButton;
-
-    sf::Sprite _logo;
+    sf::Sprite mBackground;
+    sf::Sprite mLogo;
+    Container mGuiContainer;
 };
 
 
