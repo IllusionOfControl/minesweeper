@@ -1,96 +1,75 @@
 #include "AboutState.h"
+#include "../gui/Button.hpp"
 
-
-AboutState::AboutState(GameDataRef data): _data(data)
-{
+AboutState::AboutState(GameDataRef gameData)
+        : mGameData(gameData)
+        , mGuiContainer() {
 
 }
 
-void AboutState::Init()
-{
-    this->_data->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+void AboutState::Init() {
+    mGameData->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                              (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
                                "Minesweeper",
                                sf::Style::Titlebar | sf::Style::Close);
-    auto& backgroundTexture = this->_data->assets.GetTexture("background");
-    auto windowSize = this->_data->window.getSize();
+    auto &backgroundTexture = mGameData->assets.GetTexture("background");
+    auto windowSize = mGameData->window.getSize();
 
     backgroundTexture.setRepeated(true);
-    this->_background.setTexture(backgroundTexture);
-    this->_background.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
+    mBackground.setTexture(backgroundTexture);
+    mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    this->_mainMenuButton.setTexture(this->_data->assets.GetTexture("state_buttons"));
-    this->_mainMenuButton.setTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
-    this->_mainMenuButton.setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
+    auto mainMenuButton = std::make_shared<Button>();
+    mainMenuButton->setTexture(mGameData->assets.GetTexture("state_buttons"));
+    mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
+    mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
+    mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
+    mainMenuButton->setCallback([&]() {
+        mGameData->manager.AddState(StateRef(new MainMenuState(mGameData)), true);
+    });
 
-    this->_exitButton.setTexture(this->_data->assets.GetTexture("state_buttons"));
-    this->_exitButton.setTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
-    this->_exitButton.setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
+    auto exitButton = std::make_shared<Button>();
+    exitButton->setTexture(mGameData->assets.GetTexture("state_buttons"));
+    exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
+    exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
+    exitButton->setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
+    exitButton->setCallback([&]() {
+        mGameData->window.close();
+    });
 
-    auto& authorButtonTextures = this->_data->assets.GetTexture(TEXTURE_SECOND_NAME);
-    this->_authorButton.setTextureRect({0 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
-    this->_authorButton.setTexture(authorButtonTextures);
-    this->_authorButton.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
+    auto authorButton = std::make_shared<Button>();
+    authorButton->setTexture(mGameData->assets.GetTexture(TEXTURE_SECOND_NAME));
+    authorButton->setNormalTextureRect({0 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
+    authorButton->setSelectedTextureRect({5 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
+    authorButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
 
-    this->_logo.setTexture(this->_data->assets.GetTexture(TEXTURE_SECOND_NAME));
-    this->_logo.setTextureRect({0 * SQUARE_SIZE, 1 * SQUARE_SIZE, 160, 32});
-    this->_logo.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, 1 * SQUARE_SIZE);
+    mLogo.setTexture(mGameData->assets.GetTexture(TEXTURE_SECOND_NAME));
+    mLogo.setTextureRect({0 * SQUARE_SIZE, 1 * SQUARE_SIZE, 160, 32});
+    mLogo.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, 1 * SQUARE_SIZE);
+
+    mGuiContainer.pack(mainMenuButton);
+    mGuiContainer.pack(exitButton);
+    mGuiContainer.pack(authorButton);
 }
 
 void AboutState::HandleInput() {
     sf::Event event;
 
-    while (this->_data->window.pollEvent(event))
-    {
-        switch (event.type) {
-            case sf::Event::Closed:
-                this->_data->window.close();
-                break;
-            case sf::Event::MouseMoved: {
-                auto mousePos = sf::Vector2f((float) event.mouseMove.x, (float) event.mouseMove.y);
-
-                if (this->_mainMenuButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
-                    this->_mainMenuButton.setTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
-                else this->_mainMenuButton.setTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
-
-                if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos)))
-                    this->_exitButton.setTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
-                else this->_exitButton.setTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
-
-                if (this->_authorButton.getGlobalBounds().contains(mousePos))
-                    this->_authorButton.setTextureRect({0 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
-                else this->_authorButton.setTextureRect({5 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
-
-                break;
-            }
-            case sf::Event::MouseButtonReleased: {
-                auto mousePos = sf::Vector2f((float) event.mouseButton.x, (float) event.mouseButton.y);
-
-                if (this->_exitButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
-                    this->_data->window.close();
-                }
-                if (this->_mainMenuButton.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
-                    this->_data->manager.AddState(StateRef(new MainMenuState(this->_data)), true);
-                }
-            }
-        }
+    while (mGameData->window.pollEvent(event)) {
+        mGuiContainer.handleEvent(event);
     }
 }
 
-void AboutState::Update()
-{
+void AboutState::Update() {
 
 }
 
-void AboutState::Draw()
-{
-    this->_data->window.clear(sf::Color::Red);
+void AboutState::Draw() {
+    mGameData->window.clear(sf::Color::Red);
 
-    this->_data->window.draw(this->_background);
-    this->_data->window.draw(this->_exitButton);
-    this->_data->window.draw(this->_mainMenuButton);
-    this->_data->window.draw(this->_authorButton);
-    this->_data->window.draw(this->_logo);
+    mGameData->window.draw(mBackground);
+    mGameData->window.draw(mLogo);
+    mGameData->window.draw(mGuiContainer);
 
-    this->_data->window.display();
+    mGameData->window.display();
 }

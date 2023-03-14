@@ -6,28 +6,26 @@
 #include "../DEFINITIONS.h"
 #include "MainMenuState.h"
 #include "State.h"
+#include "../gui/Container.hpp"
 
-
-class AboutState: public State {
+class AboutState : public State {
 public:
     AboutState(GameDataRef data);
 
     void Init();
 
     void HandleInput();
+
     void Update();
+
     void Draw();
 
 private:
-    GameDataRef _data;
+    GameDataRef mGameData;
 
-    sf::Sprite _background;
-
-    sf::Sprite _mainMenuButton;
-    sf::Sprite _exitButton;
-    sf::Sprite _logo;
-
-    sf::Sprite _authorButton;
+    sf::Sprite mBackground;
+    sf::Sprite mLogo;
+    Container mGuiContainer;
 };
 
 
