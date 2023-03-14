@@ -27,17 +27,11 @@ public:
 
     void setSelectedTextureRect(sf::IntRect rect);
 
-//    void setPosition()
-
-    virtual bool isSelectable() const;
-
     virtual void select();
 
     virtual void deselect();
 
     virtual void activate();
-
-    virtual void deactivate();
 
     virtual void handleEvent(const sf::Event &event);
 

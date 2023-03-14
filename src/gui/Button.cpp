@@ -29,10 +29,6 @@ void Button::setSelectedTextureRect(sf::IntRect rect) {
     mSelectedTextureRect = rect;
 }
 
-bool Button::isSelectable() const {
-    return true;
-}
-
 void Button::select() {
     Component::select();
     mSprite.setTextureRect(mSelectedTextureRect);
@@ -44,14 +40,8 @@ void Button::deselect() {
 }
 
 void Button::activate() {
-    Component::activate();
-
-    if (mCallback)
+     if (mCallback)
         mCallback();
-}
-
-void Button::deactivate() {
-    Component::deactivate();
 }
 
 void Button::handleEvent(const sf::Event &event) {

@@ -18,13 +18,3 @@ void Component::select() {
 void Component::deselect() {
     mIsSelected = false;
 }
-
-bool Component::isActive() const {
-    return mIsActive;
-}
-
-void Component::activate() {
-}
-
-void Component::deactivate() {
-}
