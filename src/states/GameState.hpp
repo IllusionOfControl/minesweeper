@@ -1,66 +1,95 @@
-#ifndef MINESWEEPER_GAMESTATE_H
-#define MINESWEEPER_GAMESTATE_H
+#ifndef MINESWEEPER_GAMESTATE_HPP
+#define MINESWEEPER_GAMESTATE_HPP
 
 #include <SFML/Graphics.hpp>
 #include "RecordSaveState.h"
 #include "State.h"
 #include "../MineSweeper.h"
+#include "../gui/Background.hpp"
 #include "../gui/Container.hpp"
 #include "../gui/Indicator.hpp"
+#include "../gui/Button.hpp"
 
-class GameState : public State
-{
+class GameState : public State {
+public:
+    enum State {
+        GameFirstMove,
+        GamePlaying,
+        GameWon,
+        GameLose
+    };
+    enum SmileReaction {
+        SmileUsual,
+        SmileReveal,
+        SmileClick,
+        SmileWin,
+        SmileLose,
+    };
+    enum CellState {
+        CellEmpty,
+        CellBomb,
+        CellBombDetonated,
+        CellFlag,
+        CellQuestion,
+        CellRevealed,
+        CellSelected
+    };
+
 public:
     explicit GameState(GameDataRef data);
 
     void Init() override;
 
     void HandleInput() override;
+
     void Update() override;
+
     void Draw() override;
 
 private:
-    void InitGridCells();
-    void InitGridArray(int x, int y);
+    void initGridCells();
 
-    void Reset();
-    void RevealCell(int x, int y);
-    void MarkCell(int x, int y);
+    void initGridArray(int x, int y);
 
-    GameDataRef _data;
+    void reset();
 
-    sf::Sprite _background;
-    sf::Sprite _gridSprite;
-    sf::Sprite _smileButton;
+    void revealCell(int x, int y);
 
-    sf::Sprite _minesLeftSprite;
-    sf::Text _minesLeftText;
+    void markCell(int x, int y);
 
-    sf::Sprite _gameTimerSprite;
-    sf::Text _gameTimerText;
+    void updateGridCells();
+    void updateGridCellsOnLose();
+    void updateGridCellsOnWin();
+    void updateTimer();
+    void checkOnWin();
 
-    sf::Sprite _mainMenuButton;
-    sf::Sprite _exitButton;
+    void selectCellsArea(int col, int row);
 
-    std::vector<sf::Sprite> _gridCells;
-    std::vector<int> _gridArray;
+private:
+    GameDataRef context;
 
-    bool _isUpdate;
-    bool _isSmileSmall;
+    sf::Sprite mGridSprite;
 
-    int _cellsRevealed;
-    int _minesCount;
-    int _gameState;
-    int _gameTime;
-    int _smileReaction;
+    std::vector<sf::Sprite> mGridCells;
+    std::vector<int> mGridArray;
 
-    sf::Clock _gameClock;
-    sf::Time _gameTimer;
+    bool mIsSmileSmall;
+    State mGameState;
+
+    bool mNeedToUpdate;
+
+    int mCellsRevealed;
+    int mMinesCount;
+    int mGameTime;
+    int mSmileReaction;
+
+    sf::Clock mGameClock;   // ??
+    sf::Time mGameTimer;
 
     Container mGuiContainer;
     Indicator::Ptr mMinesLeftIndicator;
     Indicator::Ptr mTimeLeftIndicator;
+    Button::Ptr mSmileButton;
 };
 
-
-#endif //MINESWEEPER_GAMESTATE_H
+#endif //MINESWEEPER_GAMESTATE_HPP
