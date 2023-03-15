@@ -21,7 +21,7 @@ public:
 
     virtual ~Component();
 
-    bool isSelected() const;
+    virtual bool isSelected() const;
 
     virtual void select();
 
@@ -32,7 +32,6 @@ public:
 
 private:
     bool mIsSelected;
-    bool mIsActive;
 };
 
 #endif //MINESWEEPER_COMPONENT_HPP

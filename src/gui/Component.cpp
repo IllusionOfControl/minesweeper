@@ -1,8 +1,7 @@
 #include "Component.hpp"
 
 Component::Component()
-        : mIsSelected(false)
-        , mIsActive(false) {
+        : mIsSelected(false) {
 }
 
 Component::~Component() = default;
