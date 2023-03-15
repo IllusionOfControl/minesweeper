@@ -1,4 +1,4 @@
-#include "MainMenuState.h"
+#include "MainMenuState.hpp"
 #include "../gui/Button.hpp"
 
 MainMenuState::MainMenuState(GameDataRef gameData)

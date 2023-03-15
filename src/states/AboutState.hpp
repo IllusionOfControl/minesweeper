@@ -1,11 +1,11 @@
-#ifndef MINESWEEPER_ABOUTSTATE_H
-#define MINESWEEPER_ABOUTSTATE_H
+#ifndef MINESWEEPER_ABOUTSTATE_HPP
+#define MINESWEEPER_ABOUTSTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../MineSweeper.h"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
-#include "MainMenuState.h"
-#include "State.h"
+#include "MainMenuState.hpp"
+#include "State.hpp"
 #include "../gui/Container.hpp"
 
 class AboutState : public State {
@@ -29,4 +29,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_ABOUTSTATE_H
+#endif //MINESWEEPER_ABOUTSTATE_HPP

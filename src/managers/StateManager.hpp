@@ -1,10 +1,10 @@
-#ifndef MINESWEEPER_STATEMANAGER_H
-#define MINESWEEPER_STATEMANAGER_H
+#ifndef MINESWEEPER_STATEMANAGER_HPP
+#define MINESWEEPER_STATEMANAGER_HPP
 
 #include <memory>
 #include <stack>
 
-#include "../states/State.h"
+#include "../states/State.hpp"
 
 class StateManager {
 public:
@@ -27,4 +27,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_STATEMANAGER_H
+#endif //MINESWEEPER_STATEMANAGER_HPP

@@ -1,6 +1,6 @@
 #include <sstream>
 #include <string>
-#include "CustomDifficultyState.h"
+#include "CustomDifficultyState.hpp"
 #include "../gui/Button.hpp"
 
 CustomDifficultyState::CustomDifficultyState(GameDataRef data)

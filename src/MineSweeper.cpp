@@ -1,5 +1,5 @@
-#include "MineSweeper.h"
-#include "states/MainMenuState.h"
+#include "MineSweeper.hpp"
+#include "states/MainMenuState.hpp"
 
 MineSweeper::MineSweeper() {
     _data->window.create(sf::VideoMode(200, 300), "MineSweeper", sf::Style::Close | sf::Style::Titlebar);

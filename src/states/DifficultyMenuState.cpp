@@ -1,4 +1,4 @@
-#include "DifficultyMenuState.h"
+#include "DifficultyMenuState.hpp"
 #include "../gui/Button.hpp"
 
 DifficultyMenuState::DifficultyMenuState(GameDataRef data)

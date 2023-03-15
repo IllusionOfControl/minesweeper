@@ -1,10 +1,10 @@
-#ifndef MINESWEEPER_MINESWEEPER_H
-#define MINESWEEPER_MINESWEEPER_H
+#ifndef MINESWEEPER_MINESWEEPER_HPP
+#define MINESWEEPER_MINESWEEPER_HPP
 
 #include <memory>
-#include "managers/AssetManager.h"
-#include "managers/StateManager.h"
-#include "managers/LeaderboardManager.h"
+#include "managers/AssetManager.hpp"
+#include "managers/StateManager.hpp"
+#include "managers/LeaderboardManager.hpp"
 #include "DEFINITIONS.h"
 
 struct DifficultyData {
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_MINESWEEPER_H
+#endif //MINESWEEPER_MINESWEEPER_HPP

@@ -2,9 +2,9 @@
 #define MINESWEEPER_GAMESTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "RecordSaveState.h"
-#include "State.h"
-#include "../MineSweeper.h"
+#include "RecordSaveState.hpp"
+#include "State.hpp"
+#include "../MineSweeper.hpp"
 #include "../gui/Background.hpp"
 #include "../gui/Container.hpp"
 #include "../gui/Indicator.hpp"

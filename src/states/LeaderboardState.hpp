@@ -1,10 +1,10 @@
-#ifndef MINESWEEPER_LEADERBOARDSTATE_H
-#define MINESWEEPER_LEADERBOARDSTATE_H
+#ifndef MINESWEEPER_LEADERBOARDSTATE_HPP
+#define MINESWEEPER_LEADERBOARDSTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "State.h"
-#include "MainMenuState.h"
-#include "../MineSweeper.h"
+#include "State.hpp"
+#include "MainMenuState.hpp"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
 
 class LeaderboardState: public State {
@@ -42,4 +42,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_LEADERBOARDSTATE_H
+#endif //MINESWEEPER_LEADERBOARDSTATE_HPP

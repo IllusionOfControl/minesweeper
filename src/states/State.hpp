@@ -1,5 +1,5 @@
-#ifndef MINESWEEPER_STATE_H
-#define MINESWEEPER_STATE_H
+#ifndef MINESWEEPER_STATE_HPP
+#define MINESWEEPER_STATE_HPP
 
 #include <memory>
 
@@ -15,4 +15,4 @@ public:
 
 typedef std::unique_ptr<State> StateRef;
 
-#endif //MINESWEEPER_STATE_H
+#endif //MINESWEEPER_STATE_HPP

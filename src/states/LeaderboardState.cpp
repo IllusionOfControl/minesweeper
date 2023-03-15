@@ -1,4 +1,4 @@
-#include "LeaderboardState.h"
+#include "LeaderboardState.hpp"
 
 
 LeaderboardState::LeaderboardState(GameDataRef data) : _data(data)

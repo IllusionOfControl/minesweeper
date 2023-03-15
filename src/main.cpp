@@ -1,4 +1,4 @@
-#include "MineSweeper.h"
+#include "MineSweeper.hpp"
 
 int main() {
     MineSweeper();

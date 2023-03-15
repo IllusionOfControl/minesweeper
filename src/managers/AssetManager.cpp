@@ -1,4 +1,4 @@
-#include "AssetManager.h"
+#include "AssetManager.hpp"
 #include <iostream>
 
 void AssetManager::LoadTexture(std::string name, std::string fileName)

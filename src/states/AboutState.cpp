@@ -1,4 +1,4 @@
-#include "AboutState.h"
+#include "AboutState.hpp"
 #include "../gui/Button.hpp"
 
 AboutState::AboutState(GameDataRef gameData)

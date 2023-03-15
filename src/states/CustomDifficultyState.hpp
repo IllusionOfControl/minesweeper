@@ -1,13 +1,13 @@
-#ifndef MINESWEEPER_CUSTOMDIFFICULTYSTATE_H
-#define MINESWEEPER_CUSTOMDIFFICULTYSTATE_H
+#ifndef MINESWEEPER_CUSTOMDIFFICULTYSTATE_HPP
+#define MINESWEEPER_CUSTOMDIFFICULTYSTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../MineSweeper.h"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
-#include "State.h"
-#include "GameState.h"
-#include "AboutState.h"
-#include "DifficultyMenuState.h"
+#include "State.hpp"
+#include "GameState.hpp"
+#include "AboutState.hpp"
+#include "DifficultyMenuState.hpp"
 #include "../gui/Container.hpp"
 #include "../gui/Input.hpp"
 
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_CUSTOMDIFFICULTYSTATE_H
+#endif //MINESWEEPER_CUSTOMDIFFICULTYSTATE_HPP

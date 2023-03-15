@@ -1,14 +1,14 @@
-#ifndef MINESWEEPER_MAINMENUSTATE_H
-#define MINESWEEPER_MAINMENUSTATE_H
+#ifndef MINESWEEPER_MAINMENUSTATE_HPP
+#define MINESWEEPER_MAINMENUSTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../MineSweeper.h"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
-#include "State.h"
-#include "GameState.h"
-#include "AboutState.h"
-#include "DifficultyMenuState.h"
-#include "LeaderboardState.h"
+#include "State.hpp"
+#include "GameState.hpp"
+#include "AboutState.hpp"
+#include "DifficultyMenuState.hpp"
+#include "LeaderboardState.hpp"
 #include "../gui/Container.hpp"
 
 
@@ -31,4 +31,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_MAINMENUSTATE_H
+#endif //MINESWEEPER_MAINMENUSTATE_HPP

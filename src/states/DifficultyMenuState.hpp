@@ -1,13 +1,13 @@
-#ifndef MINESWEEPER_DIFFICULTYMENUSTATE_H
-#define MINESWEEPER_DIFFICULTYMENUSTATE_H
+#ifndef MINESWEEPER_DIFFICULTYMENUSTATE_HPP
+#define MINESWEEPER_DIFFICULTYMENUSTATE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../MineSweeper.h"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
-#include "State.h"
-#include "GameState.h"
-#include "AboutState.h"
-#include "CustomDifficultyState.h"
+#include "State.hpp"
+#include "GameState.hpp"
+#include "AboutState.hpp"
+#include "CustomDifficultyState.hpp"
 
 
 class DifficultyMenuState: public State  {

@@ -1,4 +1,4 @@
-#include "LeaderboardManager.h"
+#include "LeaderboardManager.hpp"
 
 #include <iostream>
 

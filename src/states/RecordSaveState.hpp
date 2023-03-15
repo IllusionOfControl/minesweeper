@@ -1,12 +1,12 @@
-#ifndef MINESWEEPER_RECORDSAVESTATE_H
-#define MINESWEEPER_RECORDSAVESTATE_H
+#ifndef MINESWEEPER_RECORDSAVESTATE_HPP
+#define MINESWEEPER_RECORDSAVESTATE_HPP
 
 #include <SFML/Graphics.hpp>
 #include <sstream>
-#include "State.h"
-#include "MainMenuState.h"
-#include "LeaderboardState.h"
-#include "../MineSweeper.h"
+#include "State.hpp"
+#include "MainMenuState.hpp"
+#include "LeaderboardState.hpp"
+#include "../MineSweeper.hpp"
 #include "../DEFINITIONS.h"
 
 class RecordSaveState: public State {
@@ -41,4 +41,4 @@ private:
 };
 
 
-#endif //MINESWEEPER_RECORDSAVESTATE_H
+#endif //MINESWEEPER_RECORDSAVESTATE_HPP

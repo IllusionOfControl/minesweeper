@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "GameState.hpp"
-#include "MainMenuState.h"
+#include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
 
 GameState::GameState(GameDataRef data)
