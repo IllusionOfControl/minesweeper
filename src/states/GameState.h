@@ -5,11 +5,13 @@
 #include "RecordSaveState.h"
 #include "State.h"
 #include "../MineSweeper.h"
+#include "../gui/Container.hpp"
+#include "../gui/Indicator.hpp"
 
 class GameState : public State
 {
 public:
-    GameState(GameDataRef data);
+    explicit GameState(GameDataRef data);
 
     void Init() override;
 
@@ -24,7 +26,6 @@ private:
     void Reset();
     void RevealCell(int x, int y);
     void MarkCell(int x, int y);
-    void UpdateSmile(sf::Texture);
 
     GameDataRef _data;
 
@@ -55,6 +56,10 @@ private:
 
     sf::Clock _gameClock;
     sf::Time _gameTimer;
+
+    Container mGuiContainer;
+    Indicator::Ptr mMinesLeftIndicator;
+    Indicator::Ptr mTimeLeftIndicator;
 };
 
 
