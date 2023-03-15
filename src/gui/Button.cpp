@@ -18,6 +18,11 @@ void Button::setTexture(const sf::Texture& texture) {
     mSprite.setTexture(texture);
 }
 
+void Button::setTextureRect(sf::IntRect rect) {
+    Button::setNormalTextureRect(rect);
+    Button::setSelectedTextureRect(rect);
+}
+
 void Button::setNormalTextureRect(sf::IntRect rect) {
     mNormalTextureRect = rect;
     mSprite.setTextureRect(mNormalTextureRect);

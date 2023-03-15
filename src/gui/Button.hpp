@@ -23,6 +23,8 @@ public:
 
     void setTexture(const sf::Texture& texture);
 
+    void setTextureRect(sf::IntRect rect);
+
     void setNormalTextureRect(sf::IntRect rect);
 
     void setSelectedTextureRect(sf::IntRect rect);
