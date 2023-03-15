@@ -12,27 +12,19 @@
 
 class DifficultyMenuState: public State  {
 public:
-    DifficultyMenuState(GameDataRef data);
+    explicit DifficultyMenuState(GameDataRef data);
 
-    void Init();
+    void Init() override;
 
-    void HandleInput();
-    void Update();
-    void Draw();
+    void HandleInput() override;
+    void Update() override;
+    void Draw() override;
 
 private:
-    GameDataRef _data;
+    GameDataRef mGameData;
 
-    sf::Sprite _background;
-
-    sf::Sprite _easyButton;
-    sf::Sprite _mediumButton;
-    sf::Sprite _hardButton;
-    sf::Sprite _customButton;
-
-    sf::Sprite _mainMenuButton;
-    sf::Sprite _exitButton;
+    sf::Sprite mBackground;
+    Container mGuiContainer;
 };
-
 
 #endif
