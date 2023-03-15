@@ -8,6 +8,8 @@
 #include "GameState.h"
 #include "AboutState.h"
 #include "DifficultyMenuState.h"
+#include "../gui/Container.hpp"
+#include "../gui/Input.hpp"
 
 
 class CustomDifficultyState : public State {
@@ -21,31 +23,17 @@ public:
     void Draw();
 
 private:
-    GameDataRef _data;
+    GameDataRef mGameData;
+
+    Container mContainer;
 
     sf::Sprite _background;
-    sf::Sprite _playButton;
 
-    sf::Sprite _widthLogo;
-    sf::Sprite _heightLogo;
-    sf::Sprite _minesLogo;
+    Input::Ptr mWidthInput;
+    Input::Ptr mHeightInput;
+    Input::Ptr mMinesInput;
 
-    sf::Sprite _widthTextBackground;
-    sf::Sprite _heightTextBackground;
-    sf::Sprite _minesTextBackground;
-
-    sf::Text _widthText;
-    sf::Text _heightText;
-    sf::Text _minesText;
-
-    sf::String _widthString;
-    sf::String _heightString;
-    sf::String _minesString;
-
-    sf::Sprite _mainMenuButton;
-    sf::Sprite _exitButton;
-
-    bool isValidDifficulty;
+    bool isFormValid;
 };
 
 

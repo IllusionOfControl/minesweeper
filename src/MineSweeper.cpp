@@ -17,6 +17,7 @@ void MineSweeper::Run() {
     this->_data->assets.LoadTexture("text_background", "_Resources/res/tiles.png", sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
     this->_data->assets.LoadTexture("smiles_button", "_Resources/res/smiles.png");
     this->_data->assets.LoadTexture(TEXTURE_SECOND_NAME, "_Resources/res/second.png");
+    this->_data->assets.LoadTexture("customDifficultyButtons", "_Resources/res/second_edited.png", sf::IntRect(0, 128, 320, 352));
     this->_data->assets.LoadTexture("state_buttons", "_Resources/res/state_buttons.png");
     this->_data->assets.LoadTexture("mainmenu_buttons", "_Resources/res/mainMenuButtons.png");
     this->_data->assets.LoadTexture("led_background", "_Resources/res/tiles.png", sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
