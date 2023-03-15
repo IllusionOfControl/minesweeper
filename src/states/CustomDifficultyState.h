@@ -14,26 +14,26 @@
 
 class CustomDifficultyState : public State {
 public:
-    CustomDifficultyState(GameDataRef data);
+    explicit CustomDifficultyState(GameDataRef data);
 
-    void Init();
+    void Init() override;
 
-    void HandleInput();
-    void Update();
-    void Draw();
+    void HandleInput() override;
+    void Update() override;
+    void Draw() override;
 
 private:
     GameDataRef mGameData;
 
     Container mContainer;
 
-    sf::Sprite _background;
+    sf::Sprite mBackground;
 
     Input::Ptr mWidthInput;
     Input::Ptr mHeightInput;
     Input::Ptr mMinesInput;
 
-    bool isFormValid;
+    bool mIsFormValid;
 };
 
 

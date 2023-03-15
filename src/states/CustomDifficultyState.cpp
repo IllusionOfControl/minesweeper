@@ -4,23 +4,24 @@
 #include "../gui/Button.hpp"
 
 CustomDifficultyState::CustomDifficultyState(GameDataRef data)
-        : mGameData(data), mWidthInput(std::make_shared<Input>())
+        : mGameData(data)
+        , mWidthInput(std::make_shared<Input>())
         , mHeightInput(std::make_shared<Input>())
         , mMinesInput(std::make_shared<Input>())
-        , isFormValid(false) {
+        , mIsFormValid(false) {
 }
 
 void CustomDifficultyState::Init() {
-    this->mGameData->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+    mGameData->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                                  (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
                                    "Minesweeper",
                                    sf::Style::Titlebar | sf::Style::Close);
-    auto &backgroundTexture = this->mGameData->assets.GetTexture("background");
-    auto windowSize = this->mGameData->window.getSize();
+    auto &backgroundTexture = mGameData->assets.GetTexture("background");
+    auto windowSize = mGameData->window.getSize();
 
     backgroundTexture.setRepeated(true);
-    this->_background.setTexture(backgroundTexture);
-    this->_background.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
+    mBackground.setTexture(backgroundTexture);
+    mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
     //
 
@@ -105,11 +106,11 @@ void CustomDifficultyState::Init() {
     playButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 6, SQUARE_SIZE * 5, SQUARE_SIZE});
     playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
     playButton->setCallback([&]() {
-        if (isFormValid)
+        if (mIsFormValid)
             mGameData->manager.AddState(StateRef(new GameState(mGameData)), true);
     });
 
-    auto &textBackground = this->mGameData->assets.GetTexture("text_background");
+    auto &textBackground = mGameData->assets.GetTexture("text_background");
     textBackground.setRepeated(true);
 
     mContainer.pack(mainMenuButton);
@@ -123,7 +124,7 @@ void CustomDifficultyState::Init() {
 void CustomDifficultyState::HandleInput() {
     sf::Event event;
 
-    while (this->mGameData->window.pollEvent(event)) {
+    while (mGameData->window.pollEvent(event)) {
         mContainer.handleEvent(event);
     }
 }
@@ -139,19 +140,19 @@ void CustomDifficultyState::Update() {
             mGameData->difficulty.field_height = height;
             mGameData->difficulty.bomb_count = mines;
 
-            isFormValid = true;
+            mIsFormValid = true;
         } else {
             mMinesInput->setInvalid();
         }
     } else {
-        isFormValid = false;
+        mIsFormValid = false;
     }
 }
 
 void CustomDifficultyState::Draw() {
     mGameData->window.clear(sf::Color::Red);
 
-    mGameData->window.draw(_background);
+    mGameData->window.draw(mBackground);
     mGameData->window.draw(mContainer);
 
     mGameData->window.display();

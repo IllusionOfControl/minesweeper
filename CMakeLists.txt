@@ -17,7 +17,7 @@ set(SOURCE_FILES ${SOURCE_FILES} src/states/CustomDifficultyState.cpp src/states
 set(SOURCE_FILES ${SOURCE_FILES} src/states/LeaderboardState.cpp src/states/LeaderboardState.h)
 set(SOURCE_FILES ${SOURCE_FILES} src/states/RecordSaveState.cpp src/states/RecordSaveState.h)
 set(SOURCE_FILES ${SOURCE_FILES} src/managers/LeaderboardManager.cpp src/managers/LeaderboardManager.h)
-set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp src/DEFINITIONS.h src/gui/Component.cpp src/gui/Component.hpp src/gui/Button.cpp src/gui/Button.hpp src/gui/Container.cpp src/gui/Container.hpp)
+set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp src/DEFINITIONS.h src/gui/Component.cpp src/gui/Component.hpp src/gui/Button.cpp src/gui/Button.hpp src/gui/Container.cpp src/gui/Container.hpp src/gui/Input.cpp src/gui/Input.hpp)
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 add_executable(minesweeper ${SOURCE_FILES})
 
