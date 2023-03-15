@@ -7,7 +7,7 @@ Container::Container()
         : mChildren() {
 }
 
-void Container::pack(Component::Ptr component) {
+void Container::pack(const Component::Ptr& component) {
     mChildren.push_back(component);
 }
 

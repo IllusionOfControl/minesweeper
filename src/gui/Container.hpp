@@ -13,7 +13,7 @@ public:
 public:
     Container();
 
-    void pack(Component::Ptr component);
+    void pack(const Component::Ptr& component);
 
     virtual void handleEvent(const sf::Event &event);
 
@@ -22,7 +22,7 @@ private:
 
 private:
     std::vector<Component::Ptr> mChildren;
-    int mSelectedChild;
+    int mSelectedChild{};
 };
 
 #endif //MINESWEEPER_CONTAINER_HPP

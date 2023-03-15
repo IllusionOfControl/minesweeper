@@ -21,28 +21,27 @@ public:
 
     void setCallback(Callback callback);
 
-    void setTexture(sf::Texture texture);
+    void setTexture(const sf::Texture& texture);
 
     void setNormalTextureRect(sf::IntRect rect);
 
     void setSelectedTextureRect(sf::IntRect rect);
 
-    virtual void select();
+    void select() override;
 
-    virtual void deselect();
+    void deselect() override;
 
     virtual void activate();
 
-    virtual void handleEvent(const sf::Event &event);
+    void handleEvent(const sf::Event &event) override;
 
 
 private:
-    virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 
 private:
     Callback mCallback;
-    sf::Texture mTexture;
     sf::IntRect mNormalTextureRect;
     sf::IntRect mSelectedTextureRect;
     sf::Sprite mSprite;

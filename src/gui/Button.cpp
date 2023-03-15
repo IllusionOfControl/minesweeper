@@ -5,7 +5,6 @@
 
 Button::Button()
         : mCallback()
-        , mTexture()
         , mNormalTextureRect()
         , mSelectedTextureRect()
         , mSprite() {
@@ -15,9 +14,8 @@ void Button::setCallback(Callback callback) {
     mCallback = std::move(callback);
 }
 
-void Button::setTexture(sf::Texture texture) {
-    mTexture = texture;
-    mSprite.setTexture(mTexture);
+void Button::setTexture(const sf::Texture& texture) {
+    mSprite.setTexture(texture);
 }
 
 void Button::setNormalTextureRect(sf::IntRect rect) {
