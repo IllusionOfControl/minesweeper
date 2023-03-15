@@ -4,62 +4,62 @@
 #include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
 
-GameState::GameState(GameDataRef data)
-        : context(data), mGuiContainer(), mGameState(GameState::State::GameFirstMove) {
+GameState::GameState(GameDataRef context)
+        : mContext(context), mGuiContainer(), mGameState(GameState::State::GameFirstMove) {
 
 }
 
 void GameState::Init() {
-    auto difficulty = context->difficulty;
-    context->window.create(
+    auto difficulty = mContext->difficulty;
+    mContext->window.create(
             sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                           (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
             "Minesweeper",
             sf::Style::Titlebar | sf::Style::Close);
-    auto windowSize = context->window.getSize();
+    auto windowSize = mContext->window.getSize();
 
     auto background = std::make_shared<Background>();
-    background->setTexture(context->assets.GetTexture("background"));
+    background->setTexture(mContext->assets.GetTexture("background"));
     background->setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
     auto mainMenuButton = std::make_shared<Button>();
-    mainMenuButton->setTexture(context->assets.GetTexture("state_buttons"));
+    mainMenuButton->setTexture(mContext->assets.GetTexture("state_buttons"));
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
     mainMenuButton->setCallback([&]() {
-        context->manager.AddState(StateRef(new MainMenuState(context)), true);
+        mContext->manager.AddState(StateRef(new MainMenuState(mContext)), true);
     });
 
     auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(context->assets.GetTexture("state_buttons"));
+    exitButton->setTexture(mContext->assets.GetTexture("state_buttons"));
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
     exitButton->setCallback([&]() {
-        context->window.close();
+        mContext->window.close();
     });
 
     mMinesLeftIndicator = std::make_shared<Indicator>();
-    mMinesLeftIndicator->setTexture(context->assets.GetTexture("led_background"));
+    mMinesLeftIndicator->setTexture(mContext->assets.GetTexture("led_background"));
     mMinesLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mMinesLeftIndicator->setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    mMinesLeftIndicator->setFont(context->assets.GetFont("default_font"));
+    mMinesLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
 
     mTimeLeftIndicator = std::make_shared<Indicator>();
-    mTimeLeftIndicator->setTexture(context->assets.GetTexture("led_background"));
+    mTimeLeftIndicator->setTexture(mContext->assets.GetTexture("led_background"));
     mTimeLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mTimeLeftIndicator->setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE,
                                     (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    mTimeLeftIndicator->setFont(context->assets.GetFont("default_font"));
+    mTimeLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
 
-    auto &fieldTexture = context->assets.GetTexture("tile_texture");
+    auto &fieldTexture = mContext->assets.GetTexture("tile_texture");
     fieldTexture.setRepeated(true);
     mGridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
     mGridSprite.setTextureRect(TILE_INT_RECT(17));
 
     mSmileButton = std::make_shared<Button>();
-    mSmileButton->setTexture(context->assets.GetTexture("smiles_button"));
+    mSmileButton->setTexture(mContext->assets.GetTexture("smiles_button"));
     mSmileButton->setPosition(
             (GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE,
             (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
@@ -80,16 +80,16 @@ void GameState::Init() {
 void GameState::HandleInput() {
     sf::Event event;
 
-    while (context->window.pollEvent(event)) {
+    while (mContext->window.pollEvent(event)) {
         mGuiContainer.handleEvent(event);
 
         auto fieldRect = sf::IntRect(GAME_BORDER_LEFT * SQUARE_SIZE,
                                      GAME_BORDER_TOP * SQUARE_SIZE,
-                                     context->difficulty.field_width * SQUARE_SIZE,
-                                     context->difficulty.field_height * SQUARE_SIZE);
+                                     mContext->difficulty.field_width * SQUARE_SIZE,
+                                     mContext->difficulty.field_height * SQUARE_SIZE);
         switch (event.type) {
             case sf::Event::Closed:
-                context->window.close();
+                mContext->window.close();
                 break;
             case sf::Event::MouseMoved: {
 
@@ -131,7 +131,7 @@ void GameState::HandleInput() {
                 }
             }
             case sf::Event::MouseButtonPressed: {
-                auto mousePos = sf::Mouse::getPosition(context->window);
+                auto mousePos = sf::Mouse::getPosition(mContext->window);
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     // если игра - PLAYING, то находим нажатую ячейку
                     // делаем ячейчку выбранной
@@ -141,7 +141,7 @@ void GameState::HandleInput() {
                             int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
                             int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
-                            mGridArray.at(row * context->difficulty.field_width + col) |= CELL_SELECTED;
+                            mGridArray.at(row * mContext->difficulty.field_width + col) |= CELL_SELECTED;
                             mSmileReaction = GameState::SmileReaction::SmileReveal;
                             mNeedToUpdate = true;
                         }
@@ -202,7 +202,7 @@ void GameState::Update() {
 
 void GameState::reset() {
     mGameState = GameState::State::GameFirstMove;
-    mMinesCount = context->difficulty.bomb_count;
+    mMinesCount = mContext->difficulty.bomb_count;
     mNeedToUpdate = false;
     mGameTime = 0;
     mSmileReaction = GameState::SmileReaction::SmileUsual;
@@ -215,27 +215,27 @@ void GameState::reset() {
 
 
 void GameState::Draw() {
-    context->window.clear(sf::Color::Red);
+    mContext->window.clear(sf::Color::Red);
 
-    context->window.draw(mGuiContainer);
+    mContext->window.draw(mGuiContainer);
 
     for (auto cell: mGridCells) {
-        context->window.draw(cell);
+        mContext->window.draw(cell);
     }
 
-    context->window.display();
+    mContext->window.display();
 }
 
 void GameState::initGridCells() {
     mGridCells.clear();
-    auto difficulty = context->difficulty;
+    auto difficulty = mContext->difficulty;
 
     int cellCount = difficulty.field_height * difficulty.field_width;
     for (int i = 0; i < cellCount; i++) {
         int cell_y = std::ceil(i / difficulty.field_width);
         int cell_x = i % difficulty.field_width;
         sf::Sprite cell;
-        cell.setTexture(context->assets.GetTexture("tile_texture"));
+        cell.setTexture(mContext->assets.GetTexture("tile_texture"));
         cell.setTextureRect(TILE_INT_RECT(11));
         auto position = sf::Vector2f((GAME_BORDER_LEFT + cell_x) * SQUARE_SIZE,
                                      (GAME_BORDER_TOP + cell_y) * SQUARE_SIZE);
@@ -249,7 +249,7 @@ void GameState::initGridArray(int x, int y) {
     mGridArray.clear();
     mCellsRevealed = 0;
 
-    auto difficulty = context->difficulty;
+    auto difficulty = mContext->difficulty;
 
     int cellCount = difficulty.field_height * difficulty.field_width;
     int firstMoveCell = y * difficulty.field_width + x;
@@ -257,7 +257,7 @@ void GameState::initGridArray(int x, int y) {
         mGridArray.push_back(0);
     }
 
-    for (int i = 0; i < context->difficulty.bomb_count; i++) {
+    for (int i = 0; i < mContext->difficulty.bomb_count; i++) {
         int randCol = rand() % (difficulty.field_width);
         int randRow = rand() % (difficulty.field_height);
         int cellNum = randRow * difficulty.field_width + randCol;
@@ -280,21 +280,21 @@ void GameState::initGridArray(int x, int y) {
 }
 
 void GameState::revealCell(int x, int y) {
-    auto difficulty = context->difficulty;
-    if (mGridArray.at(y * context->difficulty.field_width + x) & CELL_FLAG) {
+    auto difficulty = mContext->difficulty;
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) {
         return;
     }
-    if (mGridArray.at(y * context->difficulty.field_width + x) & CELL_REVEALED) {
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_REVEALED) {
         return;
     }
-    if (mGridArray.at(y * context->difficulty.field_width + x) == CELL_BOMB) {
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) == CELL_BOMB) {
         mGameState = GameState::State::GameLose;
-        mGridArray.at(y * context->difficulty.field_width + x) = CELL_BOMB_DETONATED;
+        mGridArray.at(y * mContext->difficulty.field_width + x) = CELL_BOMB_DETONATED;
         return;
     }
 
-    mGridArray.at(y * context->difficulty.field_width + x) &= 0xF;
-    mGridArray.at(y * context->difficulty.field_width + x) |= CELL_REVEALED;
+    mGridArray.at(y * mContext->difficulty.field_width + x) &= 0xF;
+    mGridArray.at(y * mContext->difficulty.field_width + x) |= CELL_REVEALED;
     mCellsRevealed++;
 
     if ((mGridArray.at(y * difficulty.field_width + x) & 0xF) == CELL_EMPTY) {
@@ -314,30 +314,30 @@ void GameState::revealCell(int x, int y) {
 }
 
 void GameState::markCell(int x, int y) {
-    if (mGridArray.at(y * context->difficulty.field_width + x) & CELL_REVEALED)
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_REVEALED)
         return;
 
-    if (mGridArray.at(y * context->difficulty.field_width + x) & CELL_FLAG) {
-        mGridArray.at(y * context->difficulty.field_width + x) ^= CELL_FLAG;
-        mGridArray.at(y * context->difficulty.field_width + x) ^= CELL_QUESTION;
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) {
+        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_FLAG;
+        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_QUESTION;
         mMinesCount++;
         return;
     }
 
-    if (!(mGridArray.at(y * context->difficulty.field_width + x) & CELL_FLAG) &&
-        !(mGridArray.at(y * context->difficulty.field_width + x) & CELL_QUESTION)) {
-        mGridArray.at(y * context->difficulty.field_width + x) |= CELL_FLAG;
+    if (!(mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) &&
+        !(mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_QUESTION)) {
+        mGridArray.at(y * mContext->difficulty.field_width + x) |= CELL_FLAG;
         mMinesCount--;
         return;
     }
 
-    if (mGridArray.at(y * context->difficulty.field_width + x) & CELL_QUESTION) {
-        mGridArray.at(y * context->difficulty.field_width + x) ^= CELL_QUESTION;
+    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_QUESTION) {
+        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_QUESTION;
     }
 }
 
 void GameState::updateGridCellsOnLose() {
-    int fieldSize = context->difficulty.field_height * context->difficulty.field_width;
+    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
     for (int i = 0; i < fieldSize; i++) {
         if (mGridArray.at(i) & CELL_FLAG && ((mGridArray.at(i) & 0xF) != CELL_BOMB)) {
             mGridCells.at(i).setTextureRect(TILE_INT_RECT(14));
@@ -355,7 +355,7 @@ void GameState::updateGridCellsOnLose() {
 }
 
 void GameState::updateGridCellsOnWin() {
-    int fieldSize = context->difficulty.field_height * context->difficulty.field_width;
+    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
     for (int i = 0; i < fieldSize; i++) {
         if (mGridArray.at(i) == CELL_BOMB && (mGridArray.at(i) & CELL_FLAG)) {
             mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
@@ -366,12 +366,12 @@ void GameState::updateGridCellsOnWin() {
             mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
         }
     }
-    if (context->difficulty.difficulty_type != GAME_CUSTOM) {
-        context->lastResults.time = mGameTime > 999 ? 999 : mGameTime;
-        context->lastResults.name = "";
-        context->lastResults.game_type = context->difficulty.difficulty_type;
-        if (context->leaderboard.CheckResult(context->lastResults))
-            context->manager.AddState(StateRef(new RecordSaveState(context)), true);
+    if (mContext->difficulty.difficulty_type != GAME_CUSTOM) {
+        mContext->lastResults.time = mGameTime > 999 ? 999 : mGameTime;
+        mContext->lastResults.name = "";
+        mContext->lastResults.game_type = mContext->difficulty.difficulty_type;
+        if (mContext->leaderboard.CheckResult(mContext->lastResults))
+            mContext->manager.AddState(StateRef(new RecordSaveState(mContext)), true);
     }
 }
 
@@ -386,7 +386,7 @@ void GameState::updateTimer() {
 }
 
 void GameState::checkOnWin() {
-    auto difficulty = context->difficulty;
+    auto difficulty = mContext->difficulty;
     int cellsLeft = difficulty.field_width * difficulty.field_height - mCellsRevealed;
     if (cellsLeft == difficulty.bomb_count) {
         mGameState = GameState::State::GameWon;
@@ -395,7 +395,7 @@ void GameState::checkOnWin() {
 }
 
 void GameState::updateGridCells() {
-    int fieldSize = context->difficulty.field_height * context->difficulty.field_width;
+    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
     for (int i = 0; i < fieldSize; i++) {
         if (mGridArray.at(i) & CELL_REVEALED) {
             int cellValue = mGridArray.at(i) & 0xF;
@@ -415,13 +415,13 @@ void GameState::updateGridCells() {
 }
 
 void GameState::selectCellsArea(int col, int row) {
-    auto difficulty = context->difficulty;
+    auto difficulty = mContext->difficulty;
 
     for (int i = row ? row - 1 : row;
          i <= (row + 1 < difficulty.field_height ? row + 1 : difficulty.field_height - 1); i++) {
         for (int j = col ? col - 1 : col;
              j <= (col + 1 < difficulty.field_width ? col + 1 : difficulty.field_width - 1); j++) {
-            int cell_num = i * context->difficulty.field_width + j;
+            int cell_num = i * mContext->difficulty.field_width + j;
             mGridArray.at(cell_num) |= CELL_SELECTED;
         }
     }

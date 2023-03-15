@@ -12,7 +12,7 @@
 
 class DifficultyMenuState: public State  {
 public:
-    explicit DifficultyMenuState(GameDataRef data);
+    explicit DifficultyMenuState(GameDataRef context);
 
     void Init() override;
 
@@ -21,7 +21,7 @@ public:
     void Draw() override;
 
 private:
-    GameDataRef mGameData;
+    GameDataRef mContext;
 
     sf::Sprite mBackground;
     Container mGuiContainer;

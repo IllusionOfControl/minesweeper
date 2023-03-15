@@ -36,7 +36,7 @@ public:
     };
 
 public:
-    explicit GameState(GameDataRef data);
+    explicit GameState(GameDataRef context);
 
     void Init() override;
 
@@ -66,7 +66,7 @@ private:
     void selectCellsArea(int col, int row);
 
 private:
-    GameDataRef context;
+    GameDataRef mContext;
 
     sf::Sprite mGridSprite;
 

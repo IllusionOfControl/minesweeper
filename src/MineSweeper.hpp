@@ -14,7 +14,7 @@ struct DifficultyData {
     int difficulty_type;
 };
 
-struct GameData
+struct Context
 {
     StateManager manager;
     sf::RenderWindow window;
@@ -24,14 +24,14 @@ struct GameData
     struct Record lastResults;
 };
 
-typedef std::shared_ptr<GameData> GameDataRef;
+typedef std::shared_ptr<Context> GameDataRef;
 
 class MineSweeper {
 public:
     MineSweeper();
 
 private:
-    GameDataRef _data = std::make_shared<GameData>();
+    GameDataRef _data = std::make_shared<Context>();
 
     void Run();
 };

@@ -14,7 +14,7 @@
 
 class CustomDifficultyState : public State {
 public:
-    explicit CustomDifficultyState(GameDataRef data);
+    explicit CustomDifficultyState(GameDataRef context);
 
     void Init() override;
 
@@ -23,7 +23,7 @@ public:
     void Draw() override;
 
 private:
-    GameDataRef mGameData;
+    GameDataRef mContext;
 
     Container mContainer;
 

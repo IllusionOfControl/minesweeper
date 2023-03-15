@@ -1,32 +1,31 @@
 #include "MainMenuState.hpp"
-#include "../gui/Button.hpp"
 
-MainMenuState::MainMenuState(GameDataRef gameData)
-        : mGameData(gameData)
+MainMenuState::MainMenuState(GameDataRef context)
+        : mContext(context)
         , mGuiContainer() {
 
 }
 
 void MainMenuState::Init() {
-    mGameData->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+    mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                        (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                             "Minesweeper",
+                            "Minesweeper",
                          sf::Style::Titlebar | sf::Style::Close);
-    auto &backgroundTexture = mGameData->assets.GetTexture("background");
-    auto windowSize = mGameData->window.getSize();
+    auto &backgroundTexture = mContext->assets.GetTexture("background");
+    auto windowSize = mContext->window.getSize();
 
     backgroundTexture.setRepeated(true);
     mBackground.setTexture(backgroundTexture);
     mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    auto &buttonTextures = mGameData->assets.GetTexture("mainmenu_buttons");
+    auto &buttonTextures = mContext->assets.GetTexture("mainmenu_buttons");
 
     auto playButton = std::make_shared<Button>();
     playButton->setTexture(buttonTextures);
     playButton->setNormalTextureRect(BUTTON_INT_RECT(0, 0));
     playButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 0));
     playButton->setCallback([&]() {
-        mGameData->manager.AddState(StateRef(new DifficultyMenuState(mGameData)), true);
+        mContext->manager.AddState(StateRef(new DifficultyMenuState(mContext)), true);
     });
     playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
 
@@ -35,7 +34,7 @@ void MainMenuState::Init() {
     aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
     aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
     aboutButton->setCallback([&]() {
-        mGameData->manager.AddState(StateRef(new AboutState(mGameData)), true);
+        mContext->manager.AddState(StateRef(new AboutState(mContext)), true);
     });
     aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
 
@@ -44,7 +43,7 @@ void MainMenuState::Init() {
     leaderboardsButton->setNormalTextureRect(BUTTON_INT_RECT(0, 3));
     leaderboardsButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 3));
     leaderboardsButton->setCallback([&]() {
-        mGameData->manager.AddState(StateRef(new LeaderboardState(mGameData)), true);
+        mContext->manager.AddState(StateRef(new LeaderboardState(mContext)), true);
     });
     leaderboardsButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
 
@@ -53,12 +52,12 @@ void MainMenuState::Init() {
     exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
     exitButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 2));
     exitButton->setCallback([&]() {
-        mGameData->window.close();
+        mContext->window.close();
     });
     exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);
 
     mLogo.setPosition(32, 0);
-    mLogo.setTexture(mGameData->assets.GetTexture("logo"));
+    mLogo.setTexture(mContext->assets.GetTexture("logo"));
 
     mGuiContainer.pack(playButton);
     mGuiContainer.pack(aboutButton);
@@ -69,7 +68,7 @@ void MainMenuState::Init() {
 void MainMenuState::HandleInput() {
     sf::Event event;
 
-    while (mGameData->window.pollEvent(event)) {
+    while (mContext->window.pollEvent(event)) {
         mGuiContainer.handleEvent(event);
     }
 }
@@ -79,11 +78,11 @@ void MainMenuState::Update() {
 }
 
 void MainMenuState::Draw() {
-    mGameData->window.clear(sf::Color::Red);
+    mContext->window.clear(sf::Color::Red);
 
-    mGameData->window.draw(mBackground);
-    mGameData->window.draw(mGuiContainer);
-    mGameData->window.draw(mLogo);
+    mContext->window.draw(mBackground);
+    mContext->window.draw(mGuiContainer);
+    mContext->window.draw(mLogo);
 
-    mGameData->window.display();
+    mContext->window.display();
 }

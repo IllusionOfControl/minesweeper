@@ -10,7 +10,7 @@
 
 class AboutState : public State {
 public:
-    AboutState(GameDataRef data);
+    AboutState(GameDataRef context);
 
     void Init();
 
@@ -21,7 +21,7 @@ public:
     void Draw();
 
 private:
-    GameDataRef mGameData;
+    GameDataRef mContext;
 
     sf::Sprite mBackground;
     sf::Sprite mLogo;
