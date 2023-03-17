@@ -4,6 +4,11 @@
 #include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
 
+/*
+ * There was an idea to divide the code into Game Field (the whole game logic of the field),
+ *  but everything is confused here :(
+ */
+
 GameState::GameState(GameDataRef context)
         : mContext(context), mGuiContainer(), mGameState(GameState::State::GameFirstMove) {
 
