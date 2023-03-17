@@ -58,7 +58,8 @@ void GameState::Init() {
     mGridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
     mGridSprite.setTextureRect(TILE_INT_RECT(17));
 
-    mSmileButton = std::make_shared<Button>();
+    bool isSmileSmall = difficulty.field_width % 2 ? true : false;
+    mSmileButton = std::make_shared<SmileButton>(isSmileSmall);
     mSmileButton->setTexture(mContext->assets.GetTexture("smiles_button"));
     mSmileButton->setPosition(
             (GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE,
@@ -66,7 +67,7 @@ void GameState::Init() {
     mSmileButton->setCallback([this]() {
         reset();
     });
-    mIsSmileSmall = difficulty.field_width % 2 ? true : false;
+
     reset();
 
     mGuiContainer.pack(background);
@@ -112,7 +113,7 @@ void GameState::HandleInput() {
                             }
 
                             revealCell(col, row);
-                            mSmileReaction = GameState::SmileReaction::SmileUsual;
+                            mSmileButton->setReaction(SmileButton::SmileUsual);
                             mNeedToUpdate = true;
                         }
                     }
@@ -142,7 +143,7 @@ void GameState::HandleInput() {
                             int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
 
                             mGridArray.at(row * mContext->difficulty.field_width + col) |= CELL_SELECTED;
-                            mSmileReaction = GameState::SmileReaction::SmileReveal;
+                            mSmileButton->setReaction(SmileButton::SmileReveal);
                             mNeedToUpdate = true;
                         }
                     }
@@ -157,11 +158,11 @@ void GameState::HandleInput() {
                     }
                 } else {
                     if (mGameState == GameState::State::GameLose) {
-                        mSmileReaction = GameState::SmileReaction::SmileLose;
+                        mSmileButton->setReaction(SmileButton::SmileLose);
                     } else if (mGameState == GameState::State::GameWon) {
-                        mSmileReaction = GameState::SmileReaction::SmileWin;
+                        mSmileButton->setReaction(SmileButton::SmileWin);
                     } else {
-                        mSmileReaction = GameState::SmileReaction::SmileUsual;
+                        mSmileButton->setReaction(SmileButton::SmileUsual);
                     }
                 }
                 mNeedToUpdate = true;
@@ -194,10 +195,6 @@ void GameState::Update() {
         updateTimer();
         checkOnWin();
     }
-
-    if (mIsSmileSmall)
-        mSmileButton->setTextureRect(SMILE_SMALL_INT_RECT(mSmileReaction));
-    else mSmileButton->setTextureRect(SMILE_LARGE_INT_RECT(mSmileReaction));
 }
 
 void GameState::reset() {
@@ -205,7 +202,7 @@ void GameState::reset() {
     mMinesCount = mContext->difficulty.bomb_count;
     mNeedToUpdate = false;
     mGameTime = 0;
-    mSmileReaction = GameState::SmileReaction::SmileUsual;
+    mSmileButton->setReaction(SmileButton::SmileUsual);
 
     mMinesLeftIndicator->setString(std::to_string(mMinesCount));
     mTimeLeftIndicator->setString(std::to_string(mGameTime));
@@ -390,7 +387,7 @@ void GameState::checkOnWin() {
     int cellsLeft = difficulty.field_width * difficulty.field_height - mCellsRevealed;
     if (cellsLeft == difficulty.bomb_count) {
         mGameState = GameState::State::GameWon;
-        mSmileReaction = GameState::SmileReaction::SmileWin;
+        mSmileButton->setReaction(SmileButton::SmileWin);
     }
 }
 

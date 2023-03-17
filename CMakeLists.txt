@@ -24,7 +24,7 @@ set(SOURCE_FILES ${SOURCE_FILES} src/gui/Input.cpp src/gui/Input.hpp)
 set(SOURCE_FILES ${SOURCE_FILES} src/gui/Background.cpp src/gui/Background.hpp)
 set(SOURCE_FILES ${SOURCE_FILES} src/gui/Indicator.cpp src/gui/Indicator.hpp)
 #set(SOURCE_FILES ${SOURCE_FILES} src/gui/GameField.cpp src/gui/GameField.hpp)
-set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp src/DEFINITIONS.h)
+set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp src/DEFINITIONS.h src/gui/SmileButton.cpp src/gui/SmileButton.hpp)
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 add_executable(minesweeper ${SOURCE_FILES})
 

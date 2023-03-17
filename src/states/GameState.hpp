@@ -9,6 +9,7 @@
 #include "../gui/Container.hpp"
 #include "../gui/Indicator.hpp"
 #include "../gui/Button.hpp"
+#include "../gui/SmileButton.hpp"
 
 class GameState : public State {
 public:
@@ -17,13 +18,6 @@ public:
         GamePlaying,
         GameWon,
         GameLose
-    };
-    enum SmileReaction {
-        SmileUsual,
-        SmileReveal,
-        SmileClick,
-        SmileWin,
-        SmileLose,
     };
     enum CellState {
         CellEmpty,
@@ -73,7 +67,6 @@ private:
     std::vector<sf::Sprite> mGridCells;
     std::vector<int> mGridArray;
 
-    bool mIsSmileSmall;
     State mGameState;
 
     bool mNeedToUpdate;
@@ -81,7 +74,6 @@ private:
     int mCellsRevealed;
     int mMinesCount;
     int mGameTime;
-    int mSmileReaction;
 
     sf::Clock mGameClock;   // ??
     sf::Time mGameTimer;
@@ -89,7 +81,7 @@ private:
     Container mGuiContainer;
     Indicator::Ptr mMinesLeftIndicator;
     Indicator::Ptr mTimeLeftIndicator;
-    Button::Ptr mSmileButton;
+    SmileButton::Ptr mSmileButton;
 };
 
 #endif //MINESWEEPER_GAMESTATE_HPP
