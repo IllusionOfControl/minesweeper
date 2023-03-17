@@ -8,7 +8,6 @@
 #include "GameState.hpp"
 #include "AboutState.hpp"
 #include "DifficultyMenuState.hpp"
-#include "LeaderboardState.hpp"
 #include "../gui/Button.hpp"
 #include "../gui/Background.hpp"
 #include "../gui/Container.hpp"

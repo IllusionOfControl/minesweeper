@@ -38,15 +38,6 @@ void MainMenuState::Init() {
     });
     aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
 
-    auto leaderboardsButton = std::make_shared<Button>();
-    leaderboardsButton->setTexture(buttonTextures);
-    leaderboardsButton->setNormalTextureRect(BUTTON_INT_RECT(0, 3));
-    leaderboardsButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 3));
-    leaderboardsButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new LeaderboardState(mContext)), true);
-    });
-    leaderboardsButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
-
     auto exitButton = std::make_shared<Button>();
     exitButton->setTexture(buttonTextures);
     exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
@@ -61,7 +52,6 @@ void MainMenuState::Init() {
 
     mGuiContainer.pack(playButton);
     mGuiContainer.pack(aboutButton);
-    mGuiContainer.pack(leaderboardsButton);
     mGuiContainer.pack(exitButton);
 }
 

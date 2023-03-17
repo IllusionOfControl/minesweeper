@@ -4,7 +4,6 @@
 #include <memory>
 #include "managers/AssetManager.hpp"
 #include "managers/StateManager.hpp"
-#include "managers/LeaderboardManager.hpp"
 #include "DEFINITIONS.h"
 
 struct DifficultyData {
@@ -20,8 +19,6 @@ struct Context
     sf::RenderWindow window;
     AssetManager assets;
     DifficultyData difficulty;
-    LeaderboardManager leaderboard;
-    struct Record lastResults;
 };
 
 typedef std::shared_ptr<Context> GameDataRef;

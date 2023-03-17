@@ -35,7 +35,7 @@ void GameState::Init() {
     exitButton->setTexture(mContext->assets.GetTexture("state_buttons"));
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
-    exitButton->setPosition((difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
+    exitButton->setPosition((float)(difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
     exitButton->setCallback([&]() {
         mContext->window.close();
     });
@@ -362,13 +362,6 @@ void GameState::updateGridCellsOnWin() {
         } else if (mGridArray.at(i) == CELL_BOMB_DETONATED) {
             mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
         }
-    }
-    if (mContext->difficulty.difficulty_type != GAME_CUSTOM) {
-        mContext->lastResults.time = mGameTime > 999 ? 999 : mGameTime;
-        mContext->lastResults.name = "";
-        mContext->lastResults.game_type = mContext->difficulty.difficulty_type;
-        if (mContext->leaderboard.CheckResult(mContext->lastResults))
-            mContext->manager.AddState(StateRef(new RecordSaveState(mContext)), true);
     }
 }
 
