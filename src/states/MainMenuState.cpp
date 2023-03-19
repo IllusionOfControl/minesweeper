@@ -6,26 +6,26 @@ MainMenuState::MainMenuState(GameDataRef context)
 
 }
 
-void MainMenuState::Init() {
+void MainMenuState::init() {
     mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                        (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
                             "Minesweeper",
                          sf::Style::Titlebar | sf::Style::Close);
-    auto &backgroundTexture = mContext->assets.GetTexture("background");
+    auto &backgroundTexture = mContext->assets.getTexture("background");
     auto windowSize = mContext->window.getSize();
 
     backgroundTexture.setRepeated(true);
     mBackground.setTexture(backgroundTexture);
     mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    auto &buttonTextures = mContext->assets.GetTexture("mainmenu_buttons");
+    auto &buttonTextures = mContext->assets.getTexture("mainmenu_buttons");
 
     auto playButton = std::make_shared<Button>();
     playButton->setTexture(buttonTextures);
     playButton->setNormalTextureRect(BUTTON_INT_RECT(0, 0));
     playButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 0));
     playButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new DifficultyMenuState(mContext)), true);
+        mContext->manager.addState(StateRef(new DifficultyMenuState(mContext)), true);
     });
     playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
 
@@ -34,7 +34,7 @@ void MainMenuState::Init() {
     aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
     aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
     aboutButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new AboutState(mContext)), true);
+        mContext->manager.addState(StateRef(new AboutState(mContext)), true);
     });
     aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
 
@@ -48,14 +48,14 @@ void MainMenuState::Init() {
     exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);
 
     mLogo.setPosition(32, 0);
-    mLogo.setTexture(mContext->assets.GetTexture("logo"));
+    mLogo.setTexture(mContext->assets.getTexture("logo"));
 
     mGuiContainer.pack(playButton);
     mGuiContainer.pack(aboutButton);
     mGuiContainer.pack(exitButton);
 }
 
-void MainMenuState::HandleInput() {
+void MainMenuState::handleInput() {
     sf::Event event;
 
     while (mContext->window.pollEvent(event)) {
@@ -63,11 +63,11 @@ void MainMenuState::HandleInput() {
     }
 }
 
-void MainMenuState::Update() {
+void MainMenuState::update() {
 
 }
 
-void MainMenuState::Draw() {
+void MainMenuState::draw() {
     mContext->window.clear(sf::Color::Red);
 
     mContext->window.draw(mBackground);

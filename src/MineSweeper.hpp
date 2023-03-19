@@ -30,7 +30,7 @@ public:
 private:
     GameDataRef _data = std::make_shared<Context>();
 
-    void Run();
+    void run();
 };
 
 

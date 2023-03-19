@@ -1,31 +1,31 @@
 #include "AssetManager.hpp"
 #include <iostream>
 
-void AssetManager::LoadTexture(std::string name, std::string fileName)
+void AssetManager::loadTexture(std::string name, std::string fileName)
 {
     sf::Texture tex;
 
     if (tex.loadFromFile(fileName))
     {
-        this->_textures[name] = tex;
+        this->mTextures[name] = tex;
     } else {
         std::cout << "Unable to load texture on the path " + fileName << std::endl;
     }
 }
 
-void AssetManager::LoadTexture(std::string name, std::string fileName, sf::IntRect area)
+void AssetManager::loadTexture(std::string name, std::string fileName, sf::IntRect area)
 {
     sf::Texture tex;
 
     if (tex.loadFromFile(fileName, area))
     {
-        this->_textures[name] = tex;
+        this->mTextures[name] = tex;
     }
 }
 
-sf::Texture &AssetManager::GetTexture(std::string name)
+sf::Texture &AssetManager::getTexture(std::string name)
 {
-    return this->_textures.at(name);
+    return this->mTextures.at(name);
 }
 
 void AssetManager::LoadFont(std::string name, std::string fileName)
@@ -34,11 +34,11 @@ void AssetManager::LoadFont(std::string name, std::string fileName)
 
     if (font.loadFromFile(fileName))
     {
-        this->_fonts[name] = font;
+        this->mFonts[name] = font;
     }
 }
 
 sf::Font &AssetManager::GetFont(std::string name)
 {
-    return this->_fonts.at(name);
+    return this->mFonts.at(name);
 }

@@ -1,27 +1,27 @@
 #include "StateManager.hpp"
 
-void StateManager::AddState(StateRef newState, bool isReplacing)
+void StateManager::addState(StateRef newState, bool isReplacing)
 {
     this->_isAdding = true;
     this->_isReplacing = isReplacing;
 
-    this->_newState = std::move(newState);
+    this->mNewState = std::move(newState);
 }
 
-void StateManager::RemoveState()
+void StateManager::removeState()
 {
     this->_isRemoving = true;
 }
 
-void StateManager::ProcessStateChanges()
+void StateManager::processStateChanges()
 {
-    if (this->_isRemoving && !this->_states.empty())
+    if (this->_isRemoving && !this->mStateStack.empty())
     {
-        this->_states.pop();
+        this->mStateStack.pop();
 
-        if (!this->_states.empty())
+        if (!this->mStateStack.empty())
         {
-            //this->_states.top()->Resume();
+            //this->mStateStack.top()->Resume();
         }
 
         this->_isRemoving = false;
@@ -29,25 +29,25 @@ void StateManager::ProcessStateChanges()
 
     if (this->_isAdding)
     {
-        if (!this->_states.empty())
+        if (!this->mStateStack.empty())
         {
             if (this->_isReplacing)
             {
-                this->_states.pop();
+                this->mStateStack.pop();
             }
             else
             {
-                //this->_states.top()->Pause();
+                //this->mStateStack.top()->Pause();
             }
         }
 
-        this->_states.push(std::move(this->_newState));
-        this->_states.top()->Init();
+        this->mStateStack.push(std::move(this->mNewState));
+        this->mStateStack.top()->init();
         this->_isAdding = false;
     }
 }
 
-StateRef &StateManager::GetActiveState()
+StateRef &StateManager::getActiveState()
 {
-    return this->_states.top();
+    return this->mStateStack.top();
 }

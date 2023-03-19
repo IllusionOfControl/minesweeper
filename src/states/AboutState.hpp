@@ -12,13 +12,13 @@ class AboutState : public State {
 public:
     AboutState(GameDataRef context);
 
-    void Init();
+    void init();
 
-    void HandleInput();
+    void handleInput();
 
-    void Update();
+    void update();
 
-    void Draw();
+    void draw();
 
 private:
     GameDataRef mContext;
