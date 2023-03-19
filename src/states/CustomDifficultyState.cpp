@@ -11,12 +11,12 @@ CustomDifficultyState::CustomDifficultyState(GameDataRef context)
         , mIsFormValid(false) {
 }
 
-void CustomDifficultyState::Init() {
+void CustomDifficultyState::init() {
     mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                                  (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
                             "Minesweeper",
                                    sf::Style::Titlebar | sf::Style::Close);
-    auto &backgroundTexture = mContext->assets.GetTexture("background");
+    auto &backgroundTexture = mContext->assets.getTexture("background");
     auto windowSize = mContext->window.getSize();
 
     backgroundTexture.setRepeated(true);
@@ -26,16 +26,16 @@ void CustomDifficultyState::Init() {
     //
 
     auto mainMenuButton = std::make_shared<Button>();
-    mainMenuButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    mainMenuButton->setTexture(mContext->assets.getTexture("state_buttons"));
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
     mainMenuButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new MainMenuState(mContext)), true);
+        mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
     auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    exitButton->setTexture(mContext->assets.getTexture("state_buttons"));
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
@@ -49,7 +49,7 @@ void CustomDifficultyState::Init() {
         return false;
     };
 
-    mWidthInput->setTexture(mContext->assets.GetTexture("customDifficultyButtons"));
+    mWidthInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
     mWidthInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     mWidthInput->setNormalTextureRect({0, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mWidthInput->setSelectedTextureRect({SQUARE_SIZE * 5, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
@@ -66,7 +66,7 @@ void CustomDifficultyState::Init() {
         return false;
     });
 
-    mHeightInput->setTexture(mContext->assets.GetTexture("customDifficultyButtons"));
+    mHeightInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
     mHeightInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP) * SQUARE_SIZE);
     mHeightInput->setNormalTextureRect({0, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mHeightInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
@@ -83,7 +83,7 @@ void CustomDifficultyState::Init() {
         return false;
     });
 
-    mMinesInput->setTexture(mContext->assets.GetTexture("customDifficultyButtons"));
+    mMinesInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
     mMinesInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
     mMinesInput->setNormalTextureRect({0, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mMinesInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
@@ -101,16 +101,16 @@ void CustomDifficultyState::Init() {
     });
 
     auto playButton = std::make_shared<Button>();
-    playButton->setTexture(mContext->assets.GetTexture("customDifficultyButtons"));
+    playButton->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
     playButton->setNormalTextureRect({0, SQUARE_SIZE * 6, SQUARE_SIZE * 5, SQUARE_SIZE});
     playButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 6, SQUARE_SIZE * 5, SQUARE_SIZE});
     playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
     playButton->setCallback([&]() {
         if (mIsFormValid)
-            mContext->manager.AddState(StateRef(new GameState(mContext)), true);
+            mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
 
-    auto &textBackground = mContext->assets.GetTexture("text_background");
+    auto &textBackground = mContext->assets.getTexture("text_background");
     textBackground.setRepeated(true);
 
     mContainer.pack(mainMenuButton);
@@ -121,7 +121,7 @@ void CustomDifficultyState::Init() {
     mContainer.pack(playButton);
 }
 
-void CustomDifficultyState::HandleInput() {
+void CustomDifficultyState::handleInput() {
     sf::Event event;
 
     while (mContext->window.pollEvent(event)) {
@@ -129,7 +129,7 @@ void CustomDifficultyState::HandleInput() {
     }
 }
 
-void CustomDifficultyState::Update() {
+void CustomDifficultyState::update() {
     if (mWidthInput->isValid() && mHeightInput->isValid() && mMinesInput->isValid()) {
         int width = std::stoi(mWidthInput->getString().toAnsiString());
         int height = std::stoi(mHeightInput->getString().toAnsiString());
@@ -149,7 +149,7 @@ void CustomDifficultyState::Update() {
     }
 }
 
-void CustomDifficultyState::Draw() {
+void CustomDifficultyState::draw() {
     mContext->window.clear(sf::Color::Red);
 
     mContext->window.draw(mBackground);

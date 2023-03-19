@@ -31,13 +31,13 @@ public:
 public:
     explicit GameState(GameDataRef context);
 
-    void Init() override;
+    void init() override;
 
-    void HandleInput() override;
+    void handleInput() override;
 
-    void Update() override;
+    void update() override;
 
-    void Draw() override;
+    void draw() override;
 
 private:
     void initGridCells();

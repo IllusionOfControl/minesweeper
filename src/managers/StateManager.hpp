@@ -11,16 +11,16 @@ public:
     StateManager() { }
     ~StateManager() { }
 
-    void AddState(StateRef newState, bool isReplacing = true);
-    void RemoveState();
-    // Run at start of each loop in Game.cpp
-    void ProcessStateChanges();
+    void addState(StateRef newState, bool isReplacing = true);
+    void removeState();
+    // run at start of each loop in Game.cpp
+    void processStateChanges();
 
-    StateRef &GetActiveState();
+    StateRef &getActiveState();
 
 private:
-    std::stack<StateRef> _states;
-    StateRef _newState;
+    std::stack<StateRef> mStateStack;
+    State::Ptr mNewState;
 
     bool _isRemoving;
     bool _isAdding, _isReplacing;

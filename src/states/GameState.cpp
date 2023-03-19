@@ -14,7 +14,7 @@ GameState::GameState(GameDataRef context)
 
 }
 
-void GameState::Init() {
+void GameState::init() {
     auto difficulty = mContext->difficulty;
     mContext->window.create(
             sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
@@ -24,20 +24,20 @@ void GameState::Init() {
     auto windowSize = mContext->window.getSize();
 
     auto background = std::make_shared<Background>();
-    background->setTexture(mContext->assets.GetTexture("background"));
+    background->setTexture(mContext->assets.getTexture("background"));
     background->setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
     auto mainMenuButton = std::make_shared<Button>();
-    mainMenuButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    mainMenuButton->setTexture(mContext->assets.getTexture("state_buttons"));
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
     mainMenuButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new MainMenuState(mContext)), true);
+        mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
     auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    exitButton->setTexture(mContext->assets.getTexture("state_buttons"));
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((float)(difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
@@ -46,26 +46,26 @@ void GameState::Init() {
     });
 
     mMinesLeftIndicator = std::make_shared<Indicator>();
-    mMinesLeftIndicator->setTexture(mContext->assets.GetTexture("led_background"));
+    mMinesLeftIndicator->setTexture(mContext->assets.getTexture("led_background"));
     mMinesLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mMinesLeftIndicator->setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     mMinesLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
 
     mTimeLeftIndicator = std::make_shared<Indicator>();
-    mTimeLeftIndicator->setTexture(mContext->assets.GetTexture("led_background"));
+    mTimeLeftIndicator->setTexture(mContext->assets.getTexture("led_background"));
     mTimeLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mTimeLeftIndicator->setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE,
                                     (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     mTimeLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
 
-    auto &fieldTexture = mContext->assets.GetTexture("tile_texture");
+    auto &fieldTexture = mContext->assets.getTexture("tile_texture");
     fieldTexture.setRepeated(true);
     mGridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
     mGridSprite.setTextureRect(TILE_INT_RECT(17));
 
     bool isSmileSmall = difficulty.field_width % 2 ? true : false;
     mSmileButton = std::make_shared<SmileButton>(isSmileSmall);
-    mSmileButton->setTexture(mContext->assets.GetTexture("smiles_button"));
+    mSmileButton->setTexture(mContext->assets.getTexture("smiles_button"));
     mSmileButton->setPosition(
             (GAME_BORDER_LEFT + difficulty.field_width / 2 - (difficulty.field_width % 2 ? 0 : 1)) * SQUARE_SIZE,
             (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
@@ -83,7 +83,7 @@ void GameState::Init() {
     mGuiContainer.pack(mSmileButton);
 }
 
-void GameState::HandleInput() {
+void GameState::handleInput() {
     sf::Event event;
 
     while (mContext->window.pollEvent(event)) {
@@ -182,7 +182,7 @@ void GameState::HandleInput() {
     }
 }
 
-void GameState::Update() {
+void GameState::update() {
     if (mNeedToUpdate) {
         if (mGameState == GameState::State::GamePlaying) {
             updateGridCells();
@@ -216,7 +216,7 @@ void GameState::reset() {
 }
 
 
-void GameState::Draw() {
+void GameState::draw() {
     mContext->window.clear(sf::Color::Red);
 
     mContext->window.draw(mGuiContainer);
@@ -237,7 +237,7 @@ void GameState::initGridCells() {
         int cell_y = std::ceil(i / difficulty.field_width);
         int cell_x = i % difficulty.field_width;
         sf::Sprite cell;
-        cell.setTexture(mContext->assets.GetTexture("tile_texture"));
+        cell.setTexture(mContext->assets.getTexture("tile_texture"));
         cell.setTextureRect(TILE_INT_RECT(11));
         auto position = sf::Vector2f((GAME_BORDER_LEFT + cell_x) * SQUARE_SIZE,
                                      (GAME_BORDER_TOP + cell_y) * SQUARE_SIZE);

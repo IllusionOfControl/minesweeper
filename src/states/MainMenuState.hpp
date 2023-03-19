@@ -15,13 +15,15 @@
 
 class MainMenuState: public State {
 public:
+    typedef std::unique_ptr<State> Ptr;
+public:
     explicit MainMenuState(GameDataRef);
 
-    void Init() override;
+    void init() override;
 
-    void HandleInput() override;
-    void Update() override;
-    void Draw() override;
+    void handleInput() override;
+    void update() override;
+    void draw() override;
 
 private:
     GameDataRef mContext;

@@ -6,11 +6,13 @@
 
 class State {
 public:
-    virtual void Init() = 0;
+    typedef std::unique_ptr<State> Ptr;
+public:
+    virtual void init() = 0;
 
-    virtual void HandleInput() = 0;
-    virtual void Update() = 0;
-    virtual void Draw() = 0;
+    virtual void handleInput() = 0;
+    virtual void update() = 0;
+    virtual void draw() = 0;
 };
 
 typedef std::unique_ptr<State> StateRef;

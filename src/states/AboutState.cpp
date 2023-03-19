@@ -7,12 +7,12 @@ AboutState::AboutState(GameDataRef context)
 
 }
 
-void AboutState::Init() {
+void AboutState::init() {
     mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                                              (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
                             "Minesweeper",
                                sf::Style::Titlebar | sf::Style::Close);
-    auto &backgroundTexture = mContext->assets.GetTexture("background");
+    auto &backgroundTexture = mContext->assets.getTexture("background");
     auto windowSize = mContext->window.getSize();
 
     backgroundTexture.setRepeated(true);
@@ -20,16 +20,16 @@ void AboutState::Init() {
     mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
     auto mainMenuButton = std::make_shared<Button>();
-    mainMenuButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    mainMenuButton->setTexture(mContext->assets.getTexture("state_buttons"));
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
     mainMenuButton->setCallback([&]() {
-        mContext->manager.AddState(StateRef(new MainMenuState(mContext)), true);
+        mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
     auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(mContext->assets.GetTexture("state_buttons"));
+    exitButton->setTexture(mContext->assets.getTexture("state_buttons"));
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
@@ -38,12 +38,12 @@ void AboutState::Init() {
     });
 
     auto authorButton = std::make_shared<Button>();
-    authorButton->setTexture(mContext->assets.GetTexture(TEXTURE_SECOND_NAME));
+    authorButton->setTexture(mContext->assets.getTexture(TEXTURE_SECOND_NAME));
     authorButton->setNormalTextureRect({0 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
     authorButton->setSelectedTextureRect({5 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
     authorButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
 
-    mLogo.setTexture(mContext->assets.GetTexture(TEXTURE_SECOND_NAME));
+    mLogo.setTexture(mContext->assets.getTexture(TEXTURE_SECOND_NAME));
     mLogo.setTextureRect({0 * SQUARE_SIZE, 1 * SQUARE_SIZE, 160, 32});
     mLogo.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, 1 * SQUARE_SIZE);
 
@@ -52,7 +52,7 @@ void AboutState::Init() {
     mGuiContainer.pack(authorButton);
 }
 
-void AboutState::HandleInput() {
+void AboutState::handleInput() {
     sf::Event event;
 
     while (mContext->window.pollEvent(event)) {
@@ -60,11 +60,11 @@ void AboutState::HandleInput() {
     }
 }
 
-void AboutState::Update() {
+void AboutState::update() {
 
 }
 
-void AboutState::Draw() {
+void AboutState::draw() {
     mContext->window.clear(sf::Color::Red);
 
     mContext->window.draw(mBackground);
