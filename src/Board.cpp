@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <stack>
+#include <utility>
 
 Board::Board(int width, int height, int mineCount)
         : mWidth(width)
