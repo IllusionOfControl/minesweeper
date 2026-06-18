@@ -24,7 +24,7 @@ void AboutState::init() {
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    mainMenuButton->setCallback([&]() {
+    mainMenuButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
@@ -33,7 +33,7 @@ void AboutState::init() {
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
-    exitButton->setCallback([&]() {
+    exitButton->setCallback([this]() {
         mContext->window.close();
     });
 

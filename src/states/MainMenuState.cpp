@@ -24,7 +24,7 @@ void MainMenuState::init() {
     playButton->setTexture(buttonTextures);
     playButton->setNormalTextureRect(BUTTON_INT_RECT(0, 0));
     playButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 0));
-    playButton->setCallback([&]() {
+    playButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new DifficultyMenuState(mContext)), true);
     });
     playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
@@ -33,7 +33,7 @@ void MainMenuState::init() {
     aboutButton->setTexture(buttonTextures);
     aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
     aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
-    aboutButton->setCallback([&]() {
+    aboutButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new AboutState(mContext)), true);
     });
     aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
@@ -42,7 +42,7 @@ void MainMenuState::init() {
     exitButton->setTexture(buttonTextures);
     exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
     exitButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 2));
-    exitButton->setCallback([&]() {
+    exitButton->setCallback([this]() {
         mContext->window.close();
     });
     exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);

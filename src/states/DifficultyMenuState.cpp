@@ -24,7 +24,7 @@ void DifficultyMenuState::init() {
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    mainMenuButton->setCallback([&]() {
+    mainMenuButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
@@ -33,7 +33,7 @@ void DifficultyMenuState::init() {
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((WIDTH + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
-    exitButton->setCallback([&]() {
+    exitButton->setCallback([this]() {
         mContext->window.close();
     });
 
@@ -42,7 +42,7 @@ void DifficultyMenuState::init() {
     easyModeButton->setNormalTextureRect({0, 0, SQUARE_SIZE * 5, SQUARE_SIZE});
     easyModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, 0, SQUARE_SIZE * 5, SQUARE_SIZE});
     easyModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    easyModeButton->setCallback([&]() {
+    easyModeButton->setCallback([this]() {
         mContext->difficulty = DIFFICULTY_EASY;
         mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
@@ -53,7 +53,7 @@ void DifficultyMenuState::init() {
     normalModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 1, SQUARE_SIZE * 5, SQUARE_SIZE});
     normalModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 1, SQUARE_SIZE * 5, SQUARE_SIZE});
     normalModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
-    normalModeButton->setCallback([&]() {
+    normalModeButton->setCallback([this]() {
         mContext->difficulty = DIFFICULTY_MEDIUM;
         mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
@@ -63,7 +63,7 @@ void DifficultyMenuState::init() {
     hardModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE});
     hardModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE});
     hardModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
-    hardModeButton->setCallback([&]() {
+    hardModeButton->setCallback([this]() {
         mContext->difficulty = DIFFICULTY_HARD;
         mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
@@ -73,7 +73,7 @@ void DifficultyMenuState::init() {
     customModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 3, SQUARE_SIZE * 5, SQUARE_SIZE});
     customModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 3, SQUARE_SIZE * 5, SQUARE_SIZE});
     customModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
-    customModeButton->setCallback([&]() {
+    customModeButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new CustomDifficultyState(mContext)), true);
     });
 
