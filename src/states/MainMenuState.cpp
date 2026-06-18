@@ -1,4 +1,5 @@
 #include "MainMenuState.hpp"
+#include "../gui/WidgetFactory.hpp"
 #include "../WindowUtils.hpp"
 
 MainMenuState::MainMenuState(GameDataRef context)
@@ -11,12 +12,7 @@ void MainMenuState::init() {
     resizeWindow(mContext->window,
                  (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
                  (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
-    auto &backgroundTexture = mContext->assets.getTexture("background");
-    auto windowSize = mContext->window.getSize();
-
-    backgroundTexture.setRepeated(true);
-    mBackground.setTexture(backgroundTexture);
-    mBackground.setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
+    widgets::setupBackground(mBackground, mContext);
 
     auto &buttonTextures = mContext->assets.getTexture("mainmenu_buttons");
 

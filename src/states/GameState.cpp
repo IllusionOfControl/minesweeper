@@ -1,8 +1,8 @@
 #include <string>
 #include "GameState.hpp"
-#include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
 #include "../WindowUtils.hpp"
+#include "../gui/WidgetFactory.hpp"
 
 namespace {
     // Indices into tiles.png (see legend in legacy/ANALYSIS.md).
@@ -70,23 +70,8 @@ void GameState::init() {
     background->setTexture(mContext->assets.getTexture("background"));
     background->setTextureRect({0, 0, (int) windowSize.x, (int) windowSize.y});
 
-    auto mainMenuButton = std::make_shared<Button>();
-    mainMenuButton->setTexture(mContext->assets.getTexture("state_buttons"));
-    mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
-    mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
-    mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    mainMenuButton->setCallback([this]() {
-        mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
-    });
-
-    auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(mContext->assets.getTexture("state_buttons"));
-    exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
-    exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
-    exitButton->setPosition((float)(difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
-    exitButton->setCallback([this]() {
-        mContext->window.close();
-    });
+    auto mainMenuButton = widgets::makeMainMenuButton(mContext);
+    auto exitButton = widgets::makeExitButton(mContext, difficulty.field_width);
 
     mMinesLeftIndicator = std::make_shared<Indicator>();
     mMinesLeftIndicator->setTexture(mContext->assets.getTexture("led_background"));
