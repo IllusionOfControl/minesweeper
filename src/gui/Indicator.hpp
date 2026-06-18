@@ -8,9 +8,9 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/String.hpp>
 #include <SFML/Window/Event.hpp>
-#include "Component.hpp"
+#include "PassiveComponent.hpp"
 
-class Indicator : public Component {
+class Indicator : public PassiveComponent {
 public:
     typedef std::shared_ptr<Indicator> Ptr;
 
@@ -25,14 +25,6 @@ public:
     void setFont(const sf::Font& font);
 
     void setString(const sf::String& string);
-
-    bool isSelected() const override;
-
-    void select() override;
-
-    void deselect() override;
-
-    void handleEvent(const sf::Event &event) override;
 
 private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
