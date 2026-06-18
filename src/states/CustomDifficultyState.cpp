@@ -3,6 +3,26 @@
 #include "CustomDifficultyState.hpp"
 #include "../gui/Button.hpp"
 
+namespace {
+    // Safely parse a fully-numeric string. Returns false on empty input,
+    // non-numeric characters or overflow instead of throwing.
+    bool tryParseInt(const sf::String &string, int &out) {
+        const std::string str = string.toAnsiString();
+        if (str.empty())
+            return false;
+        try {
+            std::size_t pos = 0;
+            const int value = std::stoi(str, &pos);
+            if (pos != str.size())
+                return false;
+            out = value;
+            return true;
+        } catch (const std::exception &) {
+            return false;
+        }
+    }
+}
+
 CustomDifficultyState::CustomDifficultyState(GameDataRef context)
         : mContext(context)
         , mWidthInput(std::make_shared<Input>())
@@ -60,10 +80,8 @@ void CustomDifficultyState::init() {
     mWidthInput->setInputLimit(2);
     mWidthInput->setInputFilterCallback(filterOnlyNumbers);
     mWidthInput->setInputValidationCallback([](const sf::String &string) {
-        int value = std::stoi(string.toAnsiString());
-        if (value >= 5 && value <= 18)
-            return true;
-        return false;
+        int value;
+        return tryParseInt(string, value) && value >= 5 && value <= 18;
     });
 
     mHeightInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
@@ -77,10 +95,8 @@ void CustomDifficultyState::init() {
     mHeightInput->setInputLimit(2);
     mHeightInput->setInputFilterCallback(filterOnlyNumbers);
     mHeightInput->setInputValidationCallback([](const sf::String &string) {
-        int value = std::stoi(string.toAnsiString());
-        if (value >= 5 && value <= 18)
-            return true;
-        return false;
+        int value;
+        return tryParseInt(string, value) && value >= 5 && value <= 18;
     });
 
     mMinesInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
@@ -94,10 +110,8 @@ void CustomDifficultyState::init() {
     mMinesInput->setInputLimit(3);
     mMinesInput->setInputFilterCallback(filterOnlyNumbers);
     mMinesInput->setInputValidationCallback([](const sf::String &string) {
-        int value = std::stoi(string.toAnsiString());
-        if (value >= 5 && value <= 320)
-            return true;
-        return false;
+        int value;
+        return tryParseInt(string, value) && value >= 5 && value <= 320;
     });
 
     auto playButton = std::make_shared<Button>();
@@ -130,11 +144,11 @@ void CustomDifficultyState::handleInput() {
 }
 
 void CustomDifficultyState::update() {
-    if (mWidthInput->isValid() && mHeightInput->isValid() && mMinesInput->isValid()) {
-        int width = std::stoi(mWidthInput->getString().toAnsiString());
-        int height = std::stoi(mHeightInput->getString().toAnsiString());
-        int mines = std::stoi(mMinesInput->getString().toAnsiString());
-
+    int width, height, mines;
+    if (mWidthInput->isValid() && mHeightInput->isValid() && mMinesInput->isValid()
+        && tryParseInt(mWidthInput->getString(), width)
+        && tryParseInt(mHeightInput->getString(), height)
+        && tryParseInt(mMinesInput->getString(), mines)) {
         if (mines < (width * height)) {
             mContext->difficulty.field_width = width;
             mContext->difficulty.field_height = height;
