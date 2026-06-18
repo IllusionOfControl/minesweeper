@@ -19,6 +19,7 @@ set(SOURCE_FILES
         src/states/DifficultyMenuState.cpp src/states/DifficultyMenuState.hpp
         src/states/CustomDifficultyState.cpp src/states/CustomDifficultyState.hpp
         src/gui/Component.cpp src/gui/Component.hpp
+        src/gui/WidgetFactory.cpp src/gui/WidgetFactory.hpp
         src/gui/Button.cpp src/gui/Button.hpp
         src/gui/Container.cpp src/gui/Container.hpp
         src/gui/Input.cpp src/gui/Input.hpp
