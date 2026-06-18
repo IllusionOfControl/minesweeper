@@ -122,17 +122,20 @@ ctest --test-dir build --output-on-failure
 
 ## Этап 4. Чистка дубликатов и мёртвого кода
 
-- [ ] **A4** — вынести построение типовых кнопок (`mainMenu`, `exit`) и фона в helper/фабрику;
-      переиспользовать в четырёх состояниях.
-  - [ ] **Коммит:** `refactor: extract shared menu/exit/background widgets`
-- [ ] **A4** — общий базовый класс для «статичных» виджетов (`Background`, `Indicator`).
-  - [ ] **Коммит:** `refactor: share boilerplate for static widgets`
-- [ ] **Q6** — удалить мёртвый код: закомментированный `GameField`, `Pause/Resume`,
-      `Container::mSelectedChild`, дублирующую загрузку `tiles.png`.
-  - [ ] **Коммит:** `refactor: remove dead code and unused fields`
-- [ ] **Q6** — заменить магические числа (`mMinesCount > -5`, лишний `std::ceil`, смещения текста)
-      на именованные константы/корректные выражения.
-  - [ ] **Коммит:** `refactor: replace magic numbers with named constants`
+- [x] **A4** — вынести построение типовых кнопок (`mainMenu`, `exit`) и фона в фабрику
+      (`gui/WidgetFactory`); переиспользовано в меню-состояниях и `GameState`.
+  - [x] **Коммит:** `refactor: extract shared menu/exit/background widgets`
+- [x] **A4** — общий базовый класс `PassiveComponent` для «статичных» виджетов (`Background`,
+      `Indicator`).
+  - [x] **Коммит:** `refactor: share boilerplate for static widgets`
+- [x] **Q6** — удалить мёртвый код: `Container::mSelectedChild`, неиспользуемые текстуры
+      (`option_buttons`, `text_background`, `leaderboard`), `srand()`
+      (`GameField`/`Pause/Resume`/`mGridSprite` устранены ранее).
+  - [x] **Коммит:** `refactor: remove dead code and unused fields`
+- [x] **Q6** — заменить магические числа на именованные константы (смещения текста в `Input`/
+      `Indicator`; `mMinesCount > -5`/лишний `std::ceil` устранены вместе с `Board`).
+  - [x] **Коммит:** `refactor: replace magic numbers with named constants`
+- [x] **Тег:** `stage-4`
 
 ---
 
