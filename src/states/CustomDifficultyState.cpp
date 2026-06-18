@@ -103,9 +103,6 @@ void CustomDifficultyState::init() {
             mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
 
-    auto &textBackground = mContext->assets.getTexture("text_background");
-    textBackground.setRepeated(true);
-
     mContainer.pack(mainMenuButton);
     mContainer.pack(exitButton);
     mContainer.pack(mWidthInput);

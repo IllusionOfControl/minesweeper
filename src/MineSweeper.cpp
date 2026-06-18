@@ -9,14 +9,10 @@ MineSweeper::MineSweeper() {
 }
 
 void MineSweeper::run() {
-    srand((unsigned int) time(nullptr));
     _data->assets.loadTexture("tile_texture", "_Resources/res/tiles.png");
     _data->assets.loadTexture("logo", "_Resources/res/logo.png");
-    _data->assets.loadTexture("option_buttons", "_Resources/res/tiles.png");
     _data->assets.loadTexture("background", "_Resources/res/tiles.png",
                                     sf::IntRect(15 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
-    _data->assets.loadTexture("text_background", "_Resources/res/tiles.png",
-                                    sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
     _data->assets.loadTexture("smiles_button", "_Resources/res/smiles.png");
     _data->assets.loadTexture(TEXTURE_SECOND_NAME, "_Resources/res/second.png");
     _data->assets.loadTexture("customDifficultyButtons", "_Resources/res/second_edited.png",
@@ -27,7 +23,6 @@ void MineSweeper::run() {
     _data->assets.loadTexture("mainmenu_buttons", "_Resources/res/mainMenuButtons.png");
     _data->assets.loadTexture("led_background", "_Resources/res/tiles.png",
                                     sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
-    _data->assets.loadTexture("leaderboard", "_Resources/res/leaderboard.png");
 
     _data->assets.LoadFont("default_font", "_Resources/fonts/visitor1.ttf");
 
