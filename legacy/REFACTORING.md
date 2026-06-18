@@ -141,14 +141,15 @@ ctest --test-dir build --output-on-failure
 
 ## Этап 5. Косметика и константы
 
-- [ ] **Q2/Q3** — `#define` из `DEFINITIONS.h` → `enum class`/`constexpr`; убрать `;` внутри
-      макросов сложностей; убрать повторный `SQUARE_SIZE` в `SmileButton.cpp`.
-  - [ ] **Коммит:** `refactor: replace macros with typed constants`
-- [ ] **Q1** — единый нейминг: методы `camelCase`, поля с префиксом `m`; `LoadFont/GetFont` →
-      `loadFont/getFont`; `_data` → `mData`.
-  - [ ] **Коммит:** `refactor: unify naming conventions`
-- [ ] **Q7** — все комментарии на одном языке (английский).
-  - [ ] **Коммит:** `docs: translate comments to English`
+- [x] **Q2/Q3** — `#define` из `DEFINITIONS.h` → `constexpr`; сложности перенесены в
+      `MineSweeper.hpp` как `constexpr DifficultyData` (без `;`-макросов и неиспользуемого
+      `difficulty_type`); удалены мёртвые `CELL_*`/`GAME_*`; убран повторный `SQUARE_SIZE`.
+  - [x] **Коммит:** `refactor: replace macros with typed constants`
+- [x] **Q1** — единый нейминг: `LoadFont/GetFont` → `loadFont/getFont`; `_data` → `mData`.
+  - [x] **Коммит:** `refactor: unify naming conventions`
+- [x] **Q7** — комментарии уже на английском (русские удалены при переписывании на этапах 2–4;
+      проверено `grep` по кириллице — совпадений нет), отдельный коммит не требуется.
+- [x] **Тег:** `stage-5`
 
 ---
 
