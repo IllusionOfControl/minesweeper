@@ -29,23 +29,6 @@ void Indicator::setString(const sf::String& string) {
     mText.setString(string);
 }
 
-bool Indicator::isSelected() const {
-    return Component::isSelected();
-}
-
-void Indicator::select() {
-    Component::select();
-}
-
-void Indicator::deselect() {
-    Component::deselect();
-}
-
-void Indicator::handleEvent(const sf::Event &event) {
-
-}
-
-
 void Indicator::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mSprite, states);
