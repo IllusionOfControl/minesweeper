@@ -36,36 +36,38 @@ ctest --test-dir build --output-on-failure
 
 ## Этап 0. Подготовка
 
-- [ ] Ветка `cleanup` создана от `master`. *(сделано)*
+- [x] Ветка `cleanup` создана от `master`.
 - [ ] Зафиксировать стартовую сборку: проект конфигурируется и собирается из чистой `build/`.
-- [ ] `CMakeLists.txt`:
-  - [ ] убрать дублирующийся `find_package(SFML ...)`, оставить один с компонентами
+      *(требует проверки в Developer PowerShell — недоступно в среде разработки агента)*
+- [x] `CMakeLists.txt`:
+  - [x] убрать дублирующийся `find_package(SFML ...)`, оставить один с компонентами
         `system window graphics`;
-  - [ ] линковать только `sfml-system sfml-window sfml-graphics`;
-  - [ ] заменить `\\_Resources\\` на `/` в `file(COPY ...)`;
-  - [ ] убрать жёсткий `set(CMAKE_BUILD_TYPE Debug)`.
-- [ ] Добавить `.gitignore` для `build/` (если ещё не игнорируется).
-- [ ] **Коммит:** `build: clean up CMake config and ignore build dir`
+  - [x] линковать только `sfml-system sfml-window sfml-graphics`;
+  - [x] заменить `\\_Resources\\` на `/` в `file(COPY ...)`;
+  - [x] убрать жёсткий `set(CMAKE_BUILD_TYPE Debug)` (плюс требование C++17).
+- [x] Добавить `.gitignore` для `build/` (если ещё не игнорируется).
+- [x] **Коммит:** `build: clean up CMake config and ignore build dir`
 
 ---
 
 ## Этап 1. Критические баги
 
-- [ ] **B1** — `GameState::handleInput()`:
-  - [ ] расставить `break;` во всех `case`;
-  - [ ] читать `event.mouseMove` в `MouseMoved`, `event.mouseButton` — только в кнопочных событиях;
+- [x] **B1** — `GameState::handleInput()`:
+  - [x] расставить `break;` во всех `case`;
+  - [x] читать `event.mouseMove` в `MouseMoved`, `event.mouseButton` — только в кнопочных событиях;
   - [ ] проверка вручную: движение мыши к левому краю поля **не** открывает/помечает клетки.
-  - [ ] **Коммит:** `fix: correct switch fall-through and event union access in input handling`
-- [ ] **B2** — инициализация полей:
-  - [ ] `StateManager`: `_isRemoving/_isAdding/_isReplacing = false`;
-  - [ ] `GameState`: `mNeedToUpdate/mCellsRevealed/mMinesCount/mGameTime`.
-  - [ ] **Коммит:** `fix: initialize StateManager and GameState members`
-- [ ] **B5** — безопасный парсинг ввода в `CustomDifficultyState` (`try/catch` или `from_chars`).
-  - [ ] **Коммит:** `fix: guard numeric input parsing in custom difficulty`
-- [ ] **Q5** — строгая загрузка ассетов: единое логирование/исключение вместо падения на
-      `getTexture`.
-  - [ ] **Коммит:** `fix: fail fast with clear error on missing assets`
+  - [x] **Коммит:** `fix: correct switch fall-through and event union access in input handling`
+- [x] **B2** — инициализация полей:
+  - [x] `StateManager`: `_isRemoving/_isAdding/_isReplacing = false`;
+  - [x] `GameState`: `mNeedToUpdate/mCellsRevealed/mMinesCount/mGameTime`.
+  - [x] **Коммит:** `fix: initialize StateManager and GameState members`
+- [x] **B5** — безопасный парсинг ввода в `CustomDifficultyState` (`tryParseInt` + `try/catch`).
+  - [x] **Коммит:** `fix: guard numeric input parsing in custom difficulty`
+- [x] **Q5** — строгая загрузка ассетов: исключение с понятным сообщением вместо падения на
+      `getTexture`; перехват в `main`.
+  - [x] **Коммит:** `fix: fail fast with clear error on missing assets`
 - [ ] Ручной прогон: все режимы, сценарии победы/проигрыша/сброса — без падений.
+      *(требует сборки в Developer PowerShell)*
 
 ---
 
