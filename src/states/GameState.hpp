@@ -68,11 +68,11 @@ private:
 
     State mGameState;
 
-    bool mNeedToUpdate;
+    bool mNeedToUpdate = false;
 
-    int mCellsRevealed;
-    int mMinesCount;
-    int mGameTime;
+    int mCellsRevealed = 0;
+    int mMinesCount = 0;
+    int mGameTime = 0;
 
     sf::Clock mGameClock;   // ??
     sf::Time mGameTimer;

@@ -22,8 +22,8 @@ private:
     std::stack<StateRef> mStateStack;
     State::Ptr mNewState;
 
-    bool _isRemoving;
-    bool _isAdding, _isReplacing;
+    bool _isRemoving = false;
+    bool _isAdding = false, _isReplacing = false;
 };
 
 
