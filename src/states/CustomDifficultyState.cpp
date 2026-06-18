@@ -52,7 +52,7 @@ void CustomDifficultyState::init() {
     mWidthInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     mWidthInput->setNormalTextureRect({0, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mWidthInput->setSelectedTextureRect({SQUARE_SIZE * 5, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mWidthInput->setFont(mContext->assets.GetFont("default_font"));
+    mWidthInput->setFont(mContext->assets.getFont("default_font"));
     mWidthInput->setCharacterSize(32);
     mWidthInput->setStyle(sf::Text::Bold);
     mWidthInput->setFillColor(sf::Color::Green);
@@ -67,7 +67,7 @@ void CustomDifficultyState::init() {
     mHeightInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP) * SQUARE_SIZE);
     mHeightInput->setNormalTextureRect({0, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mHeightInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mHeightInput->setFont(mContext->assets.GetFont("default_font"));
+    mHeightInput->setFont(mContext->assets.getFont("default_font"));
     mHeightInput->setCharacterSize(32);
     mHeightInput->setStyle(sf::Text::Bold);
     mHeightInput->setFillColor(sf::Color::Green);
@@ -82,7 +82,7 @@ void CustomDifficultyState::init() {
     mMinesInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
     mMinesInput->setNormalTextureRect({0, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
     mMinesInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mMinesInput->setFont(mContext->assets.GetFont("default_font"));
+    mMinesInput->setFont(mContext->assets.getFont("default_font"));
     mMinesInput->setCharacterSize(32);
     mMinesInput->setStyle(sf::Text::Bold);
     mMinesInput->setFillColor(sf::Color::Green);

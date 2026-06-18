@@ -31,7 +31,7 @@ public:
     MineSweeper();
 
 private:
-    GameDataRef _data = std::make_shared<Context>();
+    GameDataRef mData = std::make_shared<Context>();
 
     void run();
 };

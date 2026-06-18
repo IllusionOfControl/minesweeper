@@ -77,14 +77,14 @@ void GameState::init() {
     mMinesLeftIndicator->setTexture(mContext->assets.getTexture("led_background"));
     mMinesLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mMinesLeftIndicator->setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    mMinesLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
+    mMinesLeftIndicator->setFont(mContext->assets.getFont("default_font"));
 
     mTimeLeftIndicator = std::make_shared<Indicator>();
     mTimeLeftIndicator->setTexture(mContext->assets.getTexture("led_background"));
     mTimeLeftIndicator->setTextureRect({0, 0, SQUARE_SIZE * 3, SQUARE_SIZE});
     mTimeLeftIndicator->setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE,
                                     (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    mTimeLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
+    mTimeLeftIndicator->setFont(mContext->assets.getFont("default_font"));
 
     bool isSmileSmall = difficulty.field_width % 2 ? true : false;
     mSmileButton = std::make_shared<SmileButton>(isSmileSmall);
