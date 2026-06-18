@@ -1,4 +1,5 @@
 #include "MainMenuState.hpp"
+#include "../WindowUtils.hpp"
 
 MainMenuState::MainMenuState(GameDataRef context)
         : mContext(context)
@@ -7,10 +8,9 @@ MainMenuState::MainMenuState(GameDataRef context)
 }
 
 void MainMenuState::init() {
-    mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                                       (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                            "Minesweeper",
-                         sf::Style::Titlebar | sf::Style::Close);
+    resizeWindow(mContext->window,
+                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
     auto &backgroundTexture = mContext->assets.getTexture("background");
     auto windowSize = mContext->window.getSize();
 

@@ -2,6 +2,7 @@
 #include "GameState.hpp"
 #include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
+#include "../WindowUtils.hpp"
 
 namespace {
     // Indices into tiles.png (see legend in legacy/ANALYSIS.md).
@@ -60,11 +61,9 @@ GameState::GameState(GameDataRef context)
 
 void GameState::init() {
     auto difficulty = mContext->difficulty;
-    mContext->window.create(
-            sf::VideoMode((difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                          (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-            "Minesweeper",
-            sf::Style::Titlebar | sf::Style::Close);
+    resizeWindow(mContext->window,
+                 (difficulty.field_width + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                 (difficulty.field_height + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
     auto windowSize = mContext->window.getSize();
 
     auto background = std::make_shared<Background>();

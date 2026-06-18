@@ -1,5 +1,6 @@
 #include "DifficultyMenuState.hpp"
 #include "../gui/Button.hpp"
+#include "../WindowUtils.hpp"
 
 DifficultyMenuState::DifficultyMenuState(GameDataRef context)
         : mContext(context)
@@ -8,10 +9,9 @@ DifficultyMenuState::DifficultyMenuState(GameDataRef context)
 }
 
 void DifficultyMenuState::init() {
-    mContext->window.create(sf::VideoMode((WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                                                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE),
-                            "Minesweeper",
-                                   sf::Style::Titlebar | sf::Style::Close);
+    resizeWindow(mContext->window,
+                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
+                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
     auto &backgroundTexture = mContext->assets.getTexture("background");
     auto windowSize = mContext->window.getSize();
 
