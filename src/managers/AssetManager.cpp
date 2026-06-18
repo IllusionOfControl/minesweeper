@@ -30,7 +30,7 @@ sf::Texture &AssetManager::getTexture(std::string name)
     return it->second;
 }
 
-void AssetManager::LoadFont(std::string name, std::string fileName)
+void AssetManager::loadFont(std::string name, std::string fileName)
 {
     sf::Font font;
 
@@ -40,7 +40,7 @@ void AssetManager::LoadFont(std::string name, std::string fileName)
     this->mFonts[name] = font;
 }
 
-sf::Font &AssetManager::GetFont(std::string name)
+sf::Font &AssetManager::getFont(std::string name)
 {
     auto it = this->mFonts.find(name);
     if (it == this->mFonts.end())
