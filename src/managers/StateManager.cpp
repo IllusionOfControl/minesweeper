@@ -18,27 +18,14 @@ void StateManager::processStateChanges()
     if (this->_isRemoving && !this->mStateStack.empty())
     {
         this->mStateStack.pop();
-
-        if (!this->mStateStack.empty())
-        {
-            //this->mStateStack.top()->Resume();
-        }
-
         this->_isRemoving = false;
     }
 
     if (this->_isAdding)
     {
-        if (!this->mStateStack.empty())
+        if (!this->mStateStack.empty() && this->_isReplacing)
         {
-            if (this->_isReplacing)
-            {
-                this->mStateStack.pop();
-            }
-            else
-            {
-                //this->mStateStack.top()->Pause();
-            }
+            this->mStateStack.pop();
         }
 
         this->mStateStack.push(std::move(this->mNewState));
