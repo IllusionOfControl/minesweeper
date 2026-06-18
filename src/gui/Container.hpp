@@ -22,7 +22,6 @@ private:
 
 private:
     std::vector<Component::Ptr> mChildren;
-    int mSelectedChild{};
 };
 
 #endif //MINESWEEPER_CONTAINER_HPP
