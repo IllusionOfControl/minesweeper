@@ -97,9 +97,8 @@ void GameState::handleInput() {
             case sf::Event::Closed:
                 mContext->window.close();
                 break;
-            case sf::Event::MouseMoved: {
-
-            }
+            case sf::Event::MouseMoved:
+                break;
             case sf::Event::MouseButtonReleased: {
                 auto mousePos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
                 if (event.mouseButton.button == sf::Mouse::Left) {
@@ -135,6 +134,7 @@ void GameState::handleInput() {
                         }
                     }
                 }
+                break;
             }
             case sf::Event::MouseButtonPressed: {
                 auto mousePos = sf::Mouse::getPosition(mContext->window);
@@ -177,7 +177,10 @@ void GameState::handleInput() {
                 if (event.key.code == sf::Keyboard::R) {
                     reset();
                 }
+                break;
             }
+            default:
+                break;
         }
     }
 }
