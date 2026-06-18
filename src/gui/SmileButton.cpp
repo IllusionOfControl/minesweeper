@@ -1,6 +1,6 @@
 #include "SmileButton.hpp"
+#include "../DEFINITIONS.h"
 
-#define SQUARE_SIZE 32
 #define SMILE_SMALL_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE, 0 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE}
 #define SMILE_LARGE_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE * 2 + (SQUARE_SIZE * 5), 0 * SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE}
 

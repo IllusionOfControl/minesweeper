@@ -10,8 +10,11 @@ struct DifficultyData {
     int field_width;
     int field_height;
     int bomb_count;
-    int difficulty_type;
 };
+
+constexpr DifficultyData DIFFICULTY_EASY{9, 9, 10};
+constexpr DifficultyData DIFFICULTY_MEDIUM{16, 16, 40};
+constexpr DifficultyData DIFFICULTY_HARD{32, 16, 99};
 
 struct Context
 {
