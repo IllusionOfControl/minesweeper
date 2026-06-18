@@ -1,79 +1,83 @@
 # Minesweeper Game
 
-This is a Minesweeper game written in C++ using the SFML framework and built with CMake.
+This is a Minesweeper game written in C++ (C++17) using the SFML framework and built with CMake.
 
 ## Prerequisites
-To build and run the project, you will need to install the following:
-- CMake
-- SFML framework
+To build and run the project, you will need:
+- A C++17 compiler (e.g. MSVC from Visual Studio 2022/2026)
+- CMake 3.24+
+- SFML 2.5+ (`graphics`, `window`, `system`)
 
-## Building and Running the Project (Windows)
-### Using Library Linking
-1. Download the SFML framework from the official website: https://www.sfml-dev.org/download/sfml/2.5.1/
-2. Extract the contents of the zip file to a directory of your choice.
-3. Clone the repository:
-```shell
-git clone https://github.com/username/minesweeper.git
-```
-4. Open a command prompt and navigate to the project directory. Create a build directory:
-```shell
-mkdir build
-cd build
-```
-5. Generate the build files:
-```shell
-cmake -DCMAKE_BUILD_TYPE=Release -DSFML_ROOT=<path-to-sfml> ..
-```
-6. Make sure to replace <path-to-sfml> with the path to the directory where you extracted the SFML framework.
-7. Build the project:
-```shell
-cmake --build .
-```
-This will generate an executable file called minesweeper.exe in the build directory.
+The unit tests use [Catch2](https://github.com/catchorg/Catch2), which is fetched
+automatically by CMake (`FetchContent`) and therefore needs internet access on the
+first configure. Pass `-DMINESWEEPER_BUILD_TESTS=OFF` to skip them.
 
-To run the game, double-click the minesweeper.exe file.
-### Using Vcpkg
-1. Install Vcpkg by following the instructions on the official website: https://github.com/microsoft/vcpkg
-2. Install the SFML framework:
-Copy code
-```shell
-vcpkg install sfml
-```
-3. Clone the repository:
+## Building and Running (Windows)
 
-```shell
-git clone https://github.com/username/minesweeper.git
-```
-4. Open a command prompt and navigate to the project directory. Create a build directory:
-``` shell
-mkdir build
-cd build
-```
-5. Generate the build files:
-```shell
-cmake -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release ..
-```
-6. Make sure to replace <path-to-vcpkg> with the path to the directory where you installed Vcpkg.
-7. Build the project:
-```shell
-cmake --build .
-```
-This will generate an executable file called minesweeper.exe in the build directory.
+### Using vcpkg (recommended)
+1. Install [vcpkg](https://github.com/microsoft/vcpkg) and the SFML package:
+   ```shell
+   vcpkg install sfml
+   ```
+2. Clone the repository:
+   ```shell
+   git clone https://github.com/IllusionOfControl/minesweeper.git
+   cd minesweeper
+   ```
+3. Configure and build:
+   ```shell
+   cmake -B build -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake
+   cmake --build build
+   ```
+4. Run the game (assets are copied next to the executable automatically):
+   ```shell
+   ./build/Debug/minesweeper.exe
+   ```
 
-To run the game, double-click the minesweeper.exe file.
+### Using a downloaded SFML
+1. Download SFML from https://www.sfml-dev.org/download/sfml/2.5.1/ and extract it.
+2. Configure pointing CMake at it, then build:
+   ```shell
+   cmake -B build -DSFML_DIR=<path-to-sfml>/lib/cmake/SFML
+   cmake --build build
+   ```
+
+## Running the tests
+```shell
+ctest --test-dir build --output-on-failure
+```
+The tests cover the pure game logic in `Board` (mine placement, flood fill, marking,
+chord, win/lose, reset) and the `StateManager` stack behaviour. They are also run on
+every push/PR by the GitHub Actions workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+## Architecture
+The code is split into small, focused pieces:
+
+- `src/Board.{hpp,cpp}` — pure, SFML-free game logic (the board model, mine placement,
+  reveal/flood-fill, marks, chord, win/lose). This is what the unit tests target.
+- `src/states/` — screens implementing the `State` interface (`init/handleInput/update/draw`):
+  main menu, difficulty menu, custom difficulty, about and the game screen. `GameState`
+  only handles input and rendering and delegates the rules to `Board`.
+- `src/managers/` — `AssetManager` (textures/fonts) and `StateManager` (a stack of screens).
+- `src/gui/` — reusable widgets (`Button`, `Input`, `Indicator`, `Background`, `Container`,
+  `SmileButton`) plus `WidgetFactory` for the shared menu/exit/background widgets.
+- `src/MineSweeper.{hpp,cpp}` — owns the window, asset loading and the main loop; the
+  `Context` it holds is shared with every state.
 
 ## How to Play
+The objective is to clear the board without detonating any mines.
 
-The objective of the game is to clear the board without detonating any mines.
+- **Left-click** a cell to reveal it. The first click is always safe. If the cell holds a
+  mine the game is over; otherwise a number shows how many of the 8 neighbours are mines.
+- **Right-click** to cycle a cell through flag → question mark → unmarked.
+- **Middle-click** a revealed number whose flag count matches it to "chord" — reveal all of
+  its remaining unflagged neighbours at once.
+- Press **R** or click the smiley to start a new game.
 
-To clear a cell, left-click on it. If the cell contains a mine, the game is over. If the cell does not contain a mine, a number is displayed indicating how many adjacent cells contain mines.
-
-To flag a cell, right-click on it. This is useful for marking cells that you think contain mines.
-
-To win the game, all non-mine cells must be cleared. Good luck!
+To win, reveal every cell that is not a mine. Good luck!
 
 ---
 
-*The assets where taken from [minesweeper]*
+*The assets were taken from [minesweeper]*
 
 [minesweeper]: https://github.com/logalex96/Minesweeper
