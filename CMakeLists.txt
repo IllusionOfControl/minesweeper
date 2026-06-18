@@ -33,8 +33,11 @@ find_package(SFML 2.5 COMPONENTS system window graphics CONFIG REQUIRED)
 add_executable(minesweeper ${SOURCE_FILES})
 target_link_libraries(minesweeper PRIVATE sfml-system sfml-window sfml-graphics)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/_Resources/
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/_Resources/)
+# Copy resources next to the executable (handles multi-config generators).
+add_custom_command(TARGET minesweeper POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/_Resources
+                $<TARGET_FILE_DIR:minesweeper>/_Resources)
 
 option(MINESWEEPER_BUILD_TESTS "Build unit tests" ON)
 if (MINESWEEPER_BUILD_TESTS)
