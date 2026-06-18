@@ -13,6 +13,8 @@
 - **Коммиты:** каждое крупное изменение — отдельный коммит. Сообщения **простые и по сути**
   (`fix: ...`, `refactor: ...`, `test: ...`, `build: ...`, `docs: ...`); стиль и историю
   коммитов **до** рефакторинга не копировать.
+- **Теги:** завершение каждого этапа помечается annotated-тегом `stage-N`
+  (`git tag -a stage-N -m "..."`).
 - **Правило перехода к следующему пункту:** проект собирается без ошибок, а с этапа 2 — ещё и
   тесты зелёные.
 
@@ -47,6 +49,7 @@ ctest --test-dir build --output-on-failure
   - [x] убрать жёсткий `set(CMAKE_BUILD_TYPE Debug)` (плюс требование C++17).
 - [x] Добавить `.gitignore` для `build/` (если ещё не игнорируется).
 - [x] **Коммит:** `build: clean up CMake config and ignore build dir`
+- [x] **Тег:** `stage-0`
 
 ---
 
@@ -68,6 +71,7 @@ ctest --test-dir build --output-on-failure
   - [x] **Коммит:** `fix: fail fast with clear error on missing assets`
 - [ ] Ручной прогон: все режимы, сценарии победы/проигрыша/сброса — без падений.
       *(требует сборки в Developer PowerShell)*
+- [x] **Тег:** `stage-1`
 
 ---
 
@@ -96,20 +100,23 @@ ctest --test-dir build --output-on-failure
   - [x] **Коммит:** `test: add Catch2 suite covering Board logic`
 - [ ] `ctest` зелёный; визуально игра ведёт себя корректно.
       *(требует сборки/прогона в Developer PowerShell — недоступно в среде агента)*
+- [x] **Тег:** `stage-2`
 
 ---
 
 ## Этап 3. Окно и состояния
 
-- [ ] **B4** — окно `sf::RenderWindow` создаётся один раз в `MineSweeper`; состояния меняют размер
-      (`setSize`) и при необходимости `sf::View`, без пересоздания окна.
-  - [ ] **Коммит:** `refactor: create window once and resize per state`
-- [ ] **A2** — определиться со `StateManager`: полноценный push/pop с `Pause()/Resume()` **или**
-      упрощение до модели «текущий экран» + фабрика экранов.
-  - [ ] **Коммит:** `refactor: simplify state management`
-- [ ] **A3** — заменить `[&]` на `[this]` во всех колбэках состояний.
-  - [ ] **Коммит:** `refactor: capture this explicitly in state callbacks`
+- [x] **B4** — окно `sf::RenderWindow` создаётся один раз в `MineSweeper`; состояния меняют размер
+      через `resizeWindow()` (`setSize` + `setView`), без пересоздания окна.
+  - [x] **Коммит:** `refactor: create window once and resize per state`
+- [x] **A2** — решение: оставлен стековый `StateManager` (replace/push/pop, без Pause/Resume),
+      задокументирован, убран мёртвый код, добавлен `isEmpty()` и unit-тесты.
+  - [x] **Коммит:** `refactor: clean up StateManager and cover it with tests`
+- [x] **A3** — заменить `[&]` на `[this]` во всех колбэках состояний.
+  - [x] **Коммит:** `refactor: capture this explicitly in state callbacks`
 - [ ] Проверка: переходы между экранами без мерцания, навигация «назад» ожидаема.
+      *(требует сборки/прогона в Developer PowerShell)*
+- [x] **Тег:** `stage-3`
 
 ---
 
