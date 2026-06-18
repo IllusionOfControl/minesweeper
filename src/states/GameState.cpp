@@ -1,17 +1,61 @@
-#include <iostream>
 #include <string>
 #include "GameState.hpp"
 #include "MainMenuState.hpp"
 #include "../DEFINITIONS.h"
 
-/*
- * There was an idea to divide the code into Game Field (the whole game logic of the field),
- *  but everything is confused here :(
- */
+namespace {
+    // Indices into tiles.png (see legend in legacy/ANALYSIS.md).
+    constexpr int TILE_PRESSED = 0;          // same look as a revealed "0"
+    constexpr int TILE_BOMB = 9;
+    constexpr int TILE_BOMB_DETONATED = 10;
+    constexpr int TILE_CLOSED = 11;
+    constexpr int TILE_FLAG = 12;
+    constexpr int TILE_QUESTION = 13;
+    constexpr int TILE_WRONG_FLAG = 14;
+
+    int tileForCell(const Board &board, int x, int y, Board::Status status, bool pressed) {
+        const Board::Cell &cell = board.cellAt(x, y);
+
+        if (status == Board::Status::Lost) {
+            if (cell.isDetonated)
+                return TILE_BOMB_DETONATED;
+            if (cell.isMine && cell.mark == Board::Mark::Flag)
+                return TILE_FLAG;
+            if (cell.isMine)
+                return TILE_BOMB;
+            if (cell.mark == Board::Mark::Flag)
+                return TILE_WRONG_FLAG;
+            if (cell.isRevealed)
+                return cell.adjacentMines;
+            return TILE_CLOSED;
+        }
+
+        if (status == Board::Status::Won) {
+            if (cell.isMine)
+                return TILE_FLAG;
+            if (cell.isRevealed)
+                return cell.adjacentMines;
+            return TILE_CLOSED;
+        }
+
+        // FirstMove / Playing
+        if (cell.isRevealed)
+            return cell.adjacentMines;
+        if (pressed)
+            return TILE_PRESSED;
+        switch (cell.mark) {
+            case Board::Mark::Flag:
+                return TILE_FLAG;
+            case Board::Mark::Question:
+                return TILE_QUESTION;
+            default:
+                return TILE_CLOSED;
+        }
+    }
+}
 
 GameState::GameState(GameDataRef context)
-        : mContext(context), mGuiContainer(), mGameState(GameState::State::GameFirstMove) {
-
+        : mContext(context), mGuiContainer() {
 }
 
 void GameState::init() {
@@ -32,7 +76,7 @@ void GameState::init() {
     mainMenuButton->setNormalTextureRect({0, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setSelectedTextureRect({SQUARE_SIZE * 1, 0, SQUARE_SIZE, SQUARE_SIZE});
     mainMenuButton->setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    mainMenuButton->setCallback([&]() {
+    mainMenuButton->setCallback([this]() {
         mContext->manager.addState(StateRef(new MainMenuState(mContext)), true);
     });
 
@@ -41,7 +85,7 @@ void GameState::init() {
     exitButton->setNormalTextureRect({SQUARE_SIZE * 2, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setSelectedTextureRect({SQUARE_SIZE * 3, 0, SQUARE_SIZE, SQUARE_SIZE});
     exitButton->setPosition((float)(difficulty.field_width + GAME_BORDER_RIGHT) * SQUARE_SIZE, 0);
-    exitButton->setCallback([&]() {
+    exitButton->setCallback([this]() {
         mContext->window.close();
     });
 
@@ -57,11 +101,6 @@ void GameState::init() {
     mTimeLeftIndicator->setPosition((GAME_BORDER_LEFT + difficulty.field_width - 3) * SQUARE_SIZE,
                                     (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
     mTimeLeftIndicator->setFont(mContext->assets.GetFont("default_font"));
-
-    auto &fieldTexture = mContext->assets.getTexture("tile_texture");
-    fieldTexture.setRepeated(true);
-    mGridSprite.setPosition(GAME_BORDER_LEFT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
-    mGridSprite.setTextureRect(TILE_INT_RECT(17));
 
     bool isSmileSmall = difficulty.field_width % 2 ? true : false;
     mSmileButton = std::make_shared<SmileButton>(isSmileSmall);
@@ -89,96 +128,49 @@ void GameState::handleInput() {
     while (mContext->window.pollEvent(event)) {
         mGuiContainer.handleEvent(event);
 
-        auto fieldRect = sf::IntRect(GAME_BORDER_LEFT * SQUARE_SIZE,
-                                     GAME_BORDER_TOP * SQUARE_SIZE,
-                                     mContext->difficulty.field_width * SQUARE_SIZE,
-                                     mContext->difficulty.field_height * SQUARE_SIZE);
         switch (event.type) {
             case sf::Event::Closed:
                 mContext->window.close();
                 break;
-            case sf::Event::MouseMoved:
-                break;
-            case sf::Event::MouseButtonReleased: {
-                auto mousePos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (mGameState == GameState::State::GamePlaying
-                        || mGameState == GameState::State::GameFirstMove) {
-                        if (fieldRect.contains(mousePos)) {
-                            if (mGameState == GameState::State::GameFirstMove)
-                                mGameClock.restart();
 
-                            int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
-                            int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
-
-                            if (mGameState == GameState::State::GameFirstMove) {
-                                mGameState = GameState::State::GamePlaying;
-                                initGridArray(col, row);
-                            }
-
-                            revealCell(col, row);
-                            mSmileButton->setReaction(SmileButton::SmileUsual);
-                            mNeedToUpdate = true;
-                        }
-                    }
-                }
-                if (mGameState == GameState::State::GamePlaying && event.mouseButton.button == sf::Mouse::Right) {
-                    if (fieldRect.contains(mousePos)) {
-                        int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
-                        int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
-
-                        if (mGameState == GameState::State::GamePlaying &&
-                            mMinesCount > -5) {
-                            markCell(col, row);
-                            mNeedToUpdate = true;
-                        }
-                    }
-                }
-                break;
-            }
             case sf::Event::MouseButtonPressed: {
-                auto mousePos = sf::Mouse::getPosition(mContext->window);
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    // если игра - PLAYING, то находим нажатую ячейку
-                    // делаем ячейчку выбранной
-                    // а смайл улыбающимся
-                    if (mGameState == GameState::State::GamePlaying) {
-                        if (fieldRect.contains(mousePos)) {
-                            int col = (mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE;
-                            int row = (mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE;
-
-                            mGridArray.at(row * mContext->difficulty.field_width + col) |= CELL_SELECTED;
-                            mSmileButton->setReaction(SmileButton::SmileReveal);
-                            mNeedToUpdate = true;
-                        }
-                    }
-                } else if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
-                    // если игра - PLAYING, то находим нажатую ячейку
-                    // делаем ячейчки выбранными +1 -1 в разные стороный от выбранной мыши
-                    if (fieldRect.contains(mousePos) && mGameState == GameState::State::GamePlaying) {
-                        int col = ((mousePos.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE);
-                        int row = ((mousePos.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE);
-
-                        selectCellsArea(col, row);
-                    }
-                } else {
-                    if (mGameState == GameState::State::GameLose) {
-                        mSmileButton->setReaction(SmileButton::SmileLose);
-                    } else if (mGameState == GameState::State::GameWon) {
-                        mSmileButton->setReaction(SmileButton::SmileWin);
-                    } else {
-                        mSmileButton->setReaction(SmileButton::SmileUsual);
-                    }
+                auto cell = cellAt({event.mouseButton.x, event.mouseButton.y});
+                if (event.mouseButton.button == sf::Mouse::Left
+                    && mBoard->inBounds(cell.x, cell.y)
+                    && mBoard->status() == Board::Status::Playing) {
+                    mPressedCell = cell.y * mBoard->width() + cell.x;
+                    mSmileButton->setReaction(SmileButton::SmileReveal);
+                    mNeedToUpdate = true;
                 }
-                mNeedToUpdate = true;
                 break;
             }
-            case sf::Event::KeyPressed: {
-                if (event.key.code == sf::Keyboard::R) {
+
+            case sf::Event::MouseButtonReleased: {
+                auto cell = cellAt({event.mouseButton.x, event.mouseButton.y});
+                mPressedCell = -1;
+
+                if (mBoard->inBounds(cell.x, cell.y)) {
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        if (mBoard->status() == Board::Status::FirstMove)
+                            mGameClock.restart();
+                        mBoard->reveal(cell.x, cell.y);
+                        mNeedToUpdate = true;
+                    } else if (event.mouseButton.button == sf::Mouse::Right) {
+                        mBoard->toggleMark(cell.x, cell.y);
+                        mNeedToUpdate = true;
+                    } else if (event.mouseButton.button == sf::Mouse::Middle) {
+                        mBoard->chord(cell.x, cell.y);
+                        mNeedToUpdate = true;
+                    }
+                }
+                break;
+            }
+
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::R)
                     reset();
-                }
                 break;
-            }
+
             default:
                 break;
         }
@@ -187,44 +179,50 @@ void GameState::handleInput() {
 
 void GameState::update() {
     if (mNeedToUpdate) {
-        if (mGameState == GameState::State::GamePlaying) {
-            updateGridCells();
+        renderCells();
+        mMinesLeftIndicator->setString(std::to_string(mBoard->minesLeft()));
+
+        switch (mBoard->status()) {
+            case Board::Status::Won:
+                mSmileButton->setReaction(SmileButton::SmileWin);
+                break;
+            case Board::Status::Lost:
+                mSmileButton->setReaction(SmileButton::SmileLose);
+                break;
+            default:
+                if (mPressedCell < 0)
+                    mSmileButton->setReaction(SmileButton::SmileUsual);
+                break;
         }
-        if (mGameState == GameState::State::GameLose) {
-            updateGridCellsOnLose();
-        }
-        if (mGameState == GameState::State::GameWon) {
-            updateGridCellsOnWin();
-        }
+
         mNeedToUpdate = false;
     }
 
-    if (mGameState == GameState::State::GamePlaying) {
+    if (mBoard->status() == Board::Status::Playing)
         updateTimer();
-        checkOnWin();
-    }
 }
 
 void GameState::reset() {
-    mGameState = GameState::State::GameFirstMove;
-    mMinesCount = mContext->difficulty.bomb_count;
-    mNeedToUpdate = false;
-    mGameTime = 0;
-    mSmileButton->setReaction(SmileButton::SmileUsual);
+    auto difficulty = mContext->difficulty;
+    mBoard = std::make_unique<Board>(difficulty.field_width, difficulty.field_height, difficulty.bomb_count);
 
-    mMinesLeftIndicator->setString(std::to_string(mMinesCount));
+    mPressedCell = -1;
+    mGameTime = 0;
+    mNeedToUpdate = false;
+
+    mSmileButton->setReaction(SmileButton::SmileUsual);
+    mMinesLeftIndicator->setString(std::to_string(mBoard->minesLeft()));
     mTimeLeftIndicator->setString(std::to_string(mGameTime));
 
     initGridCells();
 }
-
 
 void GameState::draw() {
     mContext->window.clear(sf::Color::Red);
 
     mContext->window.draw(mGuiContainer);
 
-    for (auto cell: mGridCells) {
+    for (auto &cell: mGridCells) {
         mContext->window.draw(cell);
     }
 
@@ -233,142 +231,27 @@ void GameState::draw() {
 
 void GameState::initGridCells() {
     mGridCells.clear();
-    auto difficulty = mContext->difficulty;
 
-    int cellCount = difficulty.field_height * difficulty.field_width;
-    for (int i = 0; i < cellCount; i++) {
-        int cell_y = std::ceil(i / difficulty.field_width);
-        int cell_x = i % difficulty.field_width;
-        sf::Sprite cell;
-        cell.setTexture(mContext->assets.getTexture("tile_texture"));
-        cell.setTextureRect(TILE_INT_RECT(11));
-        auto position = sf::Vector2f((GAME_BORDER_LEFT + cell_x) * SQUARE_SIZE,
-                                     (GAME_BORDER_TOP + cell_y) * SQUARE_SIZE);
-        cell.setPosition(position);
-
-        mGridCells.push_back(cell);
-    }
-}
-
-void GameState::initGridArray(int x, int y) {
-    mGridArray.clear();
-    mCellsRevealed = 0;
-
-    auto difficulty = mContext->difficulty;
-
-    int cellCount = difficulty.field_height * difficulty.field_width;
-    int firstMoveCell = y * difficulty.field_width + x;
-    for (int i = 0; i < cellCount; i++) {
-        mGridArray.push_back(0);
-    }
-
-    for (int i = 0; i < mContext->difficulty.bomb_count; i++) {
-        int randCol = rand() % (difficulty.field_width);
-        int randRow = rand() % (difficulty.field_height);
-        int cellNum = randRow * difficulty.field_width + randCol;
-        if (mGridArray.at(cellNum) == CELL_BOMB || cellNum == firstMoveCell) {
-            i--;
-            continue;
-        }
-        mGridArray.at(cellNum) = CELL_BOMB;
-        for (int row = (randRow - 1); row <= randRow + 1; row++) {
-            if (row >= 0 && row < difficulty.field_height) {
-                for (int col = (randCol - 1); col <= randCol + 1; col++) {
-                    if (col >= 0 && col < difficulty.field_width) {
-                        if (mGridArray.at(row * difficulty.field_width + col) < CELL_BOMB)
-                            mGridArray.at(row * difficulty.field_width + col)++;
-                    }
-                }
-            }
+    auto &texture = mContext->assets.getTexture("tile_texture");
+    for (int y = 0; y < mBoard->height(); ++y) {
+        for (int x = 0; x < mBoard->width(); ++x) {
+            sf::Sprite cell;
+            cell.setTexture(texture);
+            cell.setTextureRect(TILE_INT_RECT(TILE_CLOSED));
+            cell.setPosition((GAME_BORDER_LEFT + x) * SQUARE_SIZE,
+                             (GAME_BORDER_TOP + y) * SQUARE_SIZE);
+            mGridCells.push_back(cell);
         }
     }
 }
 
-void GameState::revealCell(int x, int y) {
-    auto difficulty = mContext->difficulty;
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) {
-        return;
-    }
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_REVEALED) {
-        return;
-    }
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) == CELL_BOMB) {
-        mGameState = GameState::State::GameLose;
-        mGridArray.at(y * mContext->difficulty.field_width + x) = CELL_BOMB_DETONATED;
-        return;
-    }
-
-    mGridArray.at(y * mContext->difficulty.field_width + x) &= 0xF;
-    mGridArray.at(y * mContext->difficulty.field_width + x) |= CELL_REVEALED;
-    mCellsRevealed++;
-
-    if ((mGridArray.at(y * difficulty.field_width + x) & 0xF) == CELL_EMPTY) {
-        for (int row = (y - 1); row <= y + 1; row++) {
-            if (row >= 0 && row < difficulty.field_height) {
-                for (int col = (x - 1); col <= x + 1; col++) {
-                    if (col >= 0 && col < difficulty.field_width) {
-                        if (!(mGridArray.at(row * difficulty.field_width + col) & CELL_REVEALED)) {
-                            if (row == y && col == x) continue;
-                            revealCell(col, row);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-void GameState::markCell(int x, int y) {
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_REVEALED)
-        return;
-
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) {
-        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_FLAG;
-        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_QUESTION;
-        mMinesCount++;
-        return;
-    }
-
-    if (!(mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_FLAG) &&
-        !(mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_QUESTION)) {
-        mGridArray.at(y * mContext->difficulty.field_width + x) |= CELL_FLAG;
-        mMinesCount--;
-        return;
-    }
-
-    if (mGridArray.at(y * mContext->difficulty.field_width + x) & CELL_QUESTION) {
-        mGridArray.at(y * mContext->difficulty.field_width + x) ^= CELL_QUESTION;
-    }
-}
-
-void GameState::updateGridCellsOnLose() {
-    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
-    for (int i = 0; i < fieldSize; i++) {
-        if (mGridArray.at(i) & CELL_FLAG && ((mGridArray.at(i) & 0xF) != CELL_BOMB)) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(14));
-        } else if (((mGridArray.at(i) & 0xF) == CELL_BOMB) && (mGridArray.at(i) & CELL_FLAG)) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
-            continue;
-        } else if (mGridArray.at(i) == CELL_BOMB) {
-            int cellValue = mGridArray.at(i) & 0xF;
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(cellValue));
-        } else if (mGridArray.at(i) == CELL_BOMB_DETONATED) {
-            int cellValue = mGridArray.at(i) & 0xF;
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(cellValue));
-        }
-    }
-}
-
-void GameState::updateGridCellsOnWin() {
-    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
-    for (int i = 0; i < fieldSize; i++) {
-        if (mGridArray.at(i) == CELL_BOMB && (mGridArray.at(i) & CELL_FLAG)) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
-            continue;
-        } else if (mGridArray.at(i) == CELL_BOMB) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
-        } else if (mGridArray.at(i) == CELL_BOMB_DETONATED) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
+void GameState::renderCells() {
+    const Board::Status status = mBoard->status();
+    for (int y = 0; y < mBoard->height(); ++y) {
+        for (int x = 0; x < mBoard->width(); ++x) {
+            const int i = y * mBoard->width() + x;
+            const bool pressed = (i == mPressedCell);
+            mGridCells.at(i).setTextureRect(TILE_INT_RECT(tileForCell(*mBoard, x, y, status, pressed)));
         }
     }
 }
@@ -383,44 +266,14 @@ void GameState::updateTimer() {
     }
 }
 
-void GameState::checkOnWin() {
-    auto difficulty = mContext->difficulty;
-    int cellsLeft = difficulty.field_width * difficulty.field_height - mCellsRevealed;
-    if (cellsLeft == difficulty.bomb_count) {
-        mGameState = GameState::State::GameWon;
-        mSmileButton->setReaction(SmileButton::SmileWin);
-    }
-}
+sf::Vector2i GameState::cellAt(sf::Vector2i pixel) const {
+    sf::IntRect field(GAME_BORDER_LEFT * SQUARE_SIZE,
+                      GAME_BORDER_TOP * SQUARE_SIZE,
+                      mBoard->width() * SQUARE_SIZE,
+                      mBoard->height() * SQUARE_SIZE);
+    if (!field.contains(pixel))
+        return {-1, -1};
 
-void GameState::updateGridCells() {
-    int fieldSize = mContext->difficulty.field_height * mContext->difficulty.field_width;
-    for (int i = 0; i < fieldSize; i++) {
-        if (mGridArray.at(i) & CELL_REVEALED) {
-            int cellValue = mGridArray.at(i) & 0xF;
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(cellValue));
-        } else if (mGridArray.at(i) & CELL_FLAG) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(12));
-        } else if (mGridArray.at(i) & CELL_QUESTION) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(13));
-        } else if (mGridArray.at(i) & CELL_SELECTED) {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(0));
-            mGridArray.at(i) &= 0xF;
-        } else {
-            mGridCells.at(i).setTextureRect(TILE_INT_RECT(11));
-        }
-    }
-    mMinesLeftIndicator->setString(std::to_string(mMinesCount));
-}
-
-void GameState::selectCellsArea(int col, int row) {
-    auto difficulty = mContext->difficulty;
-
-    for (int i = row ? row - 1 : row;
-         i <= (row + 1 < difficulty.field_height ? row + 1 : difficulty.field_height - 1); i++) {
-        for (int j = col ? col - 1 : col;
-             j <= (col + 1 < difficulty.field_width ? col + 1 : difficulty.field_width - 1); j++) {
-            int cell_num = i * mContext->difficulty.field_width + j;
-            mGridArray.at(cell_num) |= CELL_SELECTED;
-        }
-    }
+    return {(pixel.x - GAME_BORDER_LEFT * SQUARE_SIZE) / SQUARE_SIZE,
+            (pixel.y - GAME_BORDER_TOP * SQUARE_SIZE) / SQUARE_SIZE};
 }

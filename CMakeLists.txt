@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCE_FILES
         src/main.cpp
         src/DEFINITIONS.h
+        src/Board.cpp src/Board.hpp
         src/MineSweeper.cpp src/MineSweeper.hpp
         src/managers/AssetManager.cpp src/managers/AssetManager.hpp
         src/managers/StateManager.cpp src/managers/StateManager.hpp
