@@ -9,7 +9,9 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(minesweeper_tests
         BoardTest.cpp
-        ${CMAKE_SOURCE_DIR}/src/Board.cpp)
+        StateManagerTest.cpp
+        ${CMAKE_SOURCE_DIR}/src/Board.cpp
+        ${CMAKE_SOURCE_DIR}/src/managers/StateManager.cpp)
 target_include_directories(minesweeper_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(minesweeper_tests PRIVATE Catch2::Catch2WithMain)
 
