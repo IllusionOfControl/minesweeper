@@ -1,8 +1,11 @@
 #ifndef MINESWEEPER_GAMESTATE_HPP
 #define MINESWEEPER_GAMESTATE_HPP
 
+#include <memory>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "State.hpp"
+#include "../Board.hpp"
 #include "../MineSweeper.hpp"
 #include "../gui/Background.hpp"
 #include "../gui/Container.hpp"
@@ -11,23 +14,6 @@
 #include "../gui/SmileButton.hpp"
 
 class GameState : public State {
-public:
-    enum State {
-        GameFirstMove,
-        GamePlaying,
-        GameWon,
-        GameLose
-    };
-    enum CellState {
-        CellEmpty,
-        CellBomb,
-        CellBombDetonated,
-        CellFlag,
-        CellQuestion,
-        CellRevealed,
-        CellSelected
-    };
-
 public:
     explicit GameState(GameDataRef context);
 
@@ -40,41 +26,29 @@ public:
     void draw() override;
 
 private:
-    void initGridCells();
-
-    void initGridArray(int x, int y);
-
     void reset();
 
-    void revealCell(int x, int y);
+    void initGridCells();
 
-    void markCell(int x, int y);
+    void renderCells();
 
-    void updateGridCells();
-    void updateGridCellsOnLose();
-    void updateGridCellsOnWin();
     void updateTimer();
-    void checkOnWin();
 
-    void selectCellsArea(int col, int row);
+    // Pixel position -> cell coordinates; returns {-1,-1} if outside the field.
+    sf::Vector2i cellAt(sf::Vector2i pixel) const;
 
 private:
     GameDataRef mContext;
 
-    sf::Sprite mGridSprite;
+    std::unique_ptr<Board> mBoard;
 
     std::vector<sf::Sprite> mGridCells;
-    std::vector<int> mGridArray;
-
-    State mGameState;
 
     bool mNeedToUpdate = false;
-
-    int mCellsRevealed = 0;
-    int mMinesCount = 0;
     int mGameTime = 0;
+    int mPressedCell = -1;
 
-    sf::Clock mGameClock;   // ??
+    sf::Clock mGameClock;
     sf::Time mGameTimer;
 
     Container mGuiContainer;
