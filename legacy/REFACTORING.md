@@ -155,18 +155,22 @@ ctest --test-dir build --output-on-failure
 
 ## Этап 6. Инфраструктура
 
-- [ ] **C2** — резолвить путь к ресурсам относительно исполняемого файла.
-  - [ ] **Коммит:** `fix: resolve asset paths relative to executable`
-- [ ] CI (GitHub Actions, Windows + MSVC): конфигурация, сборка, `ctest` на push/PR.
-  - [ ] **Коммит:** `ci: build and test on Windows`
-- [ ] Обновить `README.md`: раздел архитектуры, корректный URL репозитория, запуск тестов.
-  - [ ] **Коммит:** `docs: update README with architecture and test instructions`
+- [x] **C2** — рабочая директория переключается на папку exe при старте; ресурсы копируются
+      рядом с бинарником post-build.
+  - [x] **Коммит:** `fix: resolve asset paths relative to executable`
+- [x] CI (GitHub Actions, Windows + vcpkg): конфигурация, сборка, `ctest` на push/PR.
+  - [x] **Коммит:** `ci: build and test on Windows`
+- [x] Обновить `README.md`: раздел архитектуры, корректный URL репозитория, запуск тестов.
+  - [x] **Коммит:** `docs: update README with architecture and test instructions`
+- [x] **Тег:** `stage-6`
 
 ---
 
 ## Финал
 
-- [ ] Все этапы отмечены; `ctest` зелёный; игра работает во всех режимах.
+- [x] Все этапы отмечены тегами `stage-0 … stage-6`.
+- [ ] `ctest` зелёный; игра работает во всех режимах
+      *(финальная проверка сборки/тестов — в Developer PowerShell; в среде агента тулчейн недоступен)*.
 - [ ] Открыть PR `cleanup` → `master`.
 
 ## Карта «проблема → этап»
