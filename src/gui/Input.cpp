@@ -4,6 +4,12 @@
 #include <utility>
 #include "Input.hpp"
 
+namespace {
+    // Text padding inside the input box, relative to its top-left corner.
+    constexpr float kTextOffsetX = 20.f;
+    constexpr float kTextOffsetY = 22.f;
+}
+
 Input::Input()
         : mInputFilterCallback()
         , mValidationCallback()
@@ -12,8 +18,7 @@ Input::Input()
         , mSprite()
         , mInputLimit(65536)
         , mIsValid(false) {
-    // startCoord +- offset, magic numbers
-    mText.setPosition(0 + 20, 32 - 10);
+    mText.setPosition(kTextOffsetX, kTextOffsetY);
 }
 
 /*

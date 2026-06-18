@@ -1,13 +1,20 @@
 #include "Indicator.hpp"
 
+namespace {
+    constexpr unsigned int kCharacterSize = 20;
+    constexpr float kTextScale = 2.f;
+    // Offset of the digits over the LED background.
+    constexpr float kTextOffsetX = 6.f;
+    constexpr float kTextOffsetY = -14.f;
+}
 
 Indicator::Indicator()
         : mSprite()
         , mText() {
-    mText.setCharacterSize(20);
+    mText.setCharacterSize(kCharacterSize);
     mText.setStyle(sf::Text::Bold);
-    mText.setScale(2.f, 2.f);
-    mText.setPosition(6, -14);
+    mText.setScale(kTextScale, kTextScale);
+    mText.setPosition(kTextOffsetX, kTextOffsetY);
 }
 
 Indicator::~Indicator() = default;
