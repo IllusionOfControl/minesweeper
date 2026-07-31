@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    {
+      "name": "sfml",
+      "version>=": "3.0.2"
+    },
+    {
+      "name": "spdlog",
+      "version>=": "1.17.0#1"
+    }
+  ]
+}
