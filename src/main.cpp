@@ -1,5 +1,7 @@
 #include <filesystem>
 #include <iostream>
+
+#include "Logger.hpp"
 #include "MineSweeper.hpp"
 
 #ifdef _WIN32
@@ -21,13 +23,25 @@ namespace {
 }
 
 int main() {
+    Log::init();
+    spdlog::info("Starting Minesweeper...");
+
     try {
         std::error_code ec;
-        std::filesystem::current_path(executableDir(), ec);
+        const auto workingDir = executableDir();
+        std::filesystem::current_path(workingDir, ec);
+        if (ec) {
+            spdlog::warn("Failed to set working directory to {}: {}", workingDir.string(), ec.message());
+        } else {
+            spdlog::debug("Working directory set to: {}", workingDir.string());
+        }
 
-        MineSweeper();
+        MineSweeper app;
+        app.run();
+
+        spdlog::info("Minesweeper closed normally.");
     } catch (const std::exception &e) {
-        std::cerr << "Fatal error: " << e.what() << std::endl;
+        spdlog::critical("Fatal unhandled exception: {}", e.what());
         return 1;
     }
     return 0;

@@ -16,6 +16,13 @@ set(SOURCE_FILES
         src/GameContext.hpp
         src/MineSweeper.cpp
         src/MineSweeper.hpp
+        src/managers/StateManager.cpp
+        src/managers/StateManager.hpp
+        src/managers/AssetManager.hpp
+        src/states/StateIdentifiers.hpp
+        src/states/EmptyState.cpp
+        src/Logger.cpp
+        src/Logger.hpp
         #        src/DEFINITIONS.h
 #        src/WindowUtils.hpp
 #        src/Board.cpp src/Board.hpp

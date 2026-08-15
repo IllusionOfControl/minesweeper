@@ -14,6 +14,7 @@ public:
 
 private:
     void loadAssets();
+    void registerStates();
 
     sf::RenderWindow mWindow;
     AssetManager mAssets;

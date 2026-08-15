@@ -1,36 +1,63 @@
 #ifndef MINESWEEPER_STATEMANAGER_HPP
 #define MINESWEEPER_STATEMANAGER_HPP
 
+#include <functional>
 #include <memory>
 #include <stack>
+#include <unordered_map>
+#include <vector>
 
-#include "../states/State.hpp"
+#include "states/State.hpp"
+#include "states/StateIdentifiers.hpp"
 
-// Explicit stack of screens. addState() replaces the top by default
-// (isReplacing = true) or pushes on top of it (isReplacing = false);
-// removeState() pops. States are cheap and rebuilt on navigation, so there is
-// no Pause/Resume - going "back" simply pushes/replaces with a fresh state.
-// Changes are deferred and applied by processStateChanges() once per frame.
+struct GameContext;
+
 class StateManager {
 public:
-    StateManager() { }
-    ~StateManager() { }
+    enum class Action {
+        Push,
+        Pop,
+        Change,
+        Clear
+    };
 
-    void addState(StateRef newState, bool isReplacing = true);
-    void removeState();
-    // run at the start of each frame
+    explicit StateManager(GameContext& context);
+    ~StateManager() = default;
+
+    StateManager(const StateManager&) = delete;
+    StateManager& operator=(const StateManager&) = delete;
+
+    template<typename T>
+    void registerState(StateID stateId) {
+        mFactories[stateId] = [this]() {
+            return std::make_unique<T>(mContext);
+        };
+    }
+
+    void pushState(StateID stateId);
+    void changeState(StateID stateId);
+    void popState();
+    void clearStates();
+
     void processStateChanges();
 
-    StateRef &getActiveState();
+    [[nodiscard]] State* getActiveState() const;
 
-    bool isEmpty() const { return mStateStack.empty(); }
+    [[nodiscard]] bool isEmpty() const { return mStateStack.empty(); }
 
 private:
-    std::stack<StateRef> mStateStack;
-    State::Ptr mNewState;
+    struct PendingChange {
+        Action action;
+        StateID stateId = StateID::None;
+    };
 
-    bool _isRemoving = false;
-    bool _isAdding = false, _isReplacing = false;
+    StatePtr createState(StateID stateId);
+    void applyChange(const PendingChange& change);
+
+    GameContext& mContext;
+    std::stack<StatePtr> mStateStack;
+    std::vector<PendingChange> mPendingChanges;
+    std::unordered_map<StateID, std::function<StatePtr()>> mFactories;
 };
 
 

@@ -1,16 +1,32 @@
 #include "MineSweeper.hpp"
 
+#include "states/EmptyState.hpp"
+
 MineSweeper::MineSweeper()
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
       , mAssets()
-      , mStateManager()
       , mDifficulty(Difficulty::create(Difficulty::Preset::Easy))
-      , mContext(mWindow, mAssets, mStateManager, mDifficulty) {
+      , mContext(mWindow, mAssets, mStateManager, mDifficulty)
+      , mStateManager(mContext) {
     loadAssets();
-    // mStateManager.changeState<MainMenuState>(mContext);
+    registerStates();
+
+    mStateManager.changeState(StateID::Empty);
 }
 
 void MineSweeper::run() {
+    while (mWindow.isOpen()) {
+        mStateManager.processStateChanges();
+
+        State* activeState = mStateManager.getActiveState();
+        if (!activeState) {
+            break;
+        }
+
+        activeState->handleInput();
+        activeState->update();
+        activeState->draw();
+    }
     // mData->assets.loadTexture("tile_texture", "_Resources/res/tiles.png");
     // mData->assets.loadTexture("logo", "_Resources/res/logo.png");
     // mData->assets.loadTexture("background", "_Resources/res/tiles.png",
@@ -27,14 +43,10 @@ void MineSweeper::run() {
     //                                 sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
     //
     // mData->assets.loadFont("default_font", "_Resources/fonts/visitor1.ttf");
-    //
-    // while (mData->window.isOpen()) {
-    //     mData->manager.processStateChanges();
-    //     mData->manager.getActiveState()->handleInput();
-    //     mData->manager.getActiveState()->update();
-    //
-    //     mData->manager.getActiveState()->draw();
-    // }
 }
 
 void MineSweeper::loadAssets() {}
+
+void MineSweeper::registerStates() {
+    mStateManager.registerState<EmptyState>(StateID::Empty);
+}
