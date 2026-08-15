@@ -10,10 +10,16 @@ find_package(spdlog CONFIG REQUIRED)
 
 set(SOURCE_FILES
         src/main.cpp
-#        src/DEFINITIONS.h
+        src/Difficulty.cpp
+        src/Difficulty.hpp
+        src/GameContext.cpp
+        src/GameContext.hpp
+        src/MineSweeper.cpp
+        src/MineSweeper.hpp
+        #        src/DEFINITIONS.h
 #        src/WindowUtils.hpp
 #        src/Board.cpp src/Board.hpp
-#        src/MineSweeper.cpp src/MineSweeper.hpp
+
 #        src/managers/AssetManager.cpp src/managers/AssetManager.hpp
 #        src/managers/StateManager.cpp src/managers/StateManager.hpp
 #        src/states/State.hpp
