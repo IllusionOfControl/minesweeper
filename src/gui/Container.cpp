@@ -3,6 +3,8 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "Container.hpp"
 
+#include <algorithm>
+
 Container::Container()
         : mChildren() {
 }

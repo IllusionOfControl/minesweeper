@@ -1,14 +1,11 @@
 #ifndef MINESWEEPER_GAMECONTEXT_HPP
 #define MINESWEEPER_GAMECONTEXT_HPP
 
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #include "Difficulty.hpp"
-
-namespace sf {
-    class RenderWindow;
-}
-
-class AssetManager;
-class StateManager;
+#include "managers/AssetManager.hpp"
+#include "managers/StateManager.hpp"
 
 struct GameContext {
     sf::RenderWindow& window;

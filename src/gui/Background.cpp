@@ -6,22 +6,15 @@
 #include "Background.hpp"
 
 
-Background::Background()
-        : mSprite() {
-
-}
-
-Background::~Background() = default;
-
 void Background::setTexture(sf::Texture &texture) {
     texture.setRepeated(true);
-    mSprite.setTexture(texture);
+    mSprite.emplace(texture);
 }
 
-void Background::setTextureRect(sf::IntRect rectangle) {
-    mSprite.setTextureRect(rectangle);
+void Background::setTextureRect(const sf::IntRect rectangle) {
+    if (mSprite) mSprite->setTextureRect(rectangle);
 }
 
-void Background::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.draw(mSprite, states);
+void Background::draw(sf::RenderTarget &target, const sf::RenderStates states) const {
+    if (mSprite) target.draw(*mSprite, states);
 }
