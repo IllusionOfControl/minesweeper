@@ -1,6 +1,7 @@
 #include "MineSweeper.hpp"
 
 #include "states/EmptyState.hpp"
+#include "states/MainMenuState.hpp"
 
 MineSweeper::MineSweeper()
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
@@ -11,7 +12,7 @@ MineSweeper::MineSweeper()
     loadAssets();
     registerStates();
 
-    mStateManager.changeState(StateID::Empty);
+    mStateManager.changeState(StateID::MainMenu);
 }
 
 void MineSweeper::run() {
@@ -29,7 +30,7 @@ void MineSweeper::run() {
     }
     // mData->assets.loadTexture("tile_texture", "_Resources/res/tiles.png");
     // mData->assets.loadTexture("logo", "_Resources/res/logo.png");
-    // mData->assets.loadTexture("background", "_Resources/res/tiles.png",
+
     //                                 sf::IntRect(15 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
     // mData->assets.loadTexture("smiles_button", "_Resources/res/smiles.png");
     // mData->assets.loadTexture(TEXTURE_SECOND_NAME, "_Resources/res/second.png");
@@ -45,8 +46,12 @@ void MineSweeper::run() {
     // mData->assets.loadFont("default_font", "_Resources/fonts/visitor1.ttf");
 }
 
-void MineSweeper::loadAssets() {}
+void MineSweeper::loadAssets() {
+    mAssets.loadTexture(TextureID::Background, "_Resources/res/tiles.png");
+    mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
+}
 
 void MineSweeper::registerStates() {
     mStateManager.registerState<EmptyState>(StateID::Empty);
+    mStateManager.registerState<MainMenuState>(StateID::MainMenu);
 }

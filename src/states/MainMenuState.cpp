@@ -1,74 +1,78 @@
 #include "MainMenuState.hpp"
-#include "../gui/WidgetFactory.hpp"
-#include "../WindowUtils.hpp"
 
-MainMenuState::MainMenuState(GameDataRef context)
-        : mContext(context)
-        , mGuiContainer() {
+#include "GameContext.hpp"
+#include "Layout.hpp"
+#include "WindowUtils.hpp"
+#include "gui/Button.hpp"
+#include "managers/ResourceIdentifiers.hpp"
 
+namespace {
+    constexpr int kMenuWidth = 5;
+    constexpr int kMenuHeight = 7;
+
+    constexpr int kButtonWidth = 5;
+    constexpr int kButtonHeight = 1;
 }
 
 void MainMenuState::init() {
-    resizeWindow(mContext->window,
-                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
-    widgets::setupBackground(mBackground, mContext);
+    constexpr auto windowSize = Layout::toWindowSize(kMenuWidth, kMenuHeight);
+    resizeWindow(getContext().window, windowSize);
 
-    auto &buttonTextures = mContext->assets.getTexture("mainmenu_buttons");
+    auto& bg_texture = getContext().assets.getTexture(TextureID::Background);
+    mBackground.setTexture(bg_texture);
+    mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
 
-    auto playButton = std::make_shared<Button>();
+    const auto& buttonTextures = getContext().assets.getTexture(TextureID::MainMenuButtons);
+
+    const auto playButton = std::make_shared<Button>();
     playButton->setTexture(buttonTextures);
-    playButton->setNormalTextureRect(BUTTON_INT_RECT(0, 0));
-    playButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 0));
+    playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonWidth, kButtonHeight));
+    playButton->setSelectedTextureRect(Layout::getRect(1, 0, kButtonWidth, kButtonHeight));
     playButton->setCallback([this]() {
-        mContext->manager.addState(StateRef(new DifficultyMenuState(mContext)), true);
+        getContext().states.changeState(StateID::Empty);
     });
-    playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
+    playButton->setPosition(Layout::toPixels(1, 5));
 
-    auto aboutButton = std::make_shared<Button>();
-    aboutButton->setTexture(buttonTextures);
-    aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
-    aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
-    aboutButton->setCallback([this]() {
-        mContext->manager.addState(StateRef(new AboutState(mContext)), true);
-    });
-    aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
-
-    auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(buttonTextures);
-    exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
-    exitButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 2));
-    exitButton->setCallback([this]() {
-        mContext->window.close();
-    });
-    exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);
-
-    mLogo.setPosition(32, 0);
-    mLogo.setTexture(mContext->assets.getTexture("logo"));
+    // auto aboutButton = std::make_shared<Button>();
+    // aboutButton->setTexture(buttonTextures);
+    // aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
+    // aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
+    // aboutButton->setCallback([this]() { mContext->manager.addState(StateRef(new AboutState(mContext)), true); });
+    // aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
+    //
+    // auto exitButton = std::make_shared<Button>();
+    // exitButton->setTexture(buttonTextures);
+    // exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
+    // exitButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 2));
+    // exitButton->setCallback([this]() { mContext->window.close(); });
+    // exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);
+    //
+    // mLogo.setPosition(32, 0);
+    // mLogo.setTexture(mContext->assets.getTexture("logo"));
 
     mGuiContainer.pack(playButton);
-    mGuiContainer.pack(aboutButton);
-    mGuiContainer.pack(exitButton);
+    // mGuiContainer.pack(aboutButton);
+    // mGuiContainer.pack(exitButton);
 }
 
 void MainMenuState::handleInput() {
-    sf::Event event;
-
-    while (mContext->window.pollEvent(event)) {
-        mGuiContainer.handleEvent(event);
+    while (const std::optional<sf::Event> event = getContext().window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            getContext().window.close();
+            return;
+        }
+        // mGuiContainer.handleEvent(event);
     }
 }
 
-void MainMenuState::update() {
-
-}
+void MainMenuState::update() {}
 
 void MainMenuState::draw() {
-    mContext->window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color::Red);
 
-    mContext->window.draw(mBackground);
-    mContext->window.draw(mGuiContainer);
-    mContext->window.draw(mLogo);
+    getContext().window.draw(mBackground);
+    getContext().window.draw(mGuiContainer);
+    // mContext->window.draw(mLogo);
 
-    mContext->window.display();
+    getContext().window.display();
 }

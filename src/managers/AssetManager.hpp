@@ -2,7 +2,7 @@
 #define MINESWEEPER_ASSETMANAGER_HPP
 
 #include <SFML/Graphics.hpp>
-#include <ResourceIdentifiers.hpp>
+#include "ResourceIdentifiers.hpp"
 
 class AssetManager {
 public:

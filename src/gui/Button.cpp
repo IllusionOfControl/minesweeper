@@ -6,8 +6,7 @@
 Button::Button()
         : mCallback()
         , mNormalTextureRect()
-        , mSelectedTextureRect()
-        , mSprite() {
+        , mSelectedTextureRect() {
 }
 
 void Button::setCallback(Callback callback) {
@@ -15,31 +14,31 @@ void Button::setCallback(Callback callback) {
 }
 
 void Button::setTexture(const sf::Texture& texture) {
-    mSprite.setTexture(texture);
+    if (mSprite) mSprite->setTexture(texture);
 }
 
-void Button::setTextureRect(sf::IntRect rect) {
+void Button::setTextureRect(const sf::IntRect rect) {
     Button::setNormalTextureRect(rect);
     Button::setSelectedTextureRect(rect);
 }
 
-void Button::setNormalTextureRect(sf::IntRect rect) {
+void Button::setNormalTextureRect(const sf::IntRect rect) {
     mNormalTextureRect = rect;
-    mSprite.setTextureRect(mNormalTextureRect);
+    if (mSprite) mSprite->setTextureRect(mNormalTextureRect);
 }
 
-void Button::setSelectedTextureRect(sf::IntRect rect) {
+void Button::setSelectedTextureRect(const sf::IntRect rect) {
     mSelectedTextureRect = rect;
 }
 
 void Button::select() {
     Component::select();
-    mSprite.setTextureRect(mSelectedTextureRect);
+    if (mSprite) mSprite->setTextureRect(mSelectedTextureRect);
 }
 
 void Button::deselect() {
     Component::deselect();
-    mSprite.setTextureRect(mNormalTextureRect);
+    if (mSprite) mSprite->setTextureRect(mNormalTextureRect);
 }
 
 void Button::activate() {
@@ -48,29 +47,24 @@ void Button::activate() {
 }
 
 void Button::handleEvent(const sf::Event &event) {
-    sf::Rect<float> spriteBounds = mSprite.getLocalBounds();
-    sf::Rect<float> globalBounds = getTransform().transformRect(spriteBounds);
-    switch (event.type) {
-        case sf::Event::MouseMoved: {
-            auto mousePos = sf::Vector2f((float) event.mouseMove.x, (float) event.mouseMove.y);
-            if (globalBounds.contains(mousePos))
-                select();
-            else
-                deselect();
+    if (!mSprite) return;
 
-            break;
-        }
+    const sf::Rect<float> spriteBounds = mSprite->getLocalBounds();
+    const sf::Rect<float> globalBounds = getTransform().transformRect(spriteBounds);
 
-        case sf::Event::MouseButtonReleased: {
-            if (isSelected()) activate();
-            break;
-        }
-        default:
-            break;
+    if (const auto* moved = event.getIf<sf::Event::MouseMoved>()) {
+        if (const auto mousePos = sf::Vector2f(static_cast<float>(moved->position.x), static_cast<float>(moved->position.y)); globalBounds.contains(mousePos))
+            select();
+        else
+            deselect();
+    }
+    if (event.is<sf::Event::MouseButtonPressed>()) {
+        if (isSelected()) activate();
     }
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    if (!mSprite) return;
     states.transform *= getTransform();
-    target.draw(mSprite, states);
+    target.draw(*mSprite, states);
 }
