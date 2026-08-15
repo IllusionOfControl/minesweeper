@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SFML COMPONENTS Network Graphics Window Audio System CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(fmt)
 
 set(SOURCE_FILES
         src/main.cpp
@@ -18,11 +19,13 @@ set(SOURCE_FILES
         src/MineSweeper.hpp
         src/managers/StateManager.cpp
         src/managers/StateManager.hpp
+        src/managers/AssetManager.cpp
         src/managers/AssetManager.hpp
         src/states/StateIdentifiers.hpp
         src/states/EmptyState.cpp
         src/Logger.cpp
         src/Logger.hpp
+        src/managers/ResourceIdentifiers.hpp
         #        src/DEFINITIONS.h
 #        src/WindowUtils.hpp
 #        src/Board.cpp src/Board.hpp
@@ -52,6 +55,7 @@ add_executable(minesweeper ${SOURCE_FILES})
 
 target_link_libraries(minesweeper PRIVATE SFML::Network SFML::Graphics SFML::Window SFML::Audio SFML::System)
 target_link_libraries(minesweeper PRIVATE spdlog::spdlog)
+target_link_libraries(minesweeper PRIVATE fmt::fmt)
 
 target_include_directories(minesweeper PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
