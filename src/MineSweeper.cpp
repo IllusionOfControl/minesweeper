@@ -47,8 +47,9 @@ void MineSweeper::run() {
 }
 
 void MineSweeper::loadAssets() {
-    mAssets.loadTexture(TextureID::Background, "_Resources/res/tiles.png");
+    mAssets.loadTexture(TextureID::Background, "_Resources/res/background.png");
     mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
+    mAssets.loadTexture(TextureID::Logo, "_Resources/res/logo.png");
 }
 
 void MineSweeper::registerStates() {

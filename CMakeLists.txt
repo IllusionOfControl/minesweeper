@@ -17,22 +17,31 @@ set(SOURCE_FILES
         src/GameContext.hpp
         src/MineSweeper.cpp
         src/MineSweeper.hpp
+        src/WindowUtils.hpp
+        src/Logger.cpp
+        src/Logger.hpp
+        src/Layout.hpp
         src/managers/StateManager.cpp
         src/managers/StateManager.hpp
         src/managers/AssetManager.cpp
         src/managers/AssetManager.hpp
+        src/managers/ResourceIdentifiers.hpp
         src/states/StateIdentifiers.hpp
         src/states/EmptyState.cpp
-        src/Logger.cpp
-        src/Logger.hpp
-        src/managers/ResourceIdentifiers.hpp
-        #        src/DEFINITIONS.h
-#        src/WindowUtils.hpp
-#        src/Board.cpp src/Board.hpp
-
-#        src/managers/AssetManager.cpp src/managers/AssetManager.hpp
-#        src/managers/StateManager.cpp src/managers/StateManager.hpp
-#        src/states/State.hpp
+        src/states/MainMenuState.cpp
+        src/states/MainMenuState.hpp
+        src/gui/Background.cpp
+        src/gui/Background.hpp
+        src/gui/PassiveComponent.hpp
+        src/gui/Component.cpp
+        src/gui/Component.hpp
+        src/gui/Button.cpp
+        src/gui/Button.hpp
+        src/gui/Container.cpp
+        src/gui/Container.hpp
+        src/gui/Image.cpp
+        src/gui/Image.hpp
+        #        src/Board.cpp src/Board.hpp
 #        src/states/MainMenuState.cpp src/states/MainMenuState.hpp
 #        src/states/GameState.cpp src/states/GameState.hpp
 #        src/states/AboutState.cpp src/states/AboutState.hpp
@@ -42,7 +51,6 @@ set(SOURCE_FILES
 #        src/gui/PassiveComponent.hpp
 #        src/gui/WidgetFactory.cpp src/gui/WidgetFactory.hpp
 #        src/gui/Button.cpp src/gui/Button.hpp
-#        src/gui/Container.cpp src/gui/Container.hpp
 #        src/gui/Input.cpp src/gui/Input.hpp
 #        src/gui/Background.cpp src/gui/Background.hpp
 #        src/gui/Indicator.cpp src/gui/Indicator.hpp

@@ -19,7 +19,7 @@ void AssetManager::loadTexture(const TextureID id, std::string_view filename, co
     auto texture = std::make_unique<sf::Texture>();
     if (!texture->loadFromFile(filename, false, area)) {
         spdlog::error("Failed to load sub-texture '{}' from path '{}'", toString(id), filename);
-        throw std::runtime_error(fmt::format("Unable to load texture area from: {}", filename ));
+        throw std::runtime_error(fmt::format("Unable to load texture area from: {}", filename));
     }
 
     spdlog::debug("Loaded texture area '{}' from '{}'", toString(id), filename);
