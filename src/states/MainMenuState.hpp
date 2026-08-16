@@ -4,13 +4,13 @@
 #include "State.hpp"
 #include "gui/Background.hpp"
 #include "gui/Container.hpp"
+#include "gui/Image.hpp"
 
 
 class MainMenuState : public State {
 public:
     explicit MainMenuState(GameContext& context)
-        : State(context)
-          , mGuiContainer() {}
+        : State(context) {}
 
     void init() override;
     void handleInput() override;
@@ -19,6 +19,7 @@ public:
 
 private:
     Background mBackground;
+    Image mLogo;
     Container mGuiContainer;
 };
 

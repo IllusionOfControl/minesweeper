@@ -1,5 +1,4 @@
 #include "MainMenuState.hpp"
-
 #include "GameContext.hpp"
 #include "Layout.hpp"
 #include "WindowUtils.hpp"
@@ -7,8 +6,8 @@
 #include "managers/ResourceIdentifiers.hpp"
 
 namespace {
-    constexpr int kMenuWidth = 5;
-    constexpr int kMenuHeight = 7;
+    constexpr int kMenuWidth = 7;
+    constexpr int kMenuHeight = 12;
 
     constexpr int kButtonWidth = 5;
     constexpr int kButtonHeight = 1;
@@ -27,32 +26,30 @@ void MainMenuState::init() {
     const auto playButton = std::make_shared<Button>();
     playButton->setTexture(buttonTextures);
     playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonWidth, kButtonHeight));
-    playButton->setSelectedTextureRect(Layout::getRect(1, 0, kButtonWidth, kButtonHeight));
-    playButton->setCallback([this]() {
-        getContext().states.changeState(StateID::Empty);
-    });
+    playButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonWidth, kButtonHeight));
+    playButton->setCallback([this]() { getContext().states.changeState(StateID::Empty); });
     playButton->setPosition(Layout::toPixels(1, 5));
 
-    // auto aboutButton = std::make_shared<Button>();
-    // aboutButton->setTexture(buttonTextures);
-    // aboutButton->setNormalTextureRect(BUTTON_INT_RECT(0, 1));
-    // aboutButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 1));
-    // aboutButton->setCallback([this]() { mContext->manager.addState(StateRef(new AboutState(mContext)), true); });
-    // aboutButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
-    //
-    // auto exitButton = std::make_shared<Button>();
-    // exitButton->setTexture(buttonTextures);
-    // exitButton->setNormalTextureRect(BUTTON_INT_RECT(0, 2));
-    // exitButton->setSelectedTextureRect(BUTTON_INT_RECT(1, 2));
-    // exitButton->setCallback([this]() { mContext->window.close(); });
-    // exitButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 6) * SQUARE_SIZE);
-    //
-    // mLogo.setPosition(32, 0);
-    // mLogo.setTexture(mContext->assets.getTexture("logo"));
+    const auto aboutButton = std::make_shared<Button>();
+    aboutButton->setTexture(buttonTextures);
+    aboutButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonWidth, kButtonHeight));
+    aboutButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonWidth, kButtonHeight));
+    aboutButton->setCallback([this]() { getContext().states.changeState(StateID::Empty); });
+    aboutButton->setPosition(Layout::toPixels(1, 7));
+
+    const auto exitButton = std::make_shared<Button>();
+    exitButton->setTexture(buttonTextures);
+    exitButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonWidth, kButtonHeight));
+    exitButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonWidth, kButtonHeight));
+    exitButton->setCallback([this]() { getContext().window.close(); });
+    exitButton->setPosition(Layout::toPixels(1,9));
+
+    mLogo.setPosition(Layout::toPixels(1, 1));
+    mLogo.setTexture(getContext().assets.getTexture(TextureID::Logo));
 
     mGuiContainer.pack(playButton);
-    // mGuiContainer.pack(aboutButton);
-    // mGuiContainer.pack(exitButton);
+    mGuiContainer.pack(aboutButton);
+    mGuiContainer.pack(exitButton);
 }
 
 void MainMenuState::handleInput() {
@@ -61,7 +58,7 @@ void MainMenuState::handleInput() {
             getContext().window.close();
             return;
         }
-        // mGuiContainer.handleEvent(event);
+        mGuiContainer.handleEvent(*event);
     }
 }
 
@@ -71,8 +68,8 @@ void MainMenuState::draw() {
     getContext().window.clear(sf::Color::Red);
 
     getContext().window.draw(mBackground);
+    getContext().window.draw(mLogo);
     getContext().window.draw(mGuiContainer);
-    // mContext->window.draw(mLogo);
 
     getContext().window.display();
 }
