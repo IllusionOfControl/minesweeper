@@ -1,22 +1,18 @@
 #ifndef MINESWEEPER_BUTTON_HPP
 #define MINESWEEPER_BUTTON_HPP
 
-#include "Component.hpp"
-
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-
-#include <vector>
-#include <string>
 #include <memory>
 #include <functional>
 
+#include "Component.hpp"
+
 class Button : public Component {
 public:
-    typedef std::shared_ptr<Button> Ptr;
-    typedef std::function<void()> Callback;
+    using Ptr = std::shared_ptr<Button>;
+    using Callback = std::function<void()>;
 
-    Button();
+    Button() = default;
 
     void setCallback(Callback callback);
 
@@ -34,11 +30,10 @@ public:
 
     virtual void activate();
 
-    void handleEvent(const sf::Event &event) override;
-
+    void handleEvent(const sf::Event& event) override;
 
 private:
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     Callback mCallback;
     sf::IntRect mNormalTextureRect;

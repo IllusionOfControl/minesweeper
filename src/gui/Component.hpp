@@ -15,11 +15,9 @@ class Component : public sf::Drawable, public sf::Transformable {
 public:
     typedef std::shared_ptr<Component> Ptr;
 
-
-public:
     Component();
 
-    virtual ~Component();
+    ~Component() override;
 
     virtual bool isSelected() const;
 
