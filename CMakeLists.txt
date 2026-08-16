@@ -30,6 +30,8 @@ set(SOURCE_FILES
         src/states/EmptyState.cpp
         src/states/MainMenuState.cpp
         src/states/MainMenuState.hpp
+        src/states/DifficultyMenuState.cpp
+        src/states/DifficultyMenuState.hpp
         src/gui/Background.cpp
         src/gui/Background.hpp
         src/gui/PassiveComponent.hpp

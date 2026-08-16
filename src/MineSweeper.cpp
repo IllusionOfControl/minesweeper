@@ -1,5 +1,6 @@
 #include "MineSweeper.hpp"
 
+#include "states/DifficultyMenuState.hpp"
 #include "states/EmptyState.hpp"
 #include "states/MainMenuState.hpp"
 
@@ -20,9 +21,7 @@ void MineSweeper::run() {
         mStateManager.processStateChanges();
 
         State* activeState = mStateManager.getActiveState();
-        if (!activeState) {
-            break;
-        }
+        if (!activeState) { break; }
 
         activeState->handleInput();
         activeState->update();
@@ -48,11 +47,13 @@ void MineSweeper::run() {
 
 void MineSweeper::loadAssets() {
     mAssets.loadTexture(TextureID::Background, "_Resources/res/background.png");
-    mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
     mAssets.loadTexture(TextureID::Logo, "_Resources/res/logo.png");
+    mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
+    mAssets.loadTexture(TextureID::DifficultyMenuButtons, "_Resources/res/difficultyMenuButtons.png");
 }
 
 void MineSweeper::registerStates() {
     mStateManager.registerState<EmptyState>(StateID::Empty);
     mStateManager.registerState<MainMenuState>(StateID::MainMenu);
+    mStateManager.registerState<DifficultyMenuState>(StateID::DifficultyMenu);
 }
