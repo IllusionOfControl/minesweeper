@@ -5,21 +5,21 @@ enum class StateID {
     None,
     Empty,
     MainMenu,
-    // DifficultyMenu,
-    // CustomDifficulty,
-    // Game,
-    // About
+    DifficultyMenu,
+    CustomDifficulty,
+    Game,
+    About
 };
 
 inline const char* toString(const StateID id) noexcept {
     switch (id) {
     case StateID::None: return "None";
-    case StateID::Empty: return "EmptyState";
+    case StateID::Empty: return "Empty";
     case StateID::MainMenu: return "MainMenu";
-    // case StateID::DifficultyMenu: return "DifficultyMenu";
-    // case StateID::CustomDifficulty: return "CustomDifficulty";
-    // case StateID::Game: return "Game";
-    // case StateID::About: return "About";
+    case StateID::DifficultyMenu: return "DifficultyMenu";
+    case StateID::CustomDifficulty: return "CustomDifficulty";
+    case StateID::Game: return "Game";
+    case StateID::About: return "About";
     }
     return "Unknown";
 }

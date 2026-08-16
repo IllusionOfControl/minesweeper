@@ -6,41 +6,41 @@
 #include "managers/ResourceIdentifiers.hpp"
 
 namespace {
-    constexpr int kMenuWidth = 7;
-    constexpr int kMenuHeight = 12;
+    constexpr int kWindowTilesX = 7;
+    constexpr int kWindowTilesY = 12;
 
-    constexpr int kButtonWidth = 5;
-    constexpr int kButtonHeight = 1;
+    constexpr int kButtonTilesX = 5;
+    constexpr int kButtonTilesY = 1;
 }
 
 void MainMenuState::init() {
-    constexpr auto windowSize = Layout::toWindowSize(kMenuWidth, kMenuHeight);
+    constexpr auto windowSize = Layout::toWindowSize(kWindowTilesX, kWindowTilesY);
     resizeWindow(getContext().window, windowSize);
 
-    auto& bg_texture = getContext().assets.getTexture(TextureID::Background);
-    mBackground.setTexture(bg_texture);
+    auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
+    mBackground.setTexture(backgroundTexture);
     mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
 
-    const auto& buttonTextures = getContext().assets.getTexture(TextureID::MainMenuButtons);
+    const auto& buttonsTexture = getContext().assets.getTexture(TextureID::MainMenuButtons);
 
     const auto playButton = std::make_shared<Button>();
-    playButton->setTexture(buttonTextures);
-    playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonWidth, kButtonHeight));
-    playButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonWidth, kButtonHeight));
-    playButton->setCallback([this]() { getContext().states.changeState(StateID::Empty); });
+    playButton->setTexture(buttonsTexture);
+    playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonTilesX, kButtonTilesY));
+    playButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonTilesX, kButtonTilesY));
+    playButton->setCallback([this]() { getContext().states.changeState(StateID::DifficultyMenu); });
     playButton->setPosition(Layout::toPixels(1, 5));
 
     const auto aboutButton = std::make_shared<Button>();
-    aboutButton->setTexture(buttonTextures);
-    aboutButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonWidth, kButtonHeight));
-    aboutButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonWidth, kButtonHeight));
+    aboutButton->setTexture(buttonsTexture);
+    aboutButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonTilesX, kButtonTilesY));
+    aboutButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonTilesX, kButtonTilesY));
     aboutButton->setCallback([this]() { getContext().states.changeState(StateID::Empty); });
     aboutButton->setPosition(Layout::toPixels(1, 7));
 
     const auto exitButton = std::make_shared<Button>();
-    exitButton->setTexture(buttonTextures);
-    exitButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonWidth, kButtonHeight));
-    exitButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonWidth, kButtonHeight));
+    exitButton->setTexture(buttonsTexture);
+    exitButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonTilesX, kButtonTilesY));
+    exitButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonTilesX, kButtonTilesY));
     exitButton->setCallback([this]() { getContext().window.close(); });
     exitButton->setPosition(Layout::toPixels(1,9));
 

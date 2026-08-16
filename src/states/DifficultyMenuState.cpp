@@ -1,65 +1,78 @@
 #include "DifficultyMenuState.hpp"
-#include "../gui/Button.hpp"
-#include "../gui/WidgetFactory.hpp"
-#include "../WindowUtils.hpp"
 
-DifficultyMenuState::DifficultyMenuState(GameDataRef context)
-        : mContext(context)
-        , mGuiContainer() {
+#include "GameContext.hpp"
+#include "Layout.hpp"
+#include "WindowUtils.hpp"
+#include "gui/Button.hpp"
+#include "managers/ResourceIdentifiers.hpp"
 
+namespace {
+    constexpr int kWindowTilesX = 7;
+    constexpr int kWindowTilesY = 12;
+
+    constexpr int kButtonTilesX = 5;
+    constexpr int kButtonTilesY = 1;
 }
 
+DifficultyMenuState::DifficultyMenuState(GameContext& context)
+    : State(context) {}
+
 void DifficultyMenuState::init() {
-    resizeWindow(mContext->window,
-                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
-    widgets::setupBackground(mBackground, mContext);
+    constexpr auto windowSize = Layout::toWindowSize(kWindowTilesX, kWindowTilesY);
+    resizeWindow(getContext().window, windowSize);
 
-    auto mainMenuButton = widgets::makeMainMenuButton(mContext);
-    auto exitButton = widgets::makeExitButton(mContext, WIDTH);
+    auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
+    mBackground.setTexture(backgroundTexture);
+    mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
 
-    auto easyModeButton = std::make_shared<Button>();
-    easyModeButton->setTexture(mContext->assets.getTexture("difficultMenuButtons"));
-    easyModeButton->setNormalTextureRect({0, 0, SQUARE_SIZE * 5, SQUARE_SIZE});
-    easyModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, 0, SQUARE_SIZE * 5, SQUARE_SIZE});
-    easyModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
+    const auto& buttonsTexture = getContext().assets.getTexture(TextureID::DifficultyMenuButtons);
+
+
+    // auto mainMenuButton = widgets::makeMainMenuButton(mContext);
+    // auto exitButton = widgets::makeExitButton(mContext, WIDTH);
+
+    const auto easyModeButton = std::make_shared<Button>();
+    easyModeButton->setTexture(buttonsTexture);
+    easyModeButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonTilesX, kButtonTilesY));
+    easyModeButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonTilesX, kButtonTilesY));
+    easyModeButton->setPosition(Layout::toPixels(1, 3));
     easyModeButton->setCallback([this]() {
-        mContext->difficulty = DIFFICULTY_EASY;
-        mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        // mContext->difficulty = DIFFICULTY_EASY;
+        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
 
 
     auto normalModeButton = std::make_shared<Button>();
-    normalModeButton->setTexture(mContext->assets.getTexture("difficultMenuButtons"));
-    normalModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 1, SQUARE_SIZE * 5, SQUARE_SIZE});
-    normalModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 1, SQUARE_SIZE * 5, SQUARE_SIZE});
-    normalModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
+    normalModeButton->setTexture(buttonsTexture);
+    normalModeButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonTilesX, kButtonTilesY));
+    normalModeButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonTilesX, kButtonTilesY));
+    normalModeButton->setPosition(Layout::toPixels(1, 5));
     normalModeButton->setCallback([this]() {
-        mContext->difficulty = DIFFICULTY_MEDIUM;
-        mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        // mContext->difficulty = DIFFICULTY_MEDIUM;
+        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
 
     auto hardModeButton = std::make_shared<Button>();
-    hardModeButton->setTexture(mContext->assets.getTexture("difficultMenuButtons"));
-    hardModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE});
-    hardModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE});
-    hardModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
+    hardModeButton->setTexture(buttonsTexture);
+    hardModeButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonTilesX, kButtonTilesY));
+    hardModeButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonTilesX, kButtonTilesY));
+    hardModeButton->setPosition(Layout::toPixels(1, 7));
     hardModeButton->setCallback([this]() {
-        mContext->difficulty = DIFFICULTY_HARD;
-        mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        // mContext->difficulty = DIFFICULTY_HARD;
+        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
     });
-
+    //
     auto customModeButton = std::make_shared<Button>();
-    customModeButton->setTexture(mContext->assets.getTexture("difficultMenuButtons"));
-    customModeButton->setNormalTextureRect({SQUARE_SIZE * 0, SQUARE_SIZE * 3, SQUARE_SIZE * 5, SQUARE_SIZE});
-    customModeButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 3, SQUARE_SIZE * 5, SQUARE_SIZE});
-    customModeButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
+    customModeButton->setTexture(buttonsTexture);
+    customModeButton->setNormalTextureRect(Layout::getRect(0, 3, kButtonTilesX, kButtonTilesY));
+    customModeButton->setSelectedTextureRect(Layout::getRect(5, 3, kButtonTilesX, kButtonTilesY));
+    customModeButton->setPosition(Layout::toPixels(1, 9));
     customModeButton->setCallback([this]() {
-        mContext->manager.addState(StateRef(new CustomDifficultyState(mContext)), true);
+        // mContext->manager.addState(StateRef(new CustomDifficultyState(mContext)), true);
     });
 
-    mGuiContainer.pack(mainMenuButton);
-    mGuiContainer.pack(exitButton);
+    // mGuiContainer.pack(mainMenuButton);
+    // mGuiContainer.pack(exitButton);
     mGuiContainer.pack(customModeButton);
     mGuiContainer.pack(easyModeButton);
     mGuiContainer.pack(normalModeButton);
@@ -67,23 +80,23 @@ void DifficultyMenuState::init() {
 }
 
 void DifficultyMenuState::handleInput() {
-    sf::Event event;
-
-    while (mContext->window.pollEvent(event)) {
-        mGuiContainer.handleEvent(event);
+    while (const std::optional<sf::Event> event = getContext().window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            getContext().window.close();
+            return;
+        }
+        mGuiContainer.handleEvent(*event);
     }
 }
 
 
-void DifficultyMenuState::update() {
-
-}
+void DifficultyMenuState::update() {}
 
 void DifficultyMenuState::draw() {
-    mContext->window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color::Red);
 
-    mContext->window.draw(mBackground);
-    mContext->window.draw(mGuiContainer);
+    getContext().window.draw(mBackground);
+    getContext().window.draw(mGuiContainer);
 
-    mContext->window.display();
+    getContext().window.display();
 }
