@@ -9,8 +9,8 @@ enum class TextureID {
     Second,
     CustomDifficultyButtons,
     DifficultyMenuButtons,
-    StateButtons,
     MainMenuButtons,
+    TopBarButtons,
     LedBackground
 };
 
@@ -27,8 +27,8 @@ inline const char* toString(const TextureID id) noexcept {
     case TextureID::Second: return "Second";
     case TextureID::CustomDifficultyButtons: return "CustomDifficultyButtons";
     case TextureID::DifficultyMenuButtons: return "DifficultyMenuButtons";
-    case TextureID::StateButtons: return "StateButtons";
     case TextureID::MainMenuButtons: return "MainMenuButtons";
+    case TextureID::TopBarButtons: return "TopBarButtons";
     case TextureID::LedBackground: return "LedBackground";
     }
     return "UnknownTexture";

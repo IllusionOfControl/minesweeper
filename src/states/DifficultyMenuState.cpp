@@ -4,6 +4,7 @@
 #include "Layout.hpp"
 #include "WindowUtils.hpp"
 #include "gui/Button.hpp"
+#include "gui/TopBar.hpp"
 #include "managers/ResourceIdentifiers.hpp"
 
 namespace {
@@ -26,10 +27,6 @@ void DifficultyMenuState::init() {
     mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
 
     const auto& buttonsTexture = getContext().assets.getTexture(TextureID::DifficultyMenuButtons);
-
-
-    // auto mainMenuButton = widgets::makeMainMenuButton(mContext);
-    // auto exitButton = widgets::makeExitButton(mContext, WIDTH);
 
     const auto easyModeButton = std::make_shared<Button>();
     easyModeButton->setTexture(buttonsTexture);
@@ -77,6 +74,8 @@ void DifficultyMenuState::init() {
     mGuiContainer.pack(easyModeButton);
     mGuiContainer.pack(normalModeButton);
     mGuiContainer.pack(hardModeButton);
+
+    mGuiContainer.pack(std::make_shared<TopBar>(getContext(), kWindowTilesX));
 }
 
 void DifficultyMenuState::handleInput() {

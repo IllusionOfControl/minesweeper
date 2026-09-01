@@ -50,6 +50,7 @@ void MineSweeper::loadAssets() {
     mAssets.loadTexture(TextureID::Logo, "_Resources/res/logo.png");
     mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
     mAssets.loadTexture(TextureID::DifficultyMenuButtons, "_Resources/res/difficultyMenuButtons.png");
+    mAssets.loadTexture(TextureID::TopBarButtons, "_Resources/res/topBarButtons.png");
 }
 
 void MineSweeper::registerStates() {
