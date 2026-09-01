@@ -4,7 +4,6 @@
 #include "State.hpp"
 #include "gui/Background.hpp"
 #include "gui/Container.hpp"
-#include "gui/Image.hpp"
 
 
 class MainMenuState : public State {
@@ -19,7 +18,6 @@ public:
 
 private:
     Background mBackground;
-    Image mLogo;
     Container mGuiContainer;
 };
 

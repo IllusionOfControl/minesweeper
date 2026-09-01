@@ -24,7 +24,7 @@ void DifficultyMenuState::init() {
 
     auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
     mBackground.setTexture(backgroundTexture);
-    mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
+    mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
 
     const auto& buttonsTexture = getContext().assets.getTexture(TextureID::DifficultyMenuButtons);
 
@@ -68,14 +68,15 @@ void DifficultyMenuState::init() {
         // mContext->manager.addState(StateRef(new CustomDifficultyState(mContext)), true);
     });
 
+    const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
+
     // mGuiContainer.pack(mainMenuButton);
     // mGuiContainer.pack(exitButton);
     mGuiContainer.pack(customModeButton);
     mGuiContainer.pack(easyModeButton);
     mGuiContainer.pack(normalModeButton);
     mGuiContainer.pack(hardModeButton);
-
-    mGuiContainer.pack(std::make_shared<TopBar>(getContext(), kWindowTilesX));
+    mGuiContainer.pack(topBar);
 }
 
 void DifficultyMenuState::handleInput() {

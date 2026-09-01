@@ -2,8 +2,9 @@
 #include "GameContext.hpp"
 #include "Layout.hpp"
 #include "WindowUtils.hpp"
-#include "gui/Button.hpp"
 #include "managers/ResourceIdentifiers.hpp"
+#include "gui/Button.hpp"
+#include "gui/Image.hpp"
 
 namespace {
     constexpr int kWindowTilesX = 7;
@@ -19,7 +20,12 @@ void MainMenuState::init() {
 
     auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
     mBackground.setTexture(backgroundTexture);
-    mBackground.setTextureRect({{0, 0}, {static_cast<int>(windowSize.x), static_cast<int>(windowSize.y)}});
+    mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
+
+    auto& logoTexture = getContext().assets.getTexture(TextureID::Logo);
+    const auto logo = std::make_shared<Image>();
+    logo->setPosition(Layout::toPixels(1, 2));
+    logo->setTexture(logoTexture);
 
     const auto& buttonsTexture = getContext().assets.getTexture(TextureID::MainMenuButtons);
 
@@ -28,25 +34,23 @@ void MainMenuState::init() {
     playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonTilesX, kButtonTilesY));
     playButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonTilesX, kButtonTilesY));
     playButton->setCallback([this]() { getContext().states.changeState(StateID::DifficultyMenu); });
-    playButton->setPosition(Layout::toPixels(1, 5));
+    playButton->setPosition(Layout::toPixels(1, 6));
 
     const auto aboutButton = std::make_shared<Button>();
     aboutButton->setTexture(buttonsTexture);
     aboutButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonTilesX, kButtonTilesY));
     aboutButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonTilesX, kButtonTilesY));
-    aboutButton->setCallback([this]() { getContext().states.changeState(StateID::Empty); });
-    aboutButton->setPosition(Layout::toPixels(1, 7));
+    aboutButton->setCallback([this]() { getContext().states.changeState(StateID::About); });
+    aboutButton->setPosition(Layout::toPixels(1, 8));
 
     const auto exitButton = std::make_shared<Button>();
     exitButton->setTexture(buttonsTexture);
     exitButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonTilesX, kButtonTilesY));
     exitButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonTilesX, kButtonTilesY));
     exitButton->setCallback([this]() { getContext().window.close(); });
-    exitButton->setPosition(Layout::toPixels(1,9));
+    exitButton->setPosition(Layout::toPixels(1, 10));
 
-    mLogo.setPosition(Layout::toPixels(1, 1));
-    mLogo.setTexture(getContext().assets.getTexture(TextureID::Logo));
-
+    mGuiContainer.pack(logo);
     mGuiContainer.pack(playButton);
     mGuiContainer.pack(aboutButton);
     mGuiContainer.pack(exitButton);
@@ -68,7 +72,6 @@ void MainMenuState::draw() {
     getContext().window.clear(sf::Color::Red);
 
     getContext().window.draw(mBackground);
-    getContext().window.draw(mLogo);
     getContext().window.draw(mGuiContainer);
 
     getContext().window.display();
