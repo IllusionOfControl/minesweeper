@@ -43,6 +43,8 @@ set(SOURCE_FILES
         src/gui/Container.hpp
         src/gui/Image.cpp
         src/gui/Image.hpp
+        src/gui/TopBar.cpp
+        src/gui/TopBar.hpp
         #        src/Board.cpp src/Board.hpp
 #        src/states/MainMenuState.cpp src/states/MainMenuState.hpp
 #        src/states/GameState.cpp src/states/GameState.hpp
