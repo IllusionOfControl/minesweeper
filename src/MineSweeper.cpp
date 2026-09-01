@@ -3,6 +3,7 @@
 #include "states/DifficultyMenuState.hpp"
 #include "states/EmptyState.hpp"
 #include "states/MainMenuState.hpp"
+#include "states/AboutState.hpp"
 
 MineSweeper::MineSweeper()
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
@@ -50,6 +51,7 @@ void MineSweeper::loadAssets() {
     mAssets.loadTexture(TextureID::Logo, "_Resources/res/logo.png");
     mAssets.loadTexture(TextureID::MainMenuButtons, "_Resources/res/mainMenuButtons.png");
     mAssets.loadTexture(TextureID::DifficultyMenuButtons, "_Resources/res/difficultyMenuButtons.png");
+    mAssets.loadTexture(TextureID::AboutButtons, "_Resources/res/aboutButtons.png");
     mAssets.loadTexture(TextureID::TopBarButtons, "_Resources/res/topBarButtons.png");
 }
 
@@ -57,4 +59,5 @@ void MineSweeper::registerStates() {
     mStateManager.registerState<EmptyState>(StateID::Empty);
     mStateManager.registerState<MainMenuState>(StateID::MainMenu);
     mStateManager.registerState<DifficultyMenuState>(StateID::DifficultyMenu);
+    mStateManager.registerState<AboutState>(StateID::About);
 }

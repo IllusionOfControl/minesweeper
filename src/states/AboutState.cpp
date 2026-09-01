@@ -1,56 +1,64 @@
 #include "AboutState.hpp"
-#include "../gui/Button.hpp"
-#include "../gui/WidgetFactory.hpp"
-#include "../WindowUtils.hpp"
+#include "GameContext.hpp"
+#include "WindowUtils.hpp"
+#include "Layout.hpp"
+#include "gui/Button.hpp"
+#include "gui/TopBar.hpp"
+#include "gui/Image.hpp"
 
-AboutState::AboutState(GameDataRef context)
-        : mContext(context)
-        , mGuiContainer() {
-
+namespace {
+    constexpr int kWindowTilesX = 7;
+    constexpr int kWindowTilesY = 12;
 }
 
+AboutState::AboutState(GameContext& context)
+    : State(context) {}
+
 void AboutState::init() {
-    resizeWindow(mContext->window,
-                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
-    widgets::setupBackground(mBackground, mContext);
+    constexpr auto windowSize = Layout::toWindowSize(kWindowTilesX, kWindowTilesY);
+    resizeWindow(getContext().window, windowSize);
 
-    auto mainMenuButton = widgets::makeMainMenuButton(mContext);
-    auto exitButton = widgets::makeExitButton(mContext, WIDTH);
+    auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
+    mBackground.setTexture(backgroundTexture);
+    mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
 
-    auto authorButton = std::make_shared<Button>();
-    authorButton->setTexture(mContext->assets.getTexture(TEXTURE_SECOND_NAME));
-    authorButton->setNormalTextureRect({0 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
-    authorButton->setSelectedTextureRect({5 * SQUARE_SIZE, 3 * SQUARE_SIZE, 160, 64});
-    authorButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, GAME_BORDER_TOP * SQUARE_SIZE);
+    auto& logoTexture = getContext().assets.getTexture(TextureID::Logo);
+    const auto logo = std::make_shared<Image>();
+    logo->setPosition(Layout::toPixels(1, 2));
+    logo->setTexture(logoTexture);
 
-    mLogo.setTexture(mContext->assets.getTexture(TEXTURE_SECOND_NAME));
-    mLogo.setTextureRect({0 * SQUARE_SIZE, 1 * SQUARE_SIZE, 160, 32});
-    mLogo.setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, 1 * SQUARE_SIZE);
+    const auto& buttonsTexture = getContext().assets.getTexture(TextureID::AboutButtons);
 
-    mGuiContainer.pack(mainMenuButton);
-    mGuiContainer.pack(exitButton);
+    const auto authorButton = std::make_shared<Button>();
+    authorButton->setTexture(buttonsTexture);
+    authorButton->setNormalTextureRect(Layout::getRect(0, 0, 5, 2));
+    authorButton->setSelectedTextureRect(Layout::getRect(5, 0, 5, 2));
+    authorButton->setPosition(Layout::toPixels(1, 6));
+
+    const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
+
+    mGuiContainer.pack(logo);
     mGuiContainer.pack(authorButton);
+    mGuiContainer.pack(topBar);
 }
 
 void AboutState::handleInput() {
-    sf::Event event;
-
-    while (mContext->window.pollEvent(event)) {
-        mGuiContainer.handleEvent(event);
+    while (const std::optional<sf::Event> event = getContext().window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            getContext().window.close();
+            return;
+        }
+        mGuiContainer.handleEvent(*event);
     }
 }
 
-void AboutState::update() {
-
-}
+void AboutState::update() {}
 
 void AboutState::draw() {
-    mContext->window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color::Red);
 
-    mContext->window.draw(mBackground);
-    mContext->window.draw(mLogo);
-    mContext->window.draw(mGuiContainer);
+    getContext().window.draw(mBackground);
+    getContext().window.draw(mGuiContainer);
 
-    mContext->window.display();
+    getContext().window.display();
 }
