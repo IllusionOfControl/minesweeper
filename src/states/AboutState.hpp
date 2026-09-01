@@ -1,32 +1,23 @@
 #ifndef MINESWEEPER_ABOUTSTATE_HPP
 #define MINESWEEPER_ABOUTSTATE_HPP
 
-#include <SFML/Graphics.hpp>
-#include "../MineSweeper.hpp"
-#include "../DEFINITIONS.h"
-#include "MainMenuState.hpp"
 #include "State.hpp"
-#include "../gui/Container.hpp"
+#include "gui/Container.hpp"
+#include "gui/Background.hpp"
 
 class AboutState : public State {
 public:
-    AboutState(GameDataRef context);
+    explicit AboutState(GameContext& context);
+    ~AboutState() override = default;
 
-    void init();
-
-    void handleInput();
-
-    void update();
-
-    void draw();
+    void init() override;
+    void handleInput() override;
+    void update() override;
+    void draw() override;
 
 private:
-    GameDataRef mContext;
-
-    sf::Sprite mBackground;
-    sf::Sprite mLogo;
+    Background mBackground;
     Container mGuiContainer;
 };
 
-
-#endif //MINESWEEPER_ABOUTSTATE_HPP
+#endif // MINESWEEPER_ABOUTSTATE_HPP

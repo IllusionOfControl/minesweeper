@@ -6,11 +6,12 @@ enum class TextureID {
     Logo,
     Background,
     Smiles,
-    Second,
+    Second, //TODO: Remove
     CustomDifficultyButtons,
     DifficultyMenuButtons,
     MainMenuButtons,
     TopBarButtons,
+    AboutButtons,
     LedBackground
 };
 
@@ -29,15 +30,14 @@ inline const char* toString(const TextureID id) noexcept {
     case TextureID::DifficultyMenuButtons: return "DifficultyMenuButtons";
     case TextureID::MainMenuButtons: return "MainMenuButtons";
     case TextureID::TopBarButtons: return "TopBarButtons";
+    case TextureID::AboutButtons: return "AboutButtons";
     case TextureID::LedBackground: return "LedBackground";
+    default: return "UnknownTexture";
     }
-    return "UnknownTexture";
 }
 
 inline const char* toString(const FontID id) noexcept {
-    switch (id) {
-    case FontID::Default: return "DefaultFont";
-    }
+    switch (id) { case FontID::Default: return "DefaultFont"; }
     return "UnknownFont";
 }
 
