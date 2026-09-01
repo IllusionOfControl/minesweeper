@@ -6,7 +6,6 @@ enum class TextureID {
     Logo,
     Background,
     Smiles,
-    Second, //TODO: Remove
     CustomDifficultyButtons,
     DifficultyMenuButtons,
     MainMenuButtons,
