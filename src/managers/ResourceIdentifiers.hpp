@@ -24,7 +24,6 @@ inline const char* toString(const TextureID id) noexcept {
     case TextureID::Logo: return "Logo";
     case TextureID::Background: return "Background";
     case TextureID::Smiles: return "Smiles";
-    case TextureID::Second: return "Second";
     case TextureID::CustomDifficultyButtons: return "CustomDifficultyButtons";
     case TextureID::DifficultyMenuButtons: return "DifficultyMenuButtons";
     case TextureID::MainMenuButtons: return "MainMenuButtons";
