@@ -8,19 +8,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SFML COMPONENTS Network Graphics Window Audio System CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(fmt)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 set(SOURCE_FILES
         src/main.cpp
-        src/Difficulty.cpp
         src/Difficulty.hpp
         src/Board.cpp
         src/Board.hpp
-        src/GameContext.cpp
         src/GameContext.hpp
         src/MineSweeper.cpp
         src/MineSweeper.hpp
         src/WindowUtils.hpp
-        src/Logger.cpp
         src/Logger.hpp
         src/Layout.hpp
         src/managers/StateManager.cpp
@@ -28,6 +26,8 @@ set(SOURCE_FILES
         src/managers/AssetManager.cpp
         src/managers/AssetManager.hpp
         src/managers/ResourceIdentifiers.hpp
+        src/managers/ResultManager.cpp
+        src/managers/ResultManager.hpp
         src/states/StateIdentifiers.hpp
         src/states/EmptyState.cpp
         src/states/MainMenuState.cpp
@@ -40,6 +40,8 @@ set(SOURCE_FILES
         src/states/CustomDifficultyState.hpp
         src/states/GameState.cpp
         src/states/GameState.hpp
+        src/states/SaveResultState.cpp
+        src/states/SaveResultState.hpp
         src/gui/Background.cpp
         src/gui/Background.hpp
         src/gui/PassiveComponent.hpp
@@ -61,16 +63,6 @@ set(SOURCE_FILES
         src/gui/Indicator.hpp
         src/gui/SmileButton.cpp
         src/gui/SmileButton.hpp
-#        src/states/MainMenuState.cpp src/states/MainMenuState.hpp
-#        src/states/AboutState.cpp src/states/AboutState.hpp
-#        src/states/DifficultyMenuState.cpp src/states/DifficultyMenuState.hpp
-#        src/gui/Component.cpp src/gui/Component.hpp
-#        src/gui/PassiveComponent.hpp
-#        src/gui/WidgetFactory.cpp src/gui/WidgetFactory.hpp
-#        src/gui/Button.cpp src/gui/Button.hpp
-#        src/gui/Background.cpp src/gui/Background.hpp
-#        src/states/DefaultState.cpp
-#        src/states/DefaultState.h
 )
 
 add_executable(minesweeper ${SOURCE_FILES})
@@ -78,6 +70,7 @@ add_executable(minesweeper ${SOURCE_FILES})
 target_link_libraries(minesweeper PRIVATE SFML::Network SFML::Graphics SFML::Window SFML::Audio SFML::System)
 target_link_libraries(minesweeper PRIVATE spdlog::spdlog)
 target_link_libraries(minesweeper PRIVATE fmt::fmt)
+target_link_libraries(minesweeper PRIVATE nlohmann_json::nlohmann_json)
 
 target_include_directories(minesweeper PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
