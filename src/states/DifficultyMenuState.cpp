@@ -26,6 +26,8 @@ void DifficultyMenuState::init() {
     mBackground.setTexture(backgroundTexture);
     mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
 
+    const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
+
     const auto& buttonsTexture = getContext().assets.getTexture(TextureID::DifficultyMenuButtons);
 
     const auto easyModeButton = std::make_shared<Button>();
@@ -34,49 +36,45 @@ void DifficultyMenuState::init() {
     easyModeButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonTilesX, kButtonTilesY));
     easyModeButton->setPosition(Layout::toPixels(1, 3));
     easyModeButton->setCallback([this]() {
-        // mContext->difficulty = DIFFICULTY_EASY;
-        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        getContext().difficulty = Difficulty::create(Difficulty::Preset::Easy);
+        getContext().states.changeState(StateID::Game);
     });
 
 
-    auto normalModeButton = std::make_shared<Button>();
+    const auto normalModeButton = std::make_shared<Button>();
     normalModeButton->setTexture(buttonsTexture);
     normalModeButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonTilesX, kButtonTilesY));
     normalModeButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonTilesX, kButtonTilesY));
     normalModeButton->setPosition(Layout::toPixels(1, 5));
     normalModeButton->setCallback([this]() {
-        // mContext->difficulty = DIFFICULTY_MEDIUM;
-        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        getContext().difficulty = Difficulty::create(Difficulty::Preset::Medium);
+        getContext().states.changeState(StateID::Game);
     });
 
-    auto hardModeButton = std::make_shared<Button>();
+    const auto hardModeButton = std::make_shared<Button>();
     hardModeButton->setTexture(buttonsTexture);
     hardModeButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonTilesX, kButtonTilesY));
     hardModeButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonTilesX, kButtonTilesY));
     hardModeButton->setPosition(Layout::toPixels(1, 7));
     hardModeButton->setCallback([this]() {
-        // mContext->difficulty = DIFFICULTY_HARD;
-        // mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        getContext().difficulty = Difficulty::create(Difficulty::Preset::Hard);
+        getContext().states.changeState(StateID::Game);
     });
-    //
-    auto customModeButton = std::make_shared<Button>();
+
+    const auto customModeButton = std::make_shared<Button>();
     customModeButton->setTexture(buttonsTexture);
     customModeButton->setNormalTextureRect(Layout::getRect(0, 3, kButtonTilesX, kButtonTilesY));
     customModeButton->setSelectedTextureRect(Layout::getRect(5, 3, kButtonTilesX, kButtonTilesY));
     customModeButton->setPosition(Layout::toPixels(1, 9));
     customModeButton->setCallback([this]() {
-        // mContext->manager.addState(StateRef(new CustomDifficultyState(mContext)), true);
+        getContext().states.changeState(StateID::CustomDifficulty);
     });
 
-    const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
-
-    // mGuiContainer.pack(mainMenuButton);
-    // mGuiContainer.pack(exitButton);
+    mGuiContainer.pack(topBar);
     mGuiContainer.pack(customModeButton);
     mGuiContainer.pack(easyModeButton);
     mGuiContainer.pack(normalModeButton);
     mGuiContainer.pack(hardModeButton);
-    mGuiContainer.pack(topBar);
 }
 
 void DifficultyMenuState::handleInput() {
