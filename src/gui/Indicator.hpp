@@ -1,37 +1,33 @@
 #ifndef MINESWEEPER_INDICATOR_HPP
 #define MINESWEEPER_INDICATOR_HPP
 
+#include <memory>
+#include <optional>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/System/String.hpp>
-#include <SFML/Window/Event.hpp>
+
 #include "PassiveComponent.hpp"
+#include "Text.hpp"
 
 class Indicator : public PassiveComponent {
 public:
-    typedef std::shared_ptr<Indicator> Ptr;
+    using Ptr = std::shared_ptr<Indicator>;
 
-    explicit Indicator();
+    Indicator();
+    ~Indicator() override = default;
 
-    ~Indicator() override;
-
-    void setTexture(sf::Texture &texture);
-
+    void setTexture(const sf::Texture& texture);
     void setTextureRect(sf::IntRect rectangle);
-
     void setFont(const sf::Font& font);
-
     void setString(const sf::String& string);
+    const sf::String& getString() const noexcept;
 
 private:
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-private:
-    sf::Sprite mSprite;
-    sf::Text mText;
+    sf::IntRect mTextureRect{};
+    std::optional<sf::Sprite> mSprite;
+    Text mText;
 };
 
-#endif //MINESWEEPER_INDICATOR_HPP
+#endif // MINESWEEPER_INDICATOR_HPP

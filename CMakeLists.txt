@@ -13,6 +13,8 @@ set(SOURCE_FILES
         src/main.cpp
         src/Difficulty.cpp
         src/Difficulty.hpp
+        src/Board.cpp
+        src/Board.hpp
         src/GameContext.cpp
         src/GameContext.hpp
         src/MineSweeper.cpp
@@ -36,6 +38,8 @@ set(SOURCE_FILES
         src/states/AboutState.hpp
         src/states/CustomDifficultyState.cpp
         src/states/CustomDifficultyState.hpp
+        src/states/GameState.cpp
+        src/states/GameState.hpp
         src/gui/Background.cpp
         src/gui/Background.hpp
         src/gui/PassiveComponent.hpp
@@ -53,9 +57,11 @@ set(SOURCE_FILES
         src/gui/Text.hpp
         src/gui/Input.cpp
         src/gui/Input.hpp
-        #        src/Board.cpp src/Board.hpp
+        src/gui/Indicator.cpp
+        src/gui/Indicator.hpp
+        src/gui/SmileButton.cpp
+        src/gui/SmileButton.hpp
 #        src/states/MainMenuState.cpp src/states/MainMenuState.hpp
-#        src/states/GameState.cpp src/states/GameState.hpp
 #        src/states/AboutState.cpp src/states/AboutState.hpp
 #        src/states/DifficultyMenuState.cpp src/states/DifficultyMenuState.hpp
 #        src/gui/Component.cpp src/gui/Component.hpp
@@ -63,8 +69,6 @@ set(SOURCE_FILES
 #        src/gui/WidgetFactory.cpp src/gui/WidgetFactory.hpp
 #        src/gui/Button.cpp src/gui/Button.hpp
 #        src/gui/Background.cpp src/gui/Background.hpp
-#        src/gui/Indicator.cpp src/gui/Indicator.hpp
-#        src/gui/SmileButton.cpp src/gui/SmileButton.hpp
 #        src/states/DefaultState.cpp
 #        src/states/DefaultState.h
 )

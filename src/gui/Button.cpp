@@ -8,8 +8,14 @@
 void Button::setCallback(Callback callback) { mCallback = std::move(callback); }
 
 void Button::setTexture(const sf::Texture& texture) {
-    if (mSprite.has_value()) mSprite->setTexture(texture, false);
-    else mSprite.emplace(texture);
+    if (mSprite.has_value()) {
+        mSprite->setTexture(texture, false);
+    } else {
+        mSprite.emplace(texture);
+        if (mNormalTextureRect != sf::IntRect{}) {
+            mSprite->setTextureRect(isSelected() ? mSelectedTextureRect : mNormalTextureRect);
+        }
+    }
 }
 
 void Button::setTextureRect(const sf::IntRect rect) {
@@ -22,7 +28,12 @@ void Button::setNormalTextureRect(const sf::IntRect rect) {
     if (mSprite.has_value()) mSprite->setTextureRect(mNormalTextureRect);
 }
 
-void Button::setSelectedTextureRect(const sf::IntRect rect) { mSelectedTextureRect = rect; }
+void Button::setSelectedTextureRect(const sf::IntRect rect) {
+    mSelectedTextureRect = rect;
+    if (mSprite.has_value() && isSelected()) {
+        mSprite->setTextureRect(mSelectedTextureRect);
+    }
+}
 
 void Button::select() {
     Component::select();
