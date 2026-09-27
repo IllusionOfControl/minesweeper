@@ -1,9 +1,6 @@
 #ifndef MINESWEEPER_DIFFICULTYMENUSTATE_HPP
 #define MINESWEEPER_DIFFICULTYMENUSTATE_HPP
 
-
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include "State.hpp"
 #include "gui/Background.hpp"
 #include "gui/Container.hpp"

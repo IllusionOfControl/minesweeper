@@ -29,46 +29,4 @@ namespace Layout {
     }
 }
 
-// namespace Board {
-//     inline constexpr int BorderTop = 4;     // Место под верхнюю панель
-//     inline constexpr int BorderBottom = 1;
-//     inline constexpr int BorderLeft = 1;
-//     inline constexpr int BorderRight = 1;
-//
-//     [[nodiscard]] constexpr sf::Vector2u calculateWindowSize(int width, int height) noexcept {
-//         return {
-//             static_cast<unsigned int>((width + BorderLeft + BorderRight) * TileSize),
-//             static_cast<unsigned int>((height + BorderTop + BorderBottom) * TileSize)
-//         };
-//     }
-//
-//     [[nodiscard]] constexpr sf::Vector2f cellToPixel(int cellX, int cellY) noexcept {
-//         return toPixels(cellX + BorderLeft, cellY + BorderTop);
-//     }
-//
-//     [[nodiscard]] inline std::optional<sf::Vector2i> pixelToCell(sf::Vector2i pixel, int boardWidth, int boardHeight) noexcept {
-//         const sf::IntRect bounds{
-//             BorderLeft * TileSize,
-//             BorderTop * TileSize,
-//             boardWidth * TileSize,
-//             boardHeight * TileSize
-//         };
-//         if (!bounds.contains(pixel)) return std::nullopt;
-//
-//         return sf::Vector2i{
-//             (pixel.x - bounds.left) / TileSize,
-//             (pixel.y - bounds.top) / TileSize
-//         };
-//     }
-// }
-//
-// // Текстурные прямоугольники
-// [[nodiscard]] constexpr sf::IntRect getTileRect(int tileIndex) noexcept {
-//     return {tileIndex * TileSize, 0, TileSize, TileSize};
-// }
-//
-// [[nodiscard]] constexpr sf::IntRect getMenuButtonRect(int posX, int posY) noexcept {
-//     return {posX * TileSize * 5, posY * TileSize, TileSize * 5, TileSize};
-// }
-
 #endif // MINESWEEPER_LAYOUT_HPP

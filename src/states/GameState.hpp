@@ -40,6 +40,8 @@ private:
     int mPressedCell = -1;
 
     sf::Clock mGameClock;
+    sf::Clock mWinDelayClock;
+    bool mGameWon = false;
 
     Indicator::Ptr mMinesLeftIndicator;
     Indicator::Ptr mTimeLeftIndicator;

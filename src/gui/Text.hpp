@@ -40,6 +40,7 @@ public:
 
     void alignHorizontal(AlignH align = AlignH::Left, float offsetX = 0.f);
     void alignVertical(AlignV align = AlignV::Center, float offsetY = 0.f);
+    void align(AlignH alignH = AlignH::Center, AlignV alignV = AlignV::Center, float offsetX = 0.f, float offsetY = 0.f);
 
 private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
