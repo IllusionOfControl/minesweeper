@@ -5,6 +5,8 @@
 #include "states/MainMenuState.hpp"
 #include "states/AboutState.hpp"
 #include "states/CustomDifficultyState.hpp"
+#include "states/GameState.hpp"
+#include "Layout.hpp"
 
 MineSweeper::MineSweeper(const StateID initialState)
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
@@ -28,22 +30,6 @@ void MineSweeper::run() {
         activeState->update();
         activeState->draw();
     }
-    // mData->assets.loadTexture("tile_texture", "_Resources/res/tiles.png");
-    // mData->assets.loadTexture("logo", "_Resources/res/logo.png");
-
-    //                                 sf::IntRect(15 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
-    // mData->assets.loadTexture("smiles_button", "_Resources/res/smiles.png");
-    // mData->assets.loadTexture(TEXTURE_SECOND_NAME, "_Resources/res/second.png");
-    // mData->assets.loadTexture("customDifficultyButtons", "_Resources/res/second_edited.png",
-    //                                 sf::IntRect(0, 128, 320, 352));
-    // mData->assets.loadTexture("difficultMenuButtons", "_Resources/res/second_edited.png",
-    //                                 sf::IntRect(0, 0, 320, 128));
-    // mData->assets.loadTexture("state_buttons", "_Resources/res/state_buttons.png");
-    // mData->assets.loadTexture("mainmenu_buttons", "_Resources/res/mainMenuButtons.png");
-    // mData->assets.loadTexture("led_background", "_Resources/res/tiles.png",
-    //                                 sf::IntRect(16 * SQUARE_SIZE, 0, SQUARE_SIZE, SQUARE_SIZE));
-    //
-    // mData->assets.loadFont("default_font", "_Resources/fonts/visitor1.ttf");
 }
 
 void MineSweeper::loadAssets() {
@@ -55,6 +41,10 @@ void MineSweeper::loadAssets() {
     mAssets.loadTexture(TextureID::TopBarButtons, "_Resources/res/topBarButtons.png");
     mAssets.loadTexture(TextureID::CustomDifficultyButtons, "_Resources/res/second_edited.png",
                         sf::IntRect({0, 128}, {320, 352}));
+    mAssets.loadTexture(TextureID::Tiles, "_Resources/res/tiles.png");
+    mAssets.loadTexture(TextureID::Smiles, "_Resources/res/smiles.png");
+    mAssets.loadTexture(TextureID::LedBackground, "_Resources/res/tiles.png",
+                        sf::IntRect({16 * Layout::TileSize, 0}, {Layout::TileSize, Layout::TileSize}));
 
     mAssets.loadFont(FontID::Default, "_Resources/fonts/visitor1.ttf");
 }
@@ -65,4 +55,5 @@ void MineSweeper::registerStates() {
     mStateManager.registerState<DifficultyMenuState>(StateID::DifficultyMenu);
     mStateManager.registerState<AboutState>(StateID::About);
     mStateManager.registerState<CustomDifficultyState>(StateID::CustomDifficulty);
+    mStateManager.registerState<GameState>(StateID::Game);
 }

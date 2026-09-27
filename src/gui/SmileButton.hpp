@@ -1,11 +1,12 @@
 #ifndef MINESWEEPER_SMILEBUTTON_HPP
 #define MINESWEEPER_SMILEBUTTON_HPP
 
+#include <memory>
 #include "Button.hpp"
 
 class SmileButton : public Button {
 public:
-    typedef std::shared_ptr<SmileButton> Ptr;
+    using Ptr = std::shared_ptr<SmileButton>;
 
     enum SmileReaction {
         SmileUsual,
@@ -15,18 +16,17 @@ public:
         SmileLose,
     };
 
-public:
-    SmileButton(bool isSmall);
+    explicit SmileButton(bool isSmall);
 
     void setReaction(SmileReaction reaction);
+    SmileReaction getReaction() const noexcept;
+    bool isSmall() const noexcept;
 
 private:
     void updateTexture();
 
-private:
     SmileReaction mReaction;
     bool mIsSmall;
 };
 
-
-#endif //MINESWEEPER_SMILEBUTTON_HPP
+#endif // MINESWEEPER_SMILEBUTTON_HPP

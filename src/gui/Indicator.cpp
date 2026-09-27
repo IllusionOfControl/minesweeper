@@ -1,31 +1,39 @@
 #include "Indicator.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace {
     constexpr unsigned int kCharacterSize = 20;
     constexpr float kTextScale = 2.f;
-    // Offset of the digits over the LED background.
     constexpr float kTextOffsetX = 6.f;
     constexpr float kTextOffsetY = -14.f;
 }
 
-Indicator::Indicator()
-        : mSprite()
-        , mText() {
+Indicator::Indicator() {
     mText.setCharacterSize(kCharacterSize);
     mText.setStyle(sf::Text::Bold);
-    mText.setScale(kTextScale, kTextScale);
-    mText.setPosition(kTextOffsetX, kTextOffsetY);
+    mText.setFillColor(sf::Color::Red);
+    mText.setScale({kTextScale, kTextScale});
+    mText.setPosition({kTextOffsetX, kTextOffsetY});
 }
 
-Indicator::~Indicator() = default;
-
-void Indicator::setTexture(sf::Texture &texture) {
-    texture.setRepeated(true);
-    mSprite.setTexture(texture);
+void Indicator::setTexture(const sf::Texture& texture) {
+    const_cast<sf::Texture&>(texture).setRepeated(true);
+    if (mSprite.has_value()) {
+        mSprite->setTexture(texture, false);
+    } else {
+        mSprite.emplace(texture);
+        if (mTextureRect != sf::IntRect{}) {
+            mSprite->setTextureRect(mTextureRect);
+        }
+    }
 }
 
-void Indicator::setTextureRect(sf::IntRect rectangle) {
-    mSprite.setTextureRect(rectangle);
+void Indicator::setTextureRect(const sf::IntRect rectangle) {
+    mTextureRect = rectangle;
+    if (mSprite.has_value()) {
+        mSprite->setTextureRect(mTextureRect);
+    }
 }
 
 void Indicator::setFont(const sf::Font& font) {
@@ -36,8 +44,14 @@ void Indicator::setString(const sf::String& string) {
     mText.setString(string);
 }
 
-void Indicator::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+const sf::String& Indicator::getString() const noexcept {
+    return mText.getString();
+}
+
+void Indicator::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
-    target.draw(mSprite, states);
+    if (mSprite.has_value()) {
+        target.draw(*mSprite, states);
+    }
     target.draw(mText, states);
 }

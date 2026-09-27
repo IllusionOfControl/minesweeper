@@ -1,22 +1,42 @@
 #include "SmileButton.hpp"
-#include "../DEFINITIONS.h"
+#include "Layout.hpp"
 
-#define SMILE_SMALL_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE, 0 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE}
-#define SMILE_LARGE_INT_RECT(pos_x)  {pos_x * SQUARE_SIZE * 2 + (SQUARE_SIZE * 5), 0 * SQUARE_SIZE, SQUARE_SIZE * 2, SQUARE_SIZE}
+namespace {
+    constexpr sf::IntRect getSmallSmileRect(const int index) noexcept {
+        return Layout::getRect(index, 0, 1, 1);
+    }
 
-SmileButton::SmileButton(bool isSmall)
-        : mIsSmall(isSmall)
-        , mReaction(SmileReaction::SmileUsual) {
-
+    constexpr sf::IntRect getLargeSmileRect(const int index) noexcept {
+        return {
+            {(index * 2 + 5) * Layout::TileSize, 0},
+            {2 * Layout::TileSize, Layout::TileSize}
+        };
+    }
 }
 
-void SmileButton::setReaction(SmileButton::SmileReaction reaction) {
+SmileButton::SmileButton(const bool isSmall)
+    : mReaction(SmileUsual)
+    , mIsSmall(isSmall) {
+    updateTexture();
+}
+
+void SmileButton::setReaction(const SmileReaction reaction) {
     mReaction = reaction;
     updateTexture();
 }
 
+SmileButton::SmileReaction SmileButton::getReaction() const noexcept {
+    return mReaction;
+}
+
+bool SmileButton::isSmall() const noexcept {
+    return mIsSmall;
+}
+
 void SmileButton::updateTexture() {
-    if (mIsSmall)
-        setTextureRect(SMILE_SMALL_INT_RECT(mReaction));
-    else setTextureRect(SMILE_LARGE_INT_RECT(mReaction));
+    if (mIsSmall) {
+        setTextureRect(getSmallSmileRect(mReaction));
+    } else {
+        setTextureRect(getLargeSmileRect(mReaction));
+    }
 }
