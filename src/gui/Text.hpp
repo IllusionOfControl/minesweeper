@@ -2,9 +2,12 @@
 #define MINESWEEPER_TEXT_HPP
 
 #include <memory>
+#include <optional>
 #include <string_view>
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "PassiveComponent.hpp"
 
@@ -16,7 +19,8 @@ public:
 
     enum class AlignV { Top, Center, Bottom };
 
-    explicit Text(const sf::Font&, const sf::String& = "", unsigned int = 20);
+    Text() = default;
+    explicit Text(const sf::Font& font, const sf::String& string = "", unsigned int characterSize = 20);
     ~Text() override = default;
 
     void setFont(const sf::Font& font);
@@ -41,7 +45,14 @@ private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     sf::IntRect mTextRect{};
-    sf::Text mText;
+    std::optional<sf::Text> mText;
+    sf::String mString;
+    unsigned int mCharacterSize = 20;
+    sf::Text::Style mStyle = sf::Text::Regular;
+    sf::Color mFillColor = sf::Color::White;
+    sf::Color mOutlineColor = sf::Color::Transparent;
+    float mOutlineThickness = 0.f;
+
     AlignH mAlignH = AlignH::Left;
     AlignV mAlignV = AlignV::Center;
     sf::Vector2f mOffset{0.f, 0.f};

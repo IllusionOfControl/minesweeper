@@ -9,7 +9,7 @@
 
 class MineSweeper {
 public:
-    MineSweeper();
+    explicit MineSweeper(StateID initialState = StateID::MainMenu);
     void run();
 
 private:

@@ -1,40 +1,100 @@
 #include "Text.hpp"
 
 #include <cmath>
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 Text::Text(const sf::Font& font, const sf::String& string, const unsigned int characterSize)
-    : mText(font, string, characterSize) {}
+    : mText(std::in_place, font, string, characterSize)
+    , mString(string)
+    , mCharacterSize(characterSize) {}
 
-void Text::setFont(const sf::Font& font) { mText.setFont(font); }
-
-void Text::setString(const sf::String& string) { mText.setString(string); }
-
-void Text::setString(std::string_view utf8String) {
-    mText.setString(sf::String::fromUtf8(utf8String.begin(), utf8String.end()));
+void Text::setFont(const sf::Font& font) {
+    if (mText.has_value()) {
+        mText->setFont(font);
+    } else {
+        mText.emplace(font, mString, mCharacterSize);
+        mText->setStyle(mStyle);
+        mText->setFillColor(mFillColor);
+        mText->setOutlineColor(mOutlineColor);
+        mText->setOutlineThickness(mOutlineThickness);
+    }
 }
 
-void Text::setCharacterSize(const unsigned int size) { mText.setCharacterSize(size); }
+void Text::setString(const sf::String& string) {
+    mString = string;
+    if (mText.has_value()) {
+        mText->setString(string);
+    }
+}
 
-void Text::setStyle(const sf::Text::Style style) { mText.setStyle(style); }
+void Text::setString(std::string_view utf8String) {
+    setString(sf::String::fromUtf8(utf8String.begin(), utf8String.end()));
+}
 
-void Text::setFillColor(const sf::Color color) { mText.setFillColor(color); }
+void Text::setCharacterSize(const unsigned int size) {
+    mCharacterSize = size;
+    if (mText.has_value()) {
+        mText->setCharacterSize(size);
+    }
+}
 
-void Text::setOutlineColor(const sf::Color color) { mText.setOutlineColor(color); }
+void Text::setStyle(const sf::Text::Style style) {
+    mStyle = style;
+    if (mText.has_value()) {
+        mText->setStyle(style);
+    }
+}
 
-void Text::setOutlineThickness(const float thickness) { mText.setOutlineThickness(thickness); }
+void Text::setFillColor(const sf::Color color) {
+    mFillColor = color;
+    if (mText.has_value()) {
+        mText->setFillColor(color);
+    }
+}
 
-void Text::setTextRect(const sf::IntRect& rectangle) { mTextRect = rectangle; }
+void Text::setOutlineColor(const sf::Color color) {
+    mOutlineColor = color;
+    if (mText.has_value()) {
+        mText->setOutlineColor(color);
+    }
+}
 
-const sf::IntRect& Text::getTextRect() const noexcept { return mTextRect; }
+void Text::setOutlineThickness(const float thickness) {
+    mOutlineThickness = thickness;
+    if (mText.has_value()) {
+        mText->setOutlineThickness(thickness);
+    }
+}
 
-const sf::String& Text::getString() const noexcept { return mText.getString(); }
+void Text::setTextRect(const sf::IntRect& rectangle) {
+    mTextRect = rectangle;
+}
 
-sf::FloatRect Text::getLocalBounds() const { return mText.getLocalBounds(); }
+const sf::IntRect& Text::getTextRect() const noexcept {
+    return mTextRect;
+}
+
+const sf::String& Text::getString() const noexcept {
+    if (mText.has_value()) {
+        return mText->getString();
+    }
+    return mString;
+}
+
+sf::FloatRect Text::getLocalBounds() const {
+    if (mText.has_value()) {
+        return mText->getLocalBounds();
+    }
+    return {};
+}
 
 void Text::alignHorizontal(const AlignH align, const float offsetX) {
-    const auto textBounds = mText.getLocalBounds();
+    if (!mText.has_value()) {
+        return;
+    }
+
+    const auto textBounds = mText->getLocalBounds();
     const auto bx = static_cast<float>(mTextRect.position.x);
     const auto bw = static_cast<float>(mTextRect.size.x);
 
@@ -61,7 +121,11 @@ void Text::alignHorizontal(const AlignH align, const float offsetX) {
 }
 
 void Text::alignVertical(const AlignV align, const float offsetY) {
-    const auto textBounds = mText.getLocalBounds();
+    if (!mText.has_value()) {
+        return;
+    }
+
+    const auto textBounds = mText->getLocalBounds();
     const auto by = static_cast<float>(mTextRect.position.y);
     const auto bh = static_cast<float>(mTextRect.size.y);
 
@@ -88,6 +152,9 @@ void Text::alignVertical(const AlignV align, const float offsetY) {
 }
 
 void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    if (!mText.has_value()) {
+        return;
+    }
     states.transform *= getTransform();
-    target.draw(mText, states);
+    target.draw(*mText, states);
 }

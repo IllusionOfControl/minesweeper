@@ -1,138 +1,162 @@
-#include <sstream>
-#include <string>
 #include "CustomDifficultyState.hpp"
-#include "../gui/Button.hpp"
-#include "../gui/WidgetFactory.hpp"
-#include "../WindowUtils.hpp"
+
+#include <string>
+#include "Difficulty.hpp"
+#include "GameContext.hpp"
+#include "Layout.hpp"
+#include "WindowUtils.hpp"
+#include "gui/Button.hpp"
+#include "gui/TopBar.hpp"
+#include "managers/ResourceIdentifiers.hpp"
 
 namespace {
-    // Safely parse a fully-numeric string. Returns false on empty input,
-    // non-numeric characters or overflow instead of throwing.
-    bool tryParseInt(const sf::String &string, int &out) {
+    constexpr int kWindowTilesX = 7;
+    constexpr int kWindowTilesY = 12;
+
+    constexpr int kInputTilesX = 5;
+    constexpr int kInputTilesY = 2;
+
+    constexpr int kButtonTilesX = 5;
+    constexpr int kButtonTilesY = 1;
+
+    bool tryParseInt(const sf::String& string, int& out) {
         const std::string str = string.toAnsiString();
-        if (str.empty())
+        if (str.empty()) {
             return false;
+        }
         try {
             std::size_t pos = 0;
             const int value = std::stoi(str, &pos);
-            if (pos != str.size())
+            if (pos != str.size()) {
                 return false;
+            }
             out = value;
             return true;
-        } catch (const std::exception &) {
+        } catch (const std::exception&) {
             return false;
         }
     }
 }
 
-CustomDifficultyState::CustomDifficultyState(GameDataRef context)
-        : mContext(context)
-        , mWidthInput(std::make_shared<Input>())
-        , mHeightInput(std::make_shared<Input>())
-        , mMinesInput(std::make_shared<Input>())
-        , mIsFormValid(false) {
-}
+CustomDifficultyState::CustomDifficultyState(GameContext& context)
+    : State(context)
+    , mWidthInput(std::make_shared<Input>())
+    , mHeightInput(std::make_shared<Input>())
+    , mMinesInput(std::make_shared<Input>()) {}
 
 void CustomDifficultyState::init() {
-    resizeWindow(mContext->window,
-                 (WIDTH + GAME_BORDER_RIGHT + GAME_BORDER_LEFT) * SQUARE_SIZE,
-                 (HEIGHT + GAME_BORDER_TOP + GAME_BORDER_BOTTOM) * SQUARE_SIZE);
-    widgets::setupBackground(mBackground, mContext);
+    constexpr auto windowSize = Layout::toWindowSize(kWindowTilesX, kWindowTilesY);
+    resizeWindow(getContext().window, windowSize);
 
-    auto mainMenuButton = widgets::makeMainMenuButton(mContext);
-    auto exitButton = widgets::makeExitButton(mContext, WIDTH);
+    auto& backgroundTexture = getContext().assets.getTexture(TextureID::Background);
+    mBackground.setTexture(backgroundTexture);
+    mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
 
-    std::function<bool(sf::Uint32)> filterOnlyNumbers = [](sf::Uint32 unicode) {
-        if (unicode >= 0x30 && unicode <= 0x39)
-            return true;
-        return false;
+    const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
+
+    const auto& buttonsTexture = getContext().assets.getTexture(TextureID::CustomDifficultyButtons);
+    const auto& font = getContext().assets.getFont(FontID::Default);
+
+    auto filterOnlyNumbers = [](const char32_t unicode) {
+        return unicode >= U'0' && unicode <= U'9';
     };
 
-    mWidthInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
-    mWidthInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP - 2) * SQUARE_SIZE);
-    mWidthInput->setNormalTextureRect({0, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mWidthInput->setSelectedTextureRect({SQUARE_SIZE * 5, 0, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mWidthInput->setFont(mContext->assets.getFont("default_font"));
+    mWidthInput->setTexture(buttonsTexture);
+    mWidthInput->setPosition(Layout::toPixels(1, 2));
+    mWidthInput->setNormalTextureRect(Layout::getRect(0, 0, kInputTilesX, kInputTilesY));
+    mWidthInput->setSelectedTextureRect(Layout::getRect(5, 0, kInputTilesX, kInputTilesY));
+    mWidthInput->setFont(font);
     mWidthInput->setCharacterSize(32);
     mWidthInput->setStyle(sf::Text::Bold);
     mWidthInput->setFillColor(sf::Color::Green);
     mWidthInput->setInputLimit(2);
     mWidthInput->setInputFilterCallback(filterOnlyNumbers);
-    mWidthInput->setInputValidationCallback([](const sf::String &string) {
-        int value;
-        return tryParseInt(string, value) && value >= 5 && value <= 18;
+    mWidthInput->setInputValidationCallback([](const sf::String& string) {
+        int value = 0;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinWidth && value <= 18;
     });
 
-    mHeightInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
-    mHeightInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP) * SQUARE_SIZE);
-    mHeightInput->setNormalTextureRect({0, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mHeightInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 2, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mHeightInput->setFont(mContext->assets.getFont("default_font"));
+    mHeightInput->setTexture(buttonsTexture);
+    mHeightInput->setPosition(Layout::toPixels(1, 4));
+    mHeightInput->setNormalTextureRect(Layout::getRect(0, 2, kInputTilesX, kInputTilesY));
+    mHeightInput->setSelectedTextureRect(Layout::getRect(5, 2, kInputTilesX, kInputTilesY));
+    mHeightInput->setFont(font);
     mHeightInput->setCharacterSize(32);
     mHeightInput->setStyle(sf::Text::Bold);
     mHeightInput->setFillColor(sf::Color::Green);
     mHeightInput->setInputLimit(2);
     mHeightInput->setInputFilterCallback(filterOnlyNumbers);
-    mHeightInput->setInputValidationCallback([](const sf::String &string) {
-        int value;
-        return tryParseInt(string, value) && value >= 5 && value <= 18;
+    mHeightInput->setInputValidationCallback([](const sf::String& string) {
+        int value = 0;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinHeight && value <= 18;
     });
 
-    mMinesInput->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
-    mMinesInput->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 2) * SQUARE_SIZE);
-    mMinesInput->setNormalTextureRect({0, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mMinesInput->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 4, SQUARE_SIZE * 5, SQUARE_SIZE * 2});
-    mMinesInput->setFont(mContext->assets.getFont("default_font"));
+    mMinesInput->setTexture(buttonsTexture);
+    mMinesInput->setPosition(Layout::toPixels(1, 6));
+    mMinesInput->setNormalTextureRect(Layout::getRect(0, 4, kInputTilesX, kInputTilesY));
+    mMinesInput->setSelectedTextureRect(Layout::getRect(5, 4, kInputTilesX, kInputTilesY));
+    mMinesInput->setFont(font);
     mMinesInput->setCharacterSize(32);
     mMinesInput->setStyle(sf::Text::Bold);
     mMinesInput->setFillColor(sf::Color::Green);
     mMinesInput->setInputLimit(3);
     mMinesInput->setInputFilterCallback(filterOnlyNumbers);
-    mMinesInput->setInputValidationCallback([](const sf::String &string) {
-        int value;
-        return tryParseInt(string, value) && value >= 5 && value <= 320;
+    mMinesInput->setInputValidationCallback([](const sf::String& string) {
+        int value = 0;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinMines && value <= 320;
     });
 
-    auto playButton = std::make_shared<Button>();
-    playButton->setTexture(mContext->assets.getTexture("customDifficultyButtons"));
-    playButton->setNormalTextureRect({0, SQUARE_SIZE * 6, SQUARE_SIZE * 5, SQUARE_SIZE});
-    playButton->setSelectedTextureRect({SQUARE_SIZE * 5, SQUARE_SIZE * 6, SQUARE_SIZE * 5, SQUARE_SIZE});
-    playButton->setPosition(GAME_BORDER_RIGHT * SQUARE_SIZE, (GAME_BORDER_TOP + 4) * SQUARE_SIZE);
+    const auto playButton = std::make_shared<Button>();
+    playButton->setTexture(buttonsTexture);
+    playButton->setNormalTextureRect(Layout::getRect(0, 6, kButtonTilesX, kButtonTilesY));
+    playButton->setSelectedTextureRect(Layout::getRect(5, 6, kButtonTilesX, kButtonTilesY));
+    playButton->setPosition(Layout::toPixels(1, 9));
     playButton->setCallback([this]() {
-        if (mIsFormValid)
-            mContext->manager.addState(StateRef(new GameState(mContext)), true);
+        if (mIsFormValid) {
+            int width = 0;
+            int height = 0;
+            int mines = 0;
+            if (tryParseInt(mWidthInput->getString(), width) &&
+                tryParseInt(mHeightInput->getString(), height) &&
+                tryParseInt(mMinesInput->getString(), mines)) {
+                if (const auto customDifficulty = Difficulty::createCustom(width, height, mines)) {
+                    getContext().difficulty = *customDifficulty;
+                    getContext().states.changeState(StateID::Game);
+                }
+            }
+        }
     });
 
-    mContainer.pack(mainMenuButton);
-    mContainer.pack(exitButton);
-    mContainer.pack(mWidthInput);
-    mContainer.pack(mHeightInput);
-    mContainer.pack(mMinesInput);
-    mContainer.pack(playButton);
+    mGuiContainer.pack(topBar);
+    mGuiContainer.pack(mWidthInput);
+    mGuiContainer.pack(mHeightInput);
+    mGuiContainer.pack(mMinesInput);
+    mGuiContainer.pack(playButton);
 }
 
 void CustomDifficultyState::handleInput() {
-    sf::Event event;
-
-    while (mContext->window.pollEvent(event)) {
-        mContainer.handleEvent(event);
+    while (const std::optional<sf::Event> event = getContext().window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            getContext().window.close();
+            return;
+        }
+        mGuiContainer.handleEvent(*event);
     }
 }
 
 void CustomDifficultyState::update() {
-    int width, height, mines;
+    int width = 0;
+    int height = 0;
+    int mines = 0;
     if (mWidthInput->isValid() && mHeightInput->isValid() && mMinesInput->isValid()
         && tryParseInt(mWidthInput->getString(), width)
         && tryParseInt(mHeightInput->getString(), height)
         && tryParseInt(mMinesInput->getString(), mines)) {
-        if (mines < (width * height)) {
-            mContext->difficulty.field_width = width;
-            mContext->difficulty.field_height = height;
-            mContext->difficulty.bomb_count = mines;
-
+        if (Difficulty::isValid(width, height, mines)) {
             mIsFormValid = true;
         } else {
             mMinesInput->setInvalid();
+            mIsFormValid = false;
         }
     } else {
         mIsFormValid = false;
@@ -140,10 +164,10 @@ void CustomDifficultyState::update() {
 }
 
 void CustomDifficultyState::draw() {
-    mContext->window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color::Red);
 
-    mContext->window.draw(mBackground);
-    mContext->window.draw(mContainer);
+    getContext().window.draw(mBackground);
+    getContext().window.draw(mGuiContainer);
 
-    mContext->window.display();
+    getContext().window.display();
 }

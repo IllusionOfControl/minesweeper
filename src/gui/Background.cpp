@@ -16,5 +16,5 @@ void Background::setTextureRect(const sf::IntRect rectangle) {
 }
 
 void Background::draw(sf::RenderTarget &target, const sf::RenderStates states) const {
-    if (mSprite) target.draw(*mSprite, states);
+    if (mSprite) target.draw(mSprite.value(), states);
 }

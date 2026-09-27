@@ -34,6 +34,8 @@ set(SOURCE_FILES
         src/states/DifficultyMenuState.hpp
         src/states/AboutState.cpp
         src/states/AboutState.hpp
+        src/states/CustomDifficultyState.cpp
+        src/states/CustomDifficultyState.hpp
         src/gui/Background.cpp
         src/gui/Background.hpp
         src/gui/PassiveComponent.hpp
@@ -49,19 +51,17 @@ set(SOURCE_FILES
         src/gui/TopBar.hpp
         src/gui/Text.cpp
         src/gui/Text.hpp
-        src/states/DebugState.cpp
-        src/states/DebugState.hpp
+        src/gui/Input.cpp
+        src/gui/Input.hpp
         #        src/Board.cpp src/Board.hpp
 #        src/states/MainMenuState.cpp src/states/MainMenuState.hpp
 #        src/states/GameState.cpp src/states/GameState.hpp
 #        src/states/AboutState.cpp src/states/AboutState.hpp
 #        src/states/DifficultyMenuState.cpp src/states/DifficultyMenuState.hpp
-#        src/states/CustomDifficultyState.cpp src/states/CustomDifficultyState.hpp
 #        src/gui/Component.cpp src/gui/Component.hpp
 #        src/gui/PassiveComponent.hpp
 #        src/gui/WidgetFactory.cpp src/gui/WidgetFactory.hpp
 #        src/gui/Button.cpp src/gui/Button.hpp
-#        src/gui/Input.cpp src/gui/Input.hpp
 #        src/gui/Background.cpp src/gui/Background.hpp
 #        src/gui/Indicator.cpp src/gui/Indicator.hpp
 #        src/gui/SmileButton.cpp src/gui/SmileButton.hpp
