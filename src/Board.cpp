@@ -4,13 +4,11 @@
 #include <stack>
 #include <utility>
 
-Board::Board(int width, int height, int mineCount)
-        : mWidth(width)
-        , mHeight(height)
-        , mMineCount(mineCount)
-        , mRng(std::random_device{}()) {
-    reset();
-}
+Board::Board(const int width, const int height, const int mineCount)
+    : mWidth(width)
+      , mHeight(height)
+      , mMineCount(mineCount)
+      , mRng(std::random_device{}()) { reset(); }
 
 void Board::reset() {
     mCells.assign(static_cast<std::size_t>(mWidth) * mHeight, Cell{});
@@ -19,15 +17,11 @@ void Board::reset() {
     mStatus = Status::FirstMove;
 }
 
-bool Board::inBounds(int x, int y) const {
-    return x >= 0 && x < mWidth && y >= 0 && y < mHeight;
-}
+bool Board::inBounds(const int x, const int y) const { return x >= 0 && x < mWidth && y >= 0 && y < mHeight; }
 
-const Board::Cell &Board::cellAt(int x, int y) const {
-    return mCells.at(index(x, y));
-}
+const Board::Cell& Board::cellAt(const int x, const int y) const { return mCells.at(index(x, y)); }
 
-void Board::placeMines(int safeX, int safeY) {
+void Board::placeMines(const int safeX, const int safeY) {
     const int safe = index(safeX, safeY);
     const int total = mWidth * mHeight;
 
@@ -65,7 +59,7 @@ void Board::placeMines(int safeX, int safeY) {
     }
 }
 
-void Board::reveal(int x, int y) {
+void Board::reveal(const int x, const int y) {
     if (mStatus == Status::Won || mStatus == Status::Lost)
         return;
     if (!inBounds(x, y))
@@ -76,7 +70,7 @@ void Board::reveal(int x, int y) {
         mStatus = Status::Playing;
     }
 
-    Cell &cell = mCells[index(x, y)];
+    Cell& cell = mCells[index(x, y)];
     if (cell.isRevealed || cell.mark == Mark::Flag)
         return;
 
@@ -101,7 +95,7 @@ void Board::revealFloodFill(int startX, int startY) {
         const auto [x, y] = pending.top();
         pending.pop();
 
-        Cell &cell = mCells[index(x, y)];
+        Cell& cell = mCells[index(x, y)];
         if (cell.isRevealed || cell.mark == Mark::Flag || cell.isMine)
             continue;
 
@@ -120,8 +114,8 @@ void Board::revealFloodFill(int startX, int startY) {
                 const int ny = y + dy;
                 if (!inBounds(nx, ny))
                     continue;
-                const Cell &neighbour = mCells[index(nx, ny)];
-                if (!neighbour.isRevealed && neighbour.mark != Mark::Flag && !neighbour.isMine)
+                if (const Cell& neighbour = mCells[index(nx, ny)]; !neighbour.isRevealed && neighbour.mark != Mark::Flag
+                    && !neighbour.isMine)
                     pending.emplace(nx, ny);
             }
         }
@@ -134,7 +128,7 @@ void Board::toggleMark(int x, int y) {
     if (!inBounds(x, y))
         return;
 
-    Cell &cell = mCells[index(x, y)];
+    Cell& cell = mCells[index(x, y)];
     if (cell.isRevealed)
         return;
 
@@ -153,13 +147,13 @@ void Board::toggleMark(int x, int y) {
     }
 }
 
-void Board::chord(int x, int y) {
+void Board::chord(const int x, const int y) {
     if (mStatus != Status::Playing)
         return;
     if (!inBounds(x, y))
         return;
 
-    const Cell &cell = mCells[index(x, y)];
+    const Cell& cell = mCells[index(x, y)];
     if (!cell.isRevealed || cell.isMine || cell.adjacentMines == 0)
         return;
 
@@ -186,8 +180,7 @@ void Board::chord(int x, int y) {
             const int ny = y + dy;
             if (!inBounds(nx, ny))
                 continue;
-            const Cell &neighbour = mCells[index(nx, ny)];
-            if (neighbour.mark != Mark::Flag && !neighbour.isRevealed)
+            if (const Cell& neighbour = mCells[index(nx, ny)]; neighbour.mark != Mark::Flag && !neighbour.isRevealed)
                 reveal(nx, ny);
             if (mStatus == Status::Lost)
                 return;
