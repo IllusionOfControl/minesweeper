@@ -151,6 +151,11 @@ void Text::alignVertical(const AlignV align, const float offsetY) {
     setPosition({getPosition().x, posY});
 }
 
+void Text::align(const AlignH alignH, const AlignV alignV, const float offsetX, const float offsetY) {
+    alignHorizontal(alignH, offsetX);
+    alignVertical(alignV, offsetY);
+}
+
 void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     if (!mText.has_value()) {
         return;

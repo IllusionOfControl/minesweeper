@@ -73,4 +73,14 @@ private:
     Preset mPreset;
 };
 
+inline const char* toString(const Difficulty::Preset preset) noexcept {
+    switch (preset) {
+    case Difficulty::Preset::Easy: return "Easy";
+    case Difficulty::Preset::Medium: return "Medium";
+    case Difficulty::Preset::Hard: return "Hard";
+    case Difficulty::Preset::Custom: return "Custom";
+    }
+    return "Unknown";
+}
+
 #endif //MINESWEEPER_DIFFICULTY_HPP

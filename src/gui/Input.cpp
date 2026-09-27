@@ -11,12 +11,12 @@ namespace {
 }
 
 Input::Input() {
-    mText.setPosition({kTextOffsetX, kTextOffsetY});
+    mText.setPosition(mTextOffset);
 }
 
 Input::Input(const sf::Font& font)
     : mText(font) {
-    mText.setPosition({kTextOffsetX, kTextOffsetY});
+    mText.setPosition(mTextOffset);
 }
 
 void Input::setInputFilterCallback(InputFilterCallback callback) {
@@ -116,6 +116,15 @@ Text& Input::getText() noexcept {
 const Text& Input::getText() const noexcept {
     return mText;
 }
+void Input::setTextOffset(const sf::Vector2f offset) {
+    mTextOffset = offset;
+    mText.setPosition(mTextOffset);
+}
+
+sf::Vector2f Input::getTextOffset() const noexcept {
+    return mTextOffset;
+}
+
 
 void Input::setInputLimit(const int numberOfCharacters) {
     mInputLimit = numberOfCharacters;

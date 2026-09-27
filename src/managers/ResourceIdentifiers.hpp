@@ -11,7 +11,8 @@ enum class TextureID {
     MainMenuButtons,
     TopBarButtons,
     AboutButtons,
-    LedBackground
+    LedBackground,
+    SaveRecordState
 };
 
 enum class FontID {
@@ -30,6 +31,7 @@ inline const char* toString(const TextureID id) noexcept {
     case TextureID::TopBarButtons: return "TopBarButtons";
     case TextureID::AboutButtons: return "AboutButtons";
     case TextureID::LedBackground: return "LedBackground";
+    case TextureID::SaveRecordState: return "SaveRecordState";
     default: return "UnknownTexture";
     }
 }

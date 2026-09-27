@@ -1,10 +1,10 @@
 #ifndef MINESWEEPER_STATEIDENTIFIERS_HPP
 #define MINESWEEPER_STATEIDENTIFIERS_HPP
 
-#include <string>
 #include <optional>
 #include <algorithm>
 #include <cctype>
+#include <string_view>
 
 enum class StateID {
     None,
@@ -13,7 +13,8 @@ enum class StateID {
     DifficultyMenu,
     CustomDifficulty,
     Game,
-    About
+    About,
+    SaveResult
 };
 
 inline const char* toString(const StateID id) noexcept {
@@ -25,6 +26,7 @@ inline const char* toString(const StateID id) noexcept {
     case StateID::CustomDifficulty: return "CustomDifficulty";
     case StateID::Game: return "Game";
     case StateID::About: return "About";
+    case StateID::SaveResult: return "SaveResult";
     default: return "Unknown";
     }
 }
@@ -40,8 +42,8 @@ inline std::optional<StateID> parseStateID(const std::string_view name) noexcept
     if (equals(name, "custom")) return StateID::CustomDifficulty;
     if (equals(name, "game")) return StateID::Game;
     if (equals(name, "about")) return StateID::About;
+    if (equals(name, "saveresult") || equals(name, "save")) return StateID::SaveResult;
     if (equals(name, "Empty")) return StateID::Empty;
-
     return std::nullopt;
 }
 

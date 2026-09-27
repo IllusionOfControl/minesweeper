@@ -41,6 +41,8 @@ public:
 
     Text& getText() noexcept;
     const Text& getText() const noexcept;
+    void setTextOffset(sf::Vector2f offset);
+    [[nodiscard]] sf::Vector2f getTextOffset() const noexcept;
 
     void setInputLimit(int numberOfCharacters);
     void setValid();
@@ -66,6 +68,7 @@ private:
     std::optional<sf::Sprite> mSprite;
     Text mText;
     sf::String mValue;
+    sf::Vector2f mTextOffset{20.f, 22.f};
 
     bool mIsValid = false;
     int mInputLimit = 65536;

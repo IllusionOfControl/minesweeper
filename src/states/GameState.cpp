@@ -9,8 +9,7 @@
 #include "managers/ResourceIdentifiers.hpp"
 
 namespace {
-    // Indices into tiles.png (see legend in legacy/ANALYSIS.md).
-    constexpr int TILE_PRESSED = 0;          // same look as a revealed "0"
+    constexpr int TILE_PRESSED = 0;
     constexpr int TILE_BOMB = 9;
     constexpr int TILE_BOMB_DETONATED = 10;
     constexpr int TILE_CLOSED = 11;
@@ -19,25 +18,25 @@ namespace {
     constexpr int TILE_WRONG_FLAG = 14;
 
     int tileForCell(const Board& board, const int x, const int y, const Board::Status status, const bool pressed) {
-        const auto& cell = board.cellAt(x, y);
+        const auto& [adjacentMines, isMine, isRevealed, isDetonated, mark] = board.cellAt(x, y);
 
-        if (cell.isRevealed) {
-            if (cell.isMine) {
-                return cell.isDetonated ? TILE_BOMB_DETONATED : TILE_BOMB;
+        if (isRevealed) {
+            if (isMine) {
+                return isDetonated ? TILE_BOMB_DETONATED : TILE_BOMB;
             }
-            return cell.adjacentMines;
+            return adjacentMines;
         }
 
         if (status == Board::Status::Lost) {
-            if (cell.isMine && cell.mark != Board::Mark::Flag) {
+            if (isMine && mark != Board::Mark::Flag) {
                 return TILE_BOMB;
             }
-            if (!cell.isMine && cell.mark == Board::Mark::Flag) {
+            if (!isMine && mark == Board::Mark::Flag) {
                 return TILE_WRONG_FLAG;
             }
         }
 
-        switch (cell.mark) {
+        switch (mark) {
             case Board::Mark::Flag:
                 return TILE_FLAG;
             case Board::Mark::Question:
@@ -87,6 +86,7 @@ void GameState::init() {
     const bool isSmileSmall = (boardWidth % 2 != 0);
     mSmileButton = std::make_shared<SmileButton>(isSmileSmall);
     mSmileButton->setTexture(getContext().assets.getTexture(TextureID::Smiles));
+
     const int smileTileX = 1 + boardWidth / 2 - (isSmileSmall ? 0 : 1);
     mSmileButton->setPosition(Layout::toPixels(smileTileX, 2));
     mSmileButton->setCallback([this]() { reset(); });
@@ -151,6 +151,21 @@ void GameState::update() {
         switch (mBoard->status()) {
             case Board::Status::Won:
                 mSmileButton->setReaction(SmileButton::SmileWin);
+                if (!mGameWon) {
+                    mGameWon = true;
+                    mWinDelayClock.restart();
+
+                    const auto& difficulty = getContext().difficulty;
+                    GameResult result;
+                    result.won = true;
+                    result.timeSeconds = mGameTime;
+                    result.difficulty = toString(difficulty.getPreset());
+                    result.width = difficulty.getWidth();
+                    result.height = difficulty.getHeight();
+                    result.mines = difficulty.getMineCount();
+                    result.date = ResultManager::getCurrentDateTime();
+                    getContext().lastResult = result;
+                }
                 break;
             case Board::Status::Lost:
                 mSmileButton->setReaction(SmileButton::SmileLose);
@@ -165,6 +180,11 @@ void GameState::update() {
         mNeedToUpdate = false;
     }
 
+    if (mGameWon && mWinDelayClock.getElapsedTime().asSeconds() > 1.2f) {
+        getContext().states.changeState(StateID::SaveResult);
+        return;
+    }
+
     if (mBoard->status() == Board::Status::Playing) {
         updateTimer();
     }
@@ -177,6 +197,7 @@ void GameState::reset() {
     mPressedCell = -1;
     mGameTime = 0;
     mNeedToUpdate = false;
+    mGameWon = false;
 
     mSmileButton->setReaction(SmileButton::SmileUsual);
     mMinesLeftIndicator->setString(std::to_string(mBoard->minesLeft()));

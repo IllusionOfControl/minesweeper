@@ -1,11 +1,13 @@
 #ifndef MINESWEEPER_GAMECONTEXT_HPP
 #define MINESWEEPER_GAMECONTEXT_HPP
 
+#include <optional>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "Difficulty.hpp"
 #include "managers/AssetManager.hpp"
 #include "managers/StateManager.hpp"
+#include "managers/ResultManager.hpp"
 
 struct GameContext {
     sf::RenderWindow& window;
@@ -13,6 +15,7 @@ struct GameContext {
     StateManager& states;
 
     Difficulty& difficulty;
+    std::optional<GameResult> lastResult;
 
     GameContext(sf::RenderWindow& windowRef,
                 AssetManager& assetsRef,

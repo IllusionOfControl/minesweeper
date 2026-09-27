@@ -7,11 +7,11 @@
 
 class Image : public PassiveComponent {
 public:
-    typedef std::shared_ptr<Image> Ptr;
+    using Ptr = std::shared_ptr<Image>;
 
     Image() = default;
 
-    void setTexture(sf::Texture &texture);
+    void setTexture(const sf::Texture &texture);
 
     void setTextureRect(sf::IntRect rectangle);
 

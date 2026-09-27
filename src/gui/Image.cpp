@@ -2,9 +2,9 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-void Image::setTexture(sf::Texture &texture) {
-    if (!mSprite.has_value()) mSprite.emplace(texture);
-    else mSprite->setTexture(texture);
+void Image::setTexture(const sf::Texture &texture) {
+    if (mSprite.has_value()) mSprite->setTexture(texture, false);
+    else mSprite.emplace(texture);
 }
 
 void Image::setTextureRect(const sf::IntRect rectangle) {
