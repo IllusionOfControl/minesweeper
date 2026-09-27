@@ -7,7 +7,7 @@
 
 class Background : public PassiveComponent {
 public:
-    typedef std::shared_ptr<Background> Ptr;
+    using Ptr = std::shared_ptr<Background>;
 
     Background() = default;
 

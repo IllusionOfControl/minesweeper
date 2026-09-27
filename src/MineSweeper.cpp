@@ -4,17 +4,17 @@
 #include "states/EmptyState.hpp"
 #include "states/MainMenuState.hpp"
 #include "states/AboutState.hpp"
+#include "states/CustomDifficultyState.hpp"
 
-MineSweeper::MineSweeper()
+MineSweeper::MineSweeper(const StateID initialState)
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
-      , mAssets()
+      , mStateManager(mContext)
       , mDifficulty(Difficulty::create(Difficulty::Preset::Easy))
-      , mContext(mWindow, mAssets, mStateManager, mDifficulty)
-      , mStateManager(mContext) {
+      , mContext(mWindow, mAssets, mStateManager, mDifficulty) {
     loadAssets();
     registerStates();
 
-    mStateManager.changeState(StateID::MainMenu);
+    mStateManager.changeState(initialState);
 }
 
 void MineSweeper::run() {
@@ -53,6 +53,10 @@ void MineSweeper::loadAssets() {
     mAssets.loadTexture(TextureID::DifficultyMenuButtons, "_Resources/res/difficultyMenuButtons.png");
     mAssets.loadTexture(TextureID::AboutButtons, "_Resources/res/aboutButtons.png");
     mAssets.loadTexture(TextureID::TopBarButtons, "_Resources/res/topBarButtons.png");
+    mAssets.loadTexture(TextureID::CustomDifficultyButtons, "_Resources/res/second_edited.png",
+                        sf::IntRect({0, 128}, {320, 352}));
+
+    mAssets.loadFont(FontID::Default, "_Resources/fonts/visitor1.ttf");
 }
 
 void MineSweeper::registerStates() {
@@ -60,4 +64,5 @@ void MineSweeper::registerStates() {
     mStateManager.registerState<MainMenuState>(StateID::MainMenu);
     mStateManager.registerState<DifficultyMenuState>(StateID::DifficultyMenu);
     mStateManager.registerState<AboutState>(StateID::About);
+    mStateManager.registerState<CustomDifficultyState>(StateID::CustomDifficulty);
 }

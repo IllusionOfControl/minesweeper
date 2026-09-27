@@ -67,10 +67,10 @@ private:
           , mMineCount(mines)
           , mPreset(preset) {}
 
-    const int mWidth;
-    const int mHeight;
-    const int mMineCount;
-    const Preset mPreset;
+    int mWidth;
+    int mHeight;
+    int mMineCount;
+    Preset mPreset;
 };
 
 #endif //MINESWEEPER_DIFFICULTY_HPP

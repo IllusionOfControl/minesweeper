@@ -1,98 +1,123 @@
+#include "Input.hpp"
+
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 #include <utility>
-#include "Input.hpp"
 
 namespace {
-    // Text padding inside the input box, relative to its top-left corner.
     constexpr float kTextOffsetX = 20.f;
     constexpr float kTextOffsetY = 22.f;
 }
 
-Input::Input()
-        : mInputFilterCallback()
-        , mValidationCallback()
-        , mNormalTextureRect()
-        , mSelectedTextureRect()
-        , mSprite()
-        , mInputLimit(65536)
-        , mIsValid(false) {
-    mText.setPosition(kTextOffsetX, kTextOffsetY);
+Input::Input() {
+    mText.setPosition({kTextOffsetX, kTextOffsetY});
 }
 
-/*
- *      Callbacks
- */
+Input::Input(const sf::Font& font)
+    : mText(font) {
+    mText.setPosition({kTextOffsetX, kTextOffsetY});
+}
+
 void Input::setInputFilterCallback(InputFilterCallback callback) {
     mInputFilterCallback = std::move(callback);
 }
 
-void Input::setInputValidationCallback(Input::ValidationCallback callback) {
+void Input::setInputValidationCallback(ValidationCallback callback) {
     mValidationCallback = std::move(callback);
 }
 
-/*
- *      Components
- */
-void Input::setNormalTextureRect(sf::IntRect rect) {
-    mNormalTextureRect = rect;
-    mSprite.setTextureRect(mNormalTextureRect);
-}
-
-void Input::setSelectedTextureRect(sf::IntRect rect) {
-    mSelectedTextureRect = rect;
-}
-
-/*
- *      Sprite
- */
-
 void Input::setTexture(const sf::Texture& texture) {
-    mSprite.setTexture(texture);
+    if (mSprite.has_value()) {
+        mSprite->setTexture(texture, false);
+    } else {
+        mSprite.emplace(texture);
+    }
+}
+
+void Input::setTextureRect(const sf::IntRect rect) {
+    setNormalTextureRect(rect);
+    setSelectedTextureRect(rect);
+}
+
+void Input::setNormalTextureRect(const sf::IntRect rect) {
+    mNormalTextureRect = rect;
+    mText.setTextRect(mNormalTextureRect);
+    if (mSprite.has_value() && !isSelected()) {
+        mSprite->setTextureRect(mNormalTextureRect);
+    }
+}
+
+void Input::setSelectedTextureRect(const sf::IntRect rect) {
+    mSelectedTextureRect = rect;
+    if (mSprite.has_value() && isSelected()) {
+        mSprite->setTextureRect(mSelectedTextureRect);
+    }
 }
 
 void Input::select() {
     Component::select();
-    mSprite.setTextureRect(mSelectedTextureRect);
+    if (mSprite.has_value()) {
+        mSprite->setTextureRect(mSelectedTextureRect);
+    }
+    updateDisplayedText();
 }
 
 void Input::deselect() {
     Component::deselect();
-    mSprite.setTextureRect(mNormalTextureRect);
+    if (mSprite.has_value()) {
+        mSprite->setTextureRect(mNormalTextureRect);
+    }
+    updateDisplayedText();
 }
 
-void Input::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void Input::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
-    target.draw(mSprite, states);
+    if (mSprite.has_value()) {
+        target.draw(*mSprite, states);
+    }
     target.draw(mText, states);
 }
 
-/*
- *      Text
- */
-
-void Input::setFont(const sf::Font &font) {
+void Input::setFont(const sf::Font& font) {
     mText.setFont(font);
 }
 
-void Input::setStyle(sf::Text::Style style) {
+void Input::setStyle(const sf::Text::Style style) {
     mText.setStyle(style);
 }
 
-void Input::setCharacterSize(unsigned int size) {
+void Input::setCharacterSize(const unsigned int size) {
     mText.setCharacterSize(size);
 }
 
-void Input::setFillColor(sf::Color color) {
+void Input::setFillColor(const sf::Color color) {
     mText.setFillColor(color);
 }
 
-sf::String Input::getString() const {
-    return mText.getString();
+void Input::setString(const sf::String& string) {
+    mValue = string;
+    if (validateInput(mValue)) {
+        setValid();
+    } else {
+        setInvalid();
+    }
+    updateDisplayedText();
 }
 
-void Input::setInputLimit(int numberOfCharacters) {
+const sf::String& Input::getString() const {
+    return mValue;
+}
+
+Text& Input::getText() noexcept {
+    return mText;
+}
+
+const Text& Input::getText() const noexcept {
+    return mText;
+}
+
+void Input::setInputLimit(const int numberOfCharacters) {
     mInputLimit = numberOfCharacters;
 }
 
@@ -110,56 +135,66 @@ bool Input::isValid() const {
     return mIsValid;
 }
 
-void Input::handleEvent(const sf::Event &event) {
-    sf::Rect<float> spriteBounds = mSprite.getLocalBounds();
-    sf::Rect<float> globalBounds = getTransform().transformRect(spriteBounds);
-    switch (event.type) {
-        case sf::Event::MouseMoved: {
-            auto mousePos = sf::Vector2f((float) event.mouseMove.x, (float) event.mouseMove.y);
-            if (globalBounds.contains(mousePos))
-                select();
-            else
-                deselect();
-
-            break;
-        }
-        case sf::Event::TextEntered: {
-            if (isSelected()) {
-                sf::Uint32 unicode = event.text.unicode;
-                sf::String string = mText.getString();
-
-                if (unicode == '\b' && string.getSize() > 0)
-                    string.erase(string.getSize() - 1, 1);
-                if (filterInput(unicode) && string.getSize() < mInputLimit)
-                    string += unicode;
-
-                if (validateInput(string))
-                    setValid();
-                else
-                    setInvalid();
-
-                mText.setString(string);
-            }
-
-            break;
-        }
-        default:
-            break;
+void Input::updateDisplayedText() {
+    if (isSelected()) {
+        mText.setString(mValue + "_");
+    } else {
+        mText.setString(mValue);
     }
 }
 
-bool Input::filterInput(sf::Uint32 unicode) {
-    if (mInputFilterCallback)
+void Input::handleEvent(const sf::Event& event) {
+    if (!mSprite.has_value()) {
+        return;
+    }
+
+    const sf::FloatRect spriteBounds = mSprite->getLocalBounds();
+    const sf::FloatRect globalBounds = getTransform().transformRect(spriteBounds);
+
+    if (const auto* mouseMoved = event.getIf<sf::Event::MouseMoved>()) {
+        const auto mousePos = sf::Vector2f(static_cast<float>(mouseMoved->position.x),
+                                           static_cast<float>(mouseMoved->position.y));
+        if (globalBounds.contains(mousePos)) {
+            select();
+        } else {
+            deselect();
+        }
+    } else if (const auto* textEntered = event.getIf<sf::Event::TextEntered>()) {
+        if (isSelected()) {
+            const char32_t unicode = textEntered->unicode;
+
+            if (unicode == U'\b' && !mValue.isEmpty()) {
+                mValue.erase(mValue.getSize() - 1, 1);
+            } else if (filterInput(unicode) && static_cast<int>(mValue.getSize()) < mInputLimit) {
+                mValue += unicode;
+            }
+
+            if (validateInput(mValue)) {
+                setValid();
+            } else {
+                setInvalid();
+            }
+
+            updateDisplayedText();
+        }
+    }
+}
+
+bool Input::filterInput(const char32_t unicode) const {
+    if (mInputFilterCallback) {
         return mInputFilterCallback(unicode);
+    }
     return true;
 }
 
-bool Input::validateInput(const sf::String& string) {
-    if (string.getSize() == 0)
+bool Input::validateInput(const sf::String& string) const {
+    if (string.isEmpty()) {
         return false;
+    }
 
-    if (mValidationCallback)
+    if (mValidationCallback) {
         return mValidationCallback(string);
+    }
 
     return true;
 }
