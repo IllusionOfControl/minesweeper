@@ -10,10 +10,18 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(minesweeper_tests
         BoardTest.cpp
         StateManagerTest.cpp
+        DifficultyTest.cpp
+        ResultManagerTest.cpp
+        StateIdentifiersTest.cpp
         ${CMAKE_SOURCE_DIR}/src/Board.cpp
-        ${CMAKE_SOURCE_DIR}/src/managers/StateManager.cpp)
+        ${CMAKE_SOURCE_DIR}/src/managers/StateManager.cpp
+        ${CMAKE_SOURCE_DIR}/src/managers/ResultManager.cpp)
 target_include_directories(minesweeper_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(minesweeper_tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(minesweeper_tests PRIVATE
+        Catch2::Catch2WithMain
+        spdlog::spdlog
+        fmt::fmt
+        nlohmann_json::nlohmann_json)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
