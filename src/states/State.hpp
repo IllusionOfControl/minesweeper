@@ -10,7 +10,8 @@ class State {
 public:
     using Ptr = std::unique_ptr<State>;
 
-    explicit State(GameContext& context) : mContext(context) {}
+    State() = default;
+    explicit State(GameContext& context) : mContext(&context) {}
     virtual ~State() = default;
 
     State(const State&) = delete;
@@ -25,10 +26,10 @@ public:
     virtual void resume() {}
 
 protected:
-    [[nodiscard]] GameContext& getContext() const noexcept { return mContext; }
+    [[nodiscard]] GameContext& getContext() const noexcept { return *mContext; }
 
 private:
-    GameContext& mContext;
+    GameContext* mContext = nullptr;
 };
 
 using StatePtr = State::Ptr;

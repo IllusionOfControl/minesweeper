@@ -35,6 +35,10 @@ public:
             return std::make_unique<T>(*mContext);
         };
     }
+    void registerState(StateID stateId, std::function<StatePtr()> factory) {
+        mFactories[stateId] = std::move(factory);
+    }
+
 
     void pushState(StateID stateId);
     void changeState(StateID stateId);

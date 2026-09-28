@@ -235,3 +235,71 @@ TEST_CASE("reset returns the board to a fresh state (L4)") {
                 ++revealed;
     REQUIRE(revealed == 0);
 }
+
+TEST_CASE("out-of-bounds operations are safe and ignored") {
+    Board b(9, 9, 10);
+    REQUIRE_NOTHROW(b.reveal(-1, 0));
+    REQUIRE_NOTHROW(b.reveal(0, -1));
+    REQUIRE_NOTHROW(b.reveal(9, 0));
+    REQUIRE_NOTHROW(b.reveal(0, 9));
+    REQUIRE(b.status() == Board::Status::FirstMove);
+
+    b.reveal(0, 0); // enter Playing
+    REQUIRE_NOTHROW(b.toggleMark(-1, 0));
+    REQUIRE_NOTHROW(b.toggleMark(100, 100));
+    REQUIRE_NOTHROW(b.chord(-5, -5));
+    REQUIRE_NOTHROW(b.chord(50, 50));
+}
+
+TEST_CASE("flagged cells cannot be revealed directly") {
+    Board b(9, 9, 10);
+    b.reveal(0, 0);
+
+    int targetX = -1, targetY = -1;
+    for (int y = 0; y < b.height() && targetX < 0; ++y) {
+        for (int x = 0; x < b.width(); ++x) {
+            if (!b.cellAt(x, y).isRevealed) {
+                targetX = x;
+                targetY = y;
+                break;
+            }
+        }
+    }
+    REQUIRE(targetX >= 0);
+
+    b.toggleMark(targetX, targetY); // Flag
+    REQUIRE(b.cellAt(targetX, targetY).mark == Board::Mark::Flag);
+
+    b.reveal(targetX, targetY);
+    REQUIRE_FALSE(b.cellAt(targetX, targetY).isRevealed);
+}
+
+TEST_CASE("operations are ignored once game is lost or won") {
+    Board b(4, 4, 1);
+    b.reveal(0, 0);
+
+    // Find the mine and reveal it to trigger Lost
+    int mineX = -1, mineY = -1;
+    for (int y = 0; y < b.height(); ++y) {
+        for (int x = 0; x < b.width(); ++x) {
+            if (b.cellAt(x, y).isMine) {
+                mineX = x;
+                mineY = y;
+                break;
+            }
+        }
+    }
+    REQUIRE(mineX >= 0);
+
+    b.reveal(mineX, mineY);
+    REQUIRE(b.status() == Board::Status::Lost);
+    REQUIRE(b.cellAt(mineX, mineY).isDetonated);
+    REQUIRE(b.cellAt(mineX, mineY).isRevealed);
+
+    // Further operations must not change state
+    const int flagsBefore = b.minesLeft();
+    b.toggleMark(0, 0);
+    REQUIRE(b.minesLeft() == flagsBefore);
+    b.reveal(0, 0);
+    REQUIRE(b.status() == Board::Status::Lost);
+}
