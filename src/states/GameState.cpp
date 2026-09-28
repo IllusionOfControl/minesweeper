@@ -68,7 +68,7 @@ void GameState::init() {
 
     const auto topBar = std::make_shared<TopBar>(getContext(), windowTilesX);
 
-    const auto& ledTexture = getContext().assets.getTexture(TextureID::LedBackground);
+    const auto& ledTexture = getContext().assets.getTexture(TextureID::CleanTileBackground);
     const auto& font = getContext().assets.getFont(FontID::Default);
 
     mMinesLeftIndicator = std::make_shared<Indicator>();

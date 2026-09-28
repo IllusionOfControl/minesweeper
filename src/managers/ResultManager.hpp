@@ -31,6 +31,8 @@ namespace ResultManager {
 
     bool saveResult(const GameResult& result);
     [[nodiscard]] std::vector<GameResult> loadResults();
+    [[nodiscard]] std::vector<GameResult> getTopResults(std::string_view difficulty = "", std::size_t limit = 10);
+    bool clearResults();
 }
 
 #endif // MINESWEEPER_RESULTMANAGER_HPP
