@@ -11,7 +11,7 @@
 
 namespace {
     constexpr int kWindowTilesX = 8;
-    constexpr int kWindowTilesY = 10;
+    constexpr int kWindowTilesY = 13;
 
     constexpr int kContentTilesX = 6;
     constexpr int kContentTilesY = 1;
@@ -36,7 +36,7 @@ void SaveResultState::init() {
     const auto topBar = std::make_shared<TopBar>(getContext(), kWindowTilesX);
 
     const auto& saveRecordTexture = getContext().assets.getTexture(TextureID::SaveRecordState);
-    const auto& ledTexture = getContext().assets.getTexture(TextureID::LedBackground);
+    const auto& cleanTileBackground = getContext().assets.getTexture(TextureID::CleanTileBackground);
     const auto& font = getContext().assets.getFont(FontID::Default);
 
     const auto result = *getContext().lastResult;
@@ -47,7 +47,7 @@ void SaveResultState::init() {
     mTimeLabel->setPosition(Layout::toPixels(1, 2));
 
     mTimeBackground = std::make_shared<Image>();
-    mTimeBackground->setTexture(ledTexture);
+    mTimeBackground->setTexture(cleanTileBackground);
     mTimeBackground->setTextureRect(Layout::getRect(0, 0, kContentTilesX, kContentTilesY));
     mTimeBackground->setPosition(Layout::toPixels(1, 3));
 
@@ -63,7 +63,7 @@ void SaveResultState::init() {
     mNameLabel->setPosition(Layout::toPixels(1, 5));
 
     mNameInput = std::make_shared<Input>();
-    mNameInput->setTexture(ledTexture);
+    mNameInput->setTexture(cleanTileBackground);
     mNameInput->setTextureRect(Layout::getRect(0, 0, kContentTilesX, kContentTilesY));
     mNameInput->setPosition(Layout::toPixels(1, 6));
     mNameInput->setFont(font);

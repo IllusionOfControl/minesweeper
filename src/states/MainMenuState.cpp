@@ -8,7 +8,7 @@
 
 namespace {
     constexpr int kWindowTilesX = 7;
-    constexpr int kWindowTilesY = 12;
+    constexpr int kWindowTilesY = 13;
 
     constexpr int kButtonTilesX = 5;
     constexpr int kButtonTilesY = 1;
@@ -22,37 +22,46 @@ void MainMenuState::init() {
     mBackground.setTexture(backgroundTexture);
     mBackground.setTextureRect(Layout::getRect(0, 0, kWindowTilesX, kWindowTilesY));
 
-    auto& logoTexture = getContext().assets.getTexture(TextureID::Logo);
+    const auto& logoTexture = getContext().assets.getTexture(TextureID::Logo);
     const auto logo = std::make_shared<Image>();
-    logo->setPosition(Layout::toPixels(1, 2));
+    logo->setPosition(Layout::toPixels(1, 1));
     logo->setTexture(logoTexture);
 
     const auto& buttonsTexture = getContext().assets.getTexture(TextureID::MainMenuButtons);
+    const auto& font = getContext().assets.getFont(FontID::Default);
 
     const auto playButton = std::make_shared<Button>();
     playButton->setTexture(buttonsTexture);
     playButton->setNormalTextureRect(Layout::getRect(0, 0, kButtonTilesX, kButtonTilesY));
     playButton->setSelectedTextureRect(Layout::getRect(5, 0, kButtonTilesX, kButtonTilesY));
     playButton->setCallback([this]() { getContext().states.changeState(StateID::DifficultyMenu); });
-    playButton->setPosition(Layout::toPixels(1, 6));
+    playButton->setPosition(Layout::toPixels(1, 5));
 
     const auto aboutButton = std::make_shared<Button>();
     aboutButton->setTexture(buttonsTexture);
     aboutButton->setNormalTextureRect(Layout::getRect(0, 1, kButtonTilesX, kButtonTilesY));
     aboutButton->setSelectedTextureRect(Layout::getRect(5, 1, kButtonTilesX, kButtonTilesY));
     aboutButton->setCallback([this]() { getContext().states.changeState(StateID::About); });
-    aboutButton->setPosition(Layout::toPixels(1, 8));
+    aboutButton->setPosition(Layout::toPixels(1, 7));
+
+    const auto leaderboardButton = std::make_shared<Button>();
+    leaderboardButton->setTexture(buttonsTexture);
+    leaderboardButton->setNormalTextureRect(Layout::getRect(0, 3, kButtonTilesX, kButtonTilesY));
+    leaderboardButton->setSelectedTextureRect(Layout::getRect(5, 3, kButtonTilesX, kButtonTilesY));
+    leaderboardButton->setCallback([this]() { getContext().states.changeState(StateID::Leaderboard); });
+    leaderboardButton->setPosition(Layout::toPixels(1, 9));
 
     const auto exitButton = std::make_shared<Button>();
     exitButton->setTexture(buttonsTexture);
     exitButton->setNormalTextureRect(Layout::getRect(0, 2, kButtonTilesX, kButtonTilesY));
     exitButton->setSelectedTextureRect(Layout::getRect(5, 2, kButtonTilesX, kButtonTilesY));
     exitButton->setCallback([this]() { getContext().window.close(); });
-    exitButton->setPosition(Layout::toPixels(1, 10));
+    exitButton->setPosition(Layout::toPixels(1, 11));
 
     mGuiContainer.pack(logo);
     mGuiContainer.pack(playButton);
     mGuiContainer.pack(aboutButton);
+    mGuiContainer.pack(leaderboardButton);
     mGuiContainer.pack(exitButton);
 }
 

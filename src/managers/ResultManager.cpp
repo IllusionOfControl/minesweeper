@@ -1,7 +1,7 @@
 #include "ResultManager.hpp"
 
+#include <algorithm>
 #include <chrono>
-#include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <spdlog/spdlog.h>
@@ -137,4 +137,38 @@ std::vector<GameResult> loadResults() {
     return {};
 }
 
-} // namespace ResultManager
+std::vector<GameResult> getTopResults(const std::string_view difficulty, const std::size_t limit) {
+    auto results = loadResults();
+    std::vector<GameResult> filtered;
+    filtered.reserve(results.size());
+
+    for (const auto& r : results) {
+        if (!r.won) {
+            continue;
+        }
+        if (!difficulty.empty() && difficulty != "All" && r.difficulty != difficulty) {
+            continue;
+        }
+        filtered.push_back(r);
+    }
+
+    std::sort(filtered.begin(), filtered.end(), [](const GameResult& a, const GameResult& b) {
+        if (a.timeSeconds != b.timeSeconds) {
+            return a.timeSeconds < b.timeSeconds;
+        }
+        return a.date < b.date;
+    });
+
+    if (filtered.size() > limit) {
+        filtered.resize(limit);
+    }
+    return filtered;
+}
+
+bool clearResults() {
+    const auto filePath = getResultsFilePath();
+    std::error_code ec;
+    return std::filesystem::remove(filePath, ec);
+}
+
+}

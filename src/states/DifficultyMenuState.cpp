@@ -9,7 +9,7 @@
 
 namespace {
     constexpr int kWindowTilesX = 7;
-    constexpr int kWindowTilesY = 12;
+    constexpr int kWindowTilesY = 13;
 
     constexpr int kButtonTilesX = 5;
     constexpr int kButtonTilesY = 1;
