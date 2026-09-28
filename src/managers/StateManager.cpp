@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 
 StateManager::StateManager(GameContext& context)
-    : mContext(context) {
+    : mContext(&context) {
 }
 
 void StateManager::pushState(const StateID stateId) {

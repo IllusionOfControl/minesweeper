@@ -67,6 +67,7 @@ void Button::select() {
 
 void Button::deselect() {
     Component::deselect();
+    mIsPressed = false;
     if (mSprite.has_value()) mSprite->setTextureRect(mNormalTextureRect);
     if (mText.has_value()) mText->setFillColor(mNormalTextColor);
 }
@@ -83,13 +84,32 @@ void Button::handleEvent(const sf::Event& event) {
     const sf::Rect<float> globalBounds = getTransform().transformRect(spriteBounds);
 
     if (const auto* moved = event.getIf<sf::Event::MouseMoved>()) {
-        if (const auto mousePos = sf::Vector2f(static_cast<float>(moved->position.x),
-                                               static_cast<float>(moved->position.y)); globalBounds.contains(mousePos))
+        const auto mousePos = sf::Vector2f(static_cast<float>(moved->position.x),
+                                           static_cast<float>(moved->position.y));
+        if (globalBounds.contains(mousePos)) {
             select();
-        else
+        } else {
             deselect();
+        }
+    } else if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+        if (pressed->button == sf::Mouse::Button::Left) {
+            const auto mousePos = sf::Vector2f(static_cast<float>(pressed->position.x),
+                                               static_cast<float>(pressed->position.y));
+            if (globalBounds.contains(mousePos)) {
+                mIsPressed = true;
+            }
+        }
+    } else if (const auto* released = event.getIf<sf::Event::MouseButtonReleased>()) {
+        if (released->button == sf::Mouse::Button::Left) {
+            const auto mousePos = sf::Vector2f(static_cast<float>(released->position.x),
+                                               static_cast<float>(released->position.y));
+            const bool wasPressed = mIsPressed;
+            mIsPressed = false;
+            if (wasPressed && globalBounds.contains(mousePos) && isSelected()) {
+                activate();
+            }
+        }
     }
-    if (event.is<sf::Event::MouseButtonPressed>()) { if (isSelected()) activate(); }
 }
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {

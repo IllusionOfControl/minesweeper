@@ -6,8 +6,7 @@
 #include "Background.hpp"
 
 
-void Background::setTexture(sf::Texture &texture) {
-    texture.setRepeated(true);
+void Background::setTexture(const sf::Texture &texture) {
     mSprite.emplace(texture);
 }
 

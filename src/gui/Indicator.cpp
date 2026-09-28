@@ -18,7 +18,6 @@ Indicator::Indicator() {
 }
 
 void Indicator::setTexture(const sf::Texture& texture) {
-    const_cast<sf::Texture&>(texture).setRepeated(true);
     if (mSprite.has_value()) {
         mSprite->setTexture(texture, false);
     } else {

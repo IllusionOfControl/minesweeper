@@ -73,7 +73,7 @@ void CustomDifficultyState::init() {
     mWidthInput->setInputFilterCallback(filterOnlyNumbers);
     mWidthInput->setInputValidationCallback([](const sf::String& string) {
         int value = 0;
-        return tryParseInt(string, value) && value >= Difficulty::Limits::MinWidth && value <= 18;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinWidth && value <= Difficulty::Limits::MaxWidth;
     });
 
     mHeightInput->setTexture(buttonsTexture);
@@ -88,7 +88,7 @@ void CustomDifficultyState::init() {
     mHeightInput->setInputFilterCallback(filterOnlyNumbers);
     mHeightInput->setInputValidationCallback([](const sf::String& string) {
         int value = 0;
-        return tryParseInt(string, value) && value >= Difficulty::Limits::MinHeight && value <= 18;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinHeight && value <= Difficulty::Limits::MaxHeight;
     });
 
     mMinesInput->setTexture(buttonsTexture);
@@ -103,7 +103,7 @@ void CustomDifficultyState::init() {
     mMinesInput->setInputFilterCallback(filterOnlyNumbers);
     mMinesInput->setInputValidationCallback([](const sf::String& string) {
         int value = 0;
-        return tryParseInt(string, value) && value >= Difficulty::Limits::MinMines && value <= 320;
+        return tryParseInt(string, value) && value >= Difficulty::Limits::MinMines && value <= Difficulty::Limits::maxMinesFor(Difficulty::Limits::MaxWidth, Difficulty::Limits::MaxHeight);
     });
 
     const auto playButton = std::make_shared<Button>();
@@ -164,7 +164,7 @@ void CustomDifficultyState::update() {
 }
 
 void CustomDifficultyState::draw() {
-    getContext().window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color(30, 30, 30));
 
     getContext().window.draw(mBackground);
     getContext().window.draw(mGuiContainer);

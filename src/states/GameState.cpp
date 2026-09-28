@@ -111,13 +111,14 @@ void GameState::handleInput() {
         if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
             if (const auto cell = cellAt({mousePressed->position.x, mousePressed->position.y}); mousePressed->button == sf::Mouse::Button::Left
                 && mBoard->inBounds(cell.x, cell.y)
-                && mBoard->status() == Board::Status::Playing) {
+                && (mBoard->status() == Board::Status::Playing || mBoard->status() == Board::Status::FirstMove)) {
                 mPressedCell = cell.y * mBoard->width() + cell.x;
                 mSmileButton->setReaction(SmileButton::SmileReveal);
                 mNeedToUpdate = true;
             }
         } else if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
             const auto cell = cellAt({mouseReleased->position.x, mouseReleased->position.y});
+            const bool hadPressedCell = (mPressedCell != -1);
             mPressedCell = -1;
 
             if (mBoard->inBounds(cell.x, cell.y)) {
@@ -134,6 +135,8 @@ void GameState::handleInput() {
                     mBoard->chord(cell.x, cell.y);
                     mNeedToUpdate = true;
                 }
+            } else if (hadPressedCell) {
+                mNeedToUpdate = true;
             }
         } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             if (keyPressed->code == sf::Keyboard::Key::R) {
@@ -207,7 +210,7 @@ void GameState::reset() {
 }
 
 void GameState::draw() {
-    getContext().window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color(30, 30, 30));
 
     getContext().window.draw(mBackground);
     getContext().window.draw(mGuiContainer);

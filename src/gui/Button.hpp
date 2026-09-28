@@ -50,6 +50,7 @@ private:
     std::optional<sf::Text> mText;
     sf::Color mNormalTextColor{sf::Color::White};
     sf::Color mSelectedTextColor{sf::Color::Yellow};
+    bool mIsPressed = false;
 };
 
 #endif // MINESWEEPER_BUTTON_HPP
