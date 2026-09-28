@@ -42,6 +42,8 @@ set(SOURCE_FILES
         src/states/GameState.hpp
         src/states/SaveResultState.cpp
         src/states/SaveResultState.hpp
+        src/states/LeaderboardState.cpp
+        src/states/LeaderboardState.hpp
         src/gui/Background.cpp
         src/gui/Background.hpp
         src/gui/PassiveComponent.hpp
@@ -76,7 +78,6 @@ target_include_directories(minesweeper PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Copy resources next to the executable (handles multi-config generators).
 add_custom_command(TARGET minesweeper POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_CURRENT_SOURCE_DIR}/_Resources

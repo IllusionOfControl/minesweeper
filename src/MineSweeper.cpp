@@ -7,6 +7,7 @@
 #include "states/CustomDifficultyState.hpp"
 #include "states/GameState.hpp"
 #include "states/SaveResultState.hpp"
+#include "states/LeaderboardState.hpp"
 #include "Layout.hpp"
 
 MineSweeper::MineSweeper(const StateID initialState)
@@ -44,7 +45,7 @@ void MineSweeper::loadAssets() {
                         sf::IntRect({0, 128}, {320, 352}));
     mAssets.loadTexture(TextureID::Tiles, "_Resources/res/tiles.png");
     mAssets.loadTexture(TextureID::Smiles, "_Resources/res/smiles.png");
-    mAssets.loadTexture(TextureID::LedBackground, "_Resources/res/tiles.png",
+    mAssets.loadTexture(TextureID::CleanTileBackground, "_Resources/res/tiles.png",
                         sf::IntRect({16 * Layout::TileSize, 0}, {Layout::TileSize, Layout::TileSize}));
     mAssets.loadTexture(TextureID::SaveRecordState, "_Resources/res/saveRecordState.png");
 
@@ -59,4 +60,5 @@ void MineSweeper::registerStates() {
     mStateManager.registerState<CustomDifficultyState>(StateID::CustomDifficulty);
     mStateManager.registerState<GameState>(StateID::Game);
     mStateManager.registerState<SaveResultState>(StateID::SaveResult);
+    mStateManager.registerState<LeaderboardState>(StateID::Leaderboard);
 }
