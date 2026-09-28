@@ -18,9 +18,8 @@ private:
 
     sf::RenderWindow mWindow;
     AssetManager mAssets;
-    StateManager mStateManager;
     Difficulty mDifficulty;
-
+    StateManager mStateManager;
     GameContext mContext;
 };
 

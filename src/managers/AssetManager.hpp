@@ -21,12 +21,6 @@ public:
     sf::Font& getFont(FontID id);
     [[nodiscard]] const sf::Font& getFont(FontID id) const;
 
-    // void loadTexture(std::string name, std::string fileName);
-    // void loadTexture(std::string name, std::string fileName, sf::IntRect area);
-    // sf::Texture &getTexture(std::string name);
-    //
-    // void loadFont(std::string name, std::string fileName);
-    // sf::Font &getFont(std::string name);
 
 private:
     std::unordered_map<TextureID, std::unique_ptr<sf::Texture>> mTextures;

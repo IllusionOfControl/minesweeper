@@ -11,7 +11,7 @@ public:
 
     Background() = default;
 
-    void setTexture(sf::Texture &texture);
+    void setTexture(const sf::Texture &texture);
 
     void setTextureRect(sf::IntRect rectangle);
 

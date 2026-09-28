@@ -12,9 +12,11 @@
 
 MineSweeper::MineSweeper(const StateID initialState)
     : mWindow(sf::VideoMode({200, 300}), "MineSweeper", sf::Style::Close | sf::Style::Titlebar)
-      , mStateManager(mContext)
       , mDifficulty(Difficulty::create(Difficulty::Preset::Easy))
+      , mStateManager()
       , mContext(mWindow, mAssets, mStateManager, mDifficulty) {
+    mWindow.setFramerateLimit(60);
+    mStateManager.setContext(mContext);
     loadAssets();
     registerStates();
 
@@ -49,6 +51,8 @@ void MineSweeper::loadAssets() {
                         sf::IntRect({16 * Layout::TileSize, 0}, {Layout::TileSize, Layout::TileSize}));
     mAssets.loadTexture(TextureID::SaveRecordState, "_Resources/res/saveRecordState.png");
 
+    mAssets.getTexture(TextureID::Background).setRepeated(true);
+    mAssets.getTexture(TextureID::CleanTileBackground).setRepeated(true);
     mAssets.loadFont(FontID::Default, "_Resources/fonts/visitor1.ttf");
 }
 

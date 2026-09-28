@@ -21,7 +21,9 @@ public:
         Clear
     };
 
+    StateManager() = default;
     explicit StateManager(GameContext& context);
+    void setContext(GameContext& context) { mContext = &context; }
     ~StateManager() = default;
 
     StateManager(const StateManager&) = delete;
@@ -30,7 +32,7 @@ public:
     template<typename T>
     void registerState(StateID stateId) {
         mFactories[stateId] = [this]() {
-            return std::make_unique<T>(mContext);
+            return std::make_unique<T>(*mContext);
         };
     }
 
@@ -54,7 +56,7 @@ private:
     StatePtr createState(StateID stateId);
     void applyChange(const PendingChange& change);
 
-    GameContext& mContext;
+    GameContext* mContext = nullptr;
     std::stack<StatePtr> mStateStack;
     std::vector<PendingChange> mPendingChanges;
     std::unordered_map<StateID, std::function<StatePtr()>> mFactories;

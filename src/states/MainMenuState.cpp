@@ -78,7 +78,7 @@ void MainMenuState::handleInput() {
 void MainMenuState::update() {}
 
 void MainMenuState::draw() {
-    getContext().window.clear(sf::Color::Red);
+    getContext().window.clear(sf::Color(30, 30, 30));
 
     getContext().window.draw(mBackground);
     getContext().window.draw(mGuiContainer);
