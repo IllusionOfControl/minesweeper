@@ -1,83 +1,110 @@
-# Minesweeper Game
+# Minesweeper v2
 
-This is a Minesweeper game written in C++ (C++17) using the SFML framework and built with CMake.
+[![CI](https://github.com/IllusionOfControl/minesweeper/actions/workflows/ci.yml/badge.svg)](https://github.com/IllusionOfControl/minesweeper/actions/workflows/ci.yml)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B17)
+[![CMake](https://img.shields.io/badge/CMake-3.24%2B-informational.svg)](https://cmake.org)
+[![SFML](https://img.shields.io/badge/SFML-3.x-green.svg)](https://www.sfml-dev.org)
+[![Catch2](https://img.shields.io/badge/Catch2-v3-orange.svg)](https://github.com/catchorg/Catch2)
 
-## Prerequisites
-To build and run the project, you will need:
-- A C++17 compiler (e.g. MSVC from Visual Studio 2022/2026)
-- CMake 3.24+
-- SFML 2.5+ (`graphics`, `window`, `system`)
+This is **Minesweeper v2**, a modern implementation of the classic Minesweeper game written in **C++17** using the **SFML** framework and built with **CMake**.
 
-The unit tests use [Catch2](https://github.com/catchorg/Catch2), which is fetched
-automatically by CMake (`FetchContent`) and therefore needs internet access on the
-first configure. Pass `-DMINESWEEPER_BUILD_TESTS=OFF` to skip them.
+This version represents a comprehensive overhaul of the original project. The codebase has been redesigned and refactored to meet production requirements and industry software engineering standards:
+- **Clean separation of concerns:** Core game rules and board logic are encapsulated in a pure, SFML-independent domain model (`Board`), enabling deterministic behavior and headless unit testing.
+- **Robustness and safety:** Undefined behavior, uninitialized state, and switch fall-through issues have been resolved. The recursive flood fill has been replaced with a safe iterative stack-based algorithm to prevent call-stack overflows.
+- **Modern C++ design:** Adoption of C++17 idioms, `constexpr` constants in place of preprocessor macros, strong typing (`enum class`), and secure random generation via `std::mt19937`.
+- **State machine and modular UI:** Screen transitions are managed through a stack-based state manager, supported by a reusable component-driven GUI system.
+- **Persistence and observability:** Game results are persisted to JSON using `nlohmann_json` with cross-platform filesystem path resolution, alongside structured logging powered by `spdlog` and `fmt`.
+- **Automated verification:** Built-in unit tests powered by Catch2 and continuous integration through GitHub Actions.
 
-## Building and Running (Windows)
-
-### Using vcpkg (recommended)
-1. Install [vcpkg](https://github.com/microsoft/vcpkg) and the SFML package:
-   ```shell
-   vcpkg install sfml
-   ```
-2. Clone the repository:
-   ```shell
-   git clone https://github.com/IllusionOfControl/minesweeper.git
-   cd minesweeper
-   ```
-3. Configure and build:
-   ```shell
-   cmake -B build -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake
-   cmake --build build
-   ```
-4. Run the game (assets are copied next to the executable automatically):
-   ```shell
-   ./build/Debug/minesweeper.exe
-   ```
-
-### Using a downloaded SFML
-1. Download SFML from https://www.sfml-dev.org/download/sfml/2.5.1/ and extract it.
-2. Configure pointing CMake at it, then build:
-   ```shell
-   cmake -B build -DSFML_DIR=<path-to-sfml>/lib/cmake/SFML
-   cmake --build build
-   ```
-
-## Running the tests
-```shell
-ctest --test-dir build --output-on-failure
-```
-The tests cover the pure game logic in `Board` (mine placement, flood fill, marking,
-chord, win/lose, reset) and the `StateManager` stack behaviour. They are also run on
-every push/PR by the GitHub Actions workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
-
-## Architecture
-The code is split into small, focused pieces:
-
-- `src/Board.{hpp,cpp}` — pure, SFML-free game logic (the board model, mine placement,
-  reveal/flood-fill, marks, chord, win/lose). This is what the unit tests target.
-- `src/states/` — screens implementing the `State` interface (`init/handleInput/update/draw`):
-  main menu, difficulty menu, custom difficulty, about and the game screen. `GameState`
-  only handles input and rendering and delegates the rules to `Board`.
-- `src/managers/` — `AssetManager` (textures/fonts) and `StateManager` (a stack of screens).
-- `src/gui/` — reusable widgets (`Button`, `Input`, `Indicator`, `Background`, `Container`,
-  `SmileButton`) plus `WidgetFactory` for the shared menu/exit/background widgets.
-- `src/MineSweeper.{hpp,cpp}` — owns the window, asset loading and the main loop; the
-  `Context` it holds is shared with every state.
-
-## How to Play
-The objective is to clear the board without detonating any mines.
-
-- **Left-click** a cell to reveal it. The first click is always safe. If the cell holds a
-  mine the game is over; otherwise a number shows how many of the 8 neighbours are mines.
-- **Right-click** to cycle a cell through flag → question mark → unmarked.
-- **Middle-click** a revealed number whose flag count matches it to "chord" — reveal all of
-  its remaining unflagged neighbours at once.
-- Press **R** or click the smiley to start a new game.
-
-To win, reveal every cell that is not a mine. Good luck!
+Detailed notes and history from the refactoring process are preserved in the [`legacy/`](legacy/) directory.
 
 ---
 
-*The assets were taken from [minesweeper]*
+## Features
 
-[minesweeper]: https://github.com/logalex96/Minesweeper
+- **Difficulty Presets and Custom Mode:**
+  - *Beginner:* 9×9 board, 10 mines
+  - *Intermediate:* 16×16 board, 40 mines
+  - *Expert:* 30×16 board, 99 mines
+  - *Custom:* User-defined board dimensions and mine count with input validation
+- **Guaranteed Safe First Click:** The first revealed tile is never a mine.
+- **Chording Support:** Middle-clicking a revealed numbered cell whose adjacent flag count matches its value uncovers all surrounding unflagged cells.
+- **Leaderboard and Persistence:** Records your best completion times and saves player statistics to JSON across sessions.
+- **Smooth Window Management:** A single operating system window dynamically resizes between menus and varying board sizes without flickering.
+- **Structured Logging:** Configurable log levels with colored console outputs for easy diagnostics and debugging.
+
+---
+
+## Prerequisites
+
+To build and run the game, ensure you have:
+- A **C++17** compliant compiler (MSVC from Visual Studio 2022/2026, GCC 9+, or Clang 10+)
+- **CMake 3.24+**
+- [vcpkg](https://github.com/microsoft/vcpkg) for dependency management
+
+The project uses manifest mode (`vcpkg.json`) to automatically fetch and configure:
+- **SFML** (`graphics`, `window`, `system`, `audio`, `network`)
+- **spdlog** and **fmt**
+- **nlohmann-json**
+
+Unit tests use **Catch2 v3**, fetched automatically by CMake via `FetchContent`.
+
+---
+
+## Building and Running (Windows)
+
+### 1. Clone the Repository
+```shell
+git clone https://github.com/IllusionOfControl/minesweeper.git
+cd minesweeper
+```
+
+### 2. Configure with CMake
+Point CMake to your vcpkg toolchain file (or use your `$env:VCPKG_ROOT` environment variable):
+```shell
+cmake -B build -A x64 -DCMAKE_TOOLCHAIN_FILE="<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake"
+```
+
+### 3. Build
+```shell
+cmake --build build --config Release
+```
+*Note: Game assets (`_Resources`) are copied to the executable directory automatically as part of the post-build step.*
+
+### 4. Run the Game
+```shell
+./build/Release/minesweeper.exe
+```
+
+---
+
+## Running the Unit Tests
+
+The test suite covers the domain game logic (mine placement, safe opening, flood fill, flagging, chording, win/loss evaluation, reset) and the state manager stack lifecycle.
+
+Run tests using `ctest`:
+```shell
+ctest --test-dir build -C Release --output-on-failure
+```
+
+To configure the build without unit tests, pass `-DMINESWEEPER_BUILD_TESTS=OFF` during CMake configuration.
+
+---
+
+## How to Play
+
+| Action | Control |
+|---|---|
+| **Reveal Cell** | **Left-click** (the first click is always safe) |
+| **Flag / Mark Cell** | **Right-click** (cycles through Flag 🚩 → Question Mark ❓ → Unmarked) |
+| **Chord (Open Neighbours)** | **Middle-click** on an opened number matching the count of flagged neighbours |
+| **Restart Game** | Press **R** or click the smiley face in the top bar |
+| **Navigate UI** | Use the on-screen buttons to switch screens, change difficulty, or view high scores |
+
+To win the game, reveal all cells that do not contain mines.
+
+---
+
+## Credits
+
+- Game sprites and graphical assets are sourced from [logalex96/Minesweeper](https://github.com/logalex96/Minesweeper).
