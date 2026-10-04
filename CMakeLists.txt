@@ -33,8 +33,9 @@ target_include_directories(minesweeper PRIVATE
 
 add_custom_command(TARGET minesweeper POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/_Resources
-                $<TARGET_FILE_DIR:minesweeper>/_Resources)
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:minesweeper>/assets
+)
 
 option(MINESWEEPER_BUILD_TESTS "Build unit tests" ON)
 if (MINESWEEPER_BUILD_TESTS)
