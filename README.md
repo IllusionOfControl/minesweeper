@@ -78,13 +78,70 @@ cmake --build build --config Release
 
 ---
 
+## Building and Running (Linux)
+
+### 1. Install System Dependencies
+vcpkg builds SFML 3 from source on Linux and links against system windowing, graphics, audio, and device libraries.
+
+**Fedora:**
+```shell
+sudo dnf install -y \
+    gcc-c++ cmake ninja-build git \
+    systemd-devel libX11-devel libXrandr-devel libXcursor-devel libXi-devel \
+    mesa-libGL-devel alsa-lib-devel freetype-devel libvorbis-devel flac-devel
+```
+
+**Ubuntu / Debian:**
+```shell
+sudo apt-get update && sudo apt-get install -y \
+    build-essential cmake ninja-build git curl zip unzip tar pkg-config \
+    libudev-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev \
+    libgl1-mesa-dev libasound2-dev libfreetype-dev libvorbis-dev libflac-dev
+```
+
+### 2. Set Up vcpkg
+If you have vcpkg installed via Fedora package manager (`dnf`), clone the ports repository into the expected root directory:
+```shell
+source /etc/profile.d/vcpkg.sh
+git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+cd "$VCPKG_ROOT" && ./bootstrap-vcpkg.sh -disableMetrics
+```
+
+Otherwise, clone and bootstrap vcpkg manually:
+```shell
+git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+~/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+export VCPKG_ROOT="$HOME/vcpkg"
+```
+
+### 3. Configure and Build
+```shell
+cmake -B build -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+  -DCMAKE_BUILD_TYPE=Release
+
+cmake --build build
+```
+*Note: Game assets (`_Resources`) are copied to the executable directory automatically as part of the post-build step.*
+
+### 4. Run the Game
+```shell
+./build/minesweeper
+```
+
+---
+
 ## Running the Unit Tests
 
 The test suite covers the domain game logic (mine placement, safe opening, flood fill, flagging, chording, win/loss evaluation, reset) and the state manager stack lifecycle.
 
 Run tests using `ctest`:
 ```shell
+# Windows (multi-config):
 ctest --test-dir build -C Release --output-on-failure
+
+# Linux:
+ctest --test-dir build --output-on-failure
 ```
 
 To configure the build without unit tests, pass `-DMINESWEEPER_BUILD_TESTS=OFF` during CMake configuration.
