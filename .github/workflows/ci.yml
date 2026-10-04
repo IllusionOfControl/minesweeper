@@ -7,21 +7,65 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install SFML (vcpkg)
-        run: vcpkg install sfml:x64-windows
+      - name: Create vcpkg cache directory
+        run: mkdir -p "${{ github.workspace }}/vcpkg-cache"
+        shell: bash
 
-      - name: Configure
+      - name: Cache vcpkg binary artifacts
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg-cache
+          key: ${{ matrix.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            ${{ matrix.os }}-vcpkg-
+
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ninja-build \
+            libudev-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev \
+            libgl1-mesa-dev libasound2-dev libfreetype-dev libvorbis-dev libflac-dev
+
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
         run: >
           cmake -B build -A x64
           -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
 
-      - name: Build
-        run: cmake --build build --config Debug
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
 
-      - name: Test
-        run: ctest --test-dir build --build-config Debug --output-on-failure
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --build build --config Release
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
+        run: cmake --build build
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Test (Linux)
+        if: runner.os == 'Linux'
+        run: ctest --test-dir build --output-on-failure
