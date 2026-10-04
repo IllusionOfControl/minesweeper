@@ -20,6 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Verify CMake version
+        run: cmake --version
+
       - name: Create vcpkg cache directory
         run: mkdir -p "${{ github.workspace }}/vcpkg-cache"
         shell: bash

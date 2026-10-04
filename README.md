@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/IllusionOfControl/minesweeper/actions/workflows/ci.yml/badge.svg)](https://github.com/IllusionOfControl/minesweeper/actions/workflows/ci.yml)
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B17)
-[![CMake](https://img.shields.io/badge/CMake-3.24%2B-informational.svg)](https://cmake.org)
+[![CMake](https://img.shields.io/badge/CMake-4.0%2B-informational.svg)](https://cmake.org)
 [![SFML](https://img.shields.io/badge/SFML-3.x-green.svg)](https://www.sfml-dev.org)
 [![Catch2](https://img.shields.io/badge/Catch2-v3-orange.svg)](https://github.com/catchorg/Catch2)
 
@@ -39,7 +39,7 @@ Detailed notes and history from the refactoring process are preserved in the [`l
 
 To build and run the game, ensure you have:
 - A **C++17** compliant compiler (MSVC from Visual Studio 2022/2026, GCC 9+, or Clang 10+)
-- **CMake 3.24+**
+- **CMake 4.0+**
 - [vcpkg](https://github.com/microsoft/vcpkg) for dependency management
 
 The project uses manifest mode (`vcpkg.json`) to automatically fetch and configure:
