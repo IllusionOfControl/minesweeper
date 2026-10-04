@@ -20,8 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup CMake and Ninja
-        uses: lukka/get-cmake@latest
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '4.x'
+          github-api-token: ${{ github.token }}
 
       - name: Verify CMake version
         run: cmake --version
@@ -59,6 +62,22 @@ jobs:
           cmake -B build -G Ninja
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Show vcpkg install log on configure failure (Windows)
+        if: failure() && runner.os == 'Windows'
+        run: |
+          if (Test-Path build/vcpkg-manifest-install.log) {
+            Get-Content build/vcpkg-manifest-install.log
+          }
+        shell: powershell
+
+      - name: Show vcpkg install log on configure failure (Linux)
+        if: failure() && runner.os == 'Linux'
+        run: |
+          if [ -f build/vcpkg-manifest-install.log ]; then
+            cat build/vcpkg-manifest-install.log
+          fi
+        shell: bash
 
       - name: Build (Windows)
         if: runner.os == 'Windows'

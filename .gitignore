@@ -352,4 +352,3 @@ vcpkg_installed/
 
 # vcpkg local configuration and temporary files
 .vcpkg/
-vcpkg-configuration.json
